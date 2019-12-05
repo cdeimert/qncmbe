@@ -1,14 +1,39 @@
+# Standard library imports
 import datetime as dt
 import os
 from glob import glob
 import re
 import struct
-import numpy as np
 import time as tm
 import csv
+
+# Other imports
+import numpy as np
 from qncmbe.data_export.value_names import value_names_database
 
 def get_data(start_time, end_time, value_names_list, delta_t = -1, interp = False):
+	'''
+	Primary function for getting data from various computers in the QNC-MBE lab.
+
+	- start_time and end_time should be datetime objects.
+	- value_names_list should be a list of strings. They must correspond to entries in the first column of value_names_database.csv
+	- delta_t should be the desired time resolution of Molly data in seconds.
+	- intrp is a bool determining whether to linearly interpolate (True) or step interpolate (False) the data
+	
+	Returns 'data': a dictionary of numpy arrays, with keys corresponding to the value_names_list
+
+	SPECIAL CASE:
+	If delta_t == -1, raw Molly data is returned.
+	In this case, each data value is only stored whenever it changes.
+	This means that each data signal has a different time array, and the time values are not equally spaced.
+	So, in this case "Molly time" is not returned as a separate array. 
+	Rather, each Molly data signal is now a dictionary with two numpy arrays: one for 'time' and one for 'vals'
+
+	So, e.g., suppose you are looking at 'Ga1 tip measured'.
+	If delta_t = 2.0, then your time array would be data['Molly time'] (equally spaced at 2s), and your values array would be data['Ga1 tip measured']
+	If delta_t = -1, then your time array would be data['Ga1 tip measured']['time'] and your values array would be data['Ga1 tip measured']['vals']
+
+	'''
 
 	local_value_names = {
 		"Molly": [],
@@ -16,6 +41,8 @@ def get_data(start_time, end_time, value_names_list, delta_t = -1, interp = Fals
 		"SVT": []
 	}
 	for val in value_names_list:
+		if val not in value_names_database:
+			raise Exception(f'Invalid value "{val}" in value_names_list. Not found in value_names_database')
 		local_value_names[value_names_database[val]['Location']].append(value_names_database[val]['Local value name'])
 
 	# Generate dictionary of data for each location
@@ -34,8 +61,10 @@ def get_data(start_time, end_time, value_names_list, delta_t = -1, interp = Fals
 	return data
 
 def get_value_names_list(location = "all"):
-	# Gets a list of all value names from the value names database if location == "all"
-	# Otherwise, only returns value names from a particular location (either "Molly", "SVT", or "BET")
+	'''
+	Gets a list of all value names from the value names database if location == "all"
+	Otherwise, only returns value names from a particular location (either "Molly", "SVT", or "BET")
+	'''
 
 	value_names_list = []
 	for val in value_names_database:
@@ -45,11 +74,12 @@ def get_value_names_list(location = "all"):
 	return value_names_list
 
 def get_raw_Molly_data(start_time, end_time, value_names):
-
-	# First, get data from each hour
-	# Start with start_time, but rounded DOWN to the nearest hour.
-	# Ensures that all the needed hours are captured. E.g., if start_time is 14:50 and 
-	# end_time is 15:20, this will capture from 14:00 to 16:00.
+	'''
+	First, get data from each hour
+	Start with start_time, but rounded DOWN to the nearest hour.
+	Ensures that all the needed hours are captured. E.g., if start_time is 14:50 and 
+	end_time is 15:20, this will capture from 14:00 to 16:00.
+	'''
 
 
 	delta = dt.timedelta(hours=1)
