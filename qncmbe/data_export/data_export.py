@@ -429,6 +429,8 @@ def get_SVT_data(start_time, end_time, value_names):
 	# Different values are stored in different files and columns, so need information about which value is where.
 	info = {}
 
+	# TODO: deal with the issue that the SVT computer sometimes splits files from long growths
+	# into, e.g. Refl, Refm, Refn...
 	info['SVT Time (RoboMBE Engine 1)'] = {'subloc': 'Engine 1', 'col': 0}
 	info['PI 950'] = {'subloc': 'Engine 1', 'col': 1}
 	info['PI 850'] = {'subloc': 'Engine 1', 'col': 2}
@@ -481,7 +483,9 @@ def get_SVT_data(start_time, end_time, value_names):
 		raw_data[subloc] = []
 		for file in files[subloc]:
 			try:
-				file_data = np.genfromtxt(file['name'], usecols = cols[subloc], skip_header = 1)
+				file_data = np.genfromtxt(file['name'], usecols = cols[subloc], skip_header = 3)
+				# Note, setting skip_header = 3 will typically discard the first two data points, but
+				# otherwise there can be problems when someone starts logging before turning on the Engine
 			except:
 				print("Error loading file " + file['name'])
 
