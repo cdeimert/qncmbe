@@ -1,7 +1,28 @@
+'''
+Functions for fitting reflectance oscillations in Molecular Beam Epitaxy growths.
+Based on the method of Breiland et al ("A virtual interface method for extracting growth rates and high temperature optical constants from thin semiconductor films using in situ normal incidence reflectance", Journal of Applied Physics, 1995)
+
+TODO: 
+  - Refactor to get rid of the fittable parameter weirdness... 
+    Should just pass a list of parameters to be fitted.
+  - Add the ability to plot fit convergence over time. (Part done, but would be better if you could pick a specific parameter.)
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
 import scipy.signal as sig
+
+wvln_colors_light = {
+    '469.5': '#80b1d3',
+    '950.3': '#fb8072'
+}
+wvln_colors_dark = {
+    '469.5': '#377eb8',
+    '950.3': '#e41a1c'
+}
+
+refl_pars = ['n','k','ns','ks','G','s','wlvn']
 
 class Material():
     def __init__(self, name):
@@ -25,6 +46,12 @@ class Refl_parameters():
         self.wvln = Fittable_parameter(wvln)
            
     def set_fit_type(self, fit_type):
+        '''
+        Valid fit types:
+        - "fix nk" (fit everything else, except wavelength)
+        - "fix G" (fit everything else, except wavelength)
+        - "fit everything" (fit everything except wavelength)
+        '''
         
         self.N.is_fitted = True
         self.Ns.is_fitted = True
@@ -66,40 +93,50 @@ def calc_reflectance(time, n, k, ns, ks, G, s, wvln):
 
     return s*np.absolute(r)**2
 
-# def get_restricted_refl_func(**kwargs):
-#     # 'Magic' function to create a new version of calc_reflectance with some arguments fixed.
-#     # E.g., if you call get_restricted_refl_func(s = 1.0, wavelen = 470.0), you are returned a function
-#     #   refl_func(time, n, k, ns, ks, G) which is equivalent to calc_reflectance(time, n, k, ns, ks, 1.0, 470.0)
-#     #
-#     # This is needed for the scipy curve fitting routine.
-
-#     funcstr = '''def refl_func({p}):\n\treturn calc_reflectance({q})'''
-
-#     all_vars = ['time', 'n', 'k', 'ns', 'ks', 'G', 's', 'wvln']
-#     fixed_vars = list(kwargs.keys())
-
-#     args = []
-#     fit_vars = []
-#     for var in all_vars:
-#         if var in fixed_vars:
-#             args.append(str(kwargs[var]))
-#         else:
-#             args.append(var)
-#             fit_vars.append(var)
-
-#     args = ', '.join(args)
-#     fit_vars = ', '.join(fit_vars)
-
-#     func_def = funcstr.format(p=fit_vars, q=args)
-#     exec(func_def, globals())
-
-#     return refl_func
-
 def dict_to_list(in_dict, keys):
 	return [in_dict[key] for key in keys]
 
 def list_to_dict(in_list, keys):
 	return {k:v for k,v in zip(keys, in_list)}
+
+# def fit_reflectance_new(refl, time, pars_guess, pars_to_fit):
+#     '''
+#     - refl and time should be numpy arrays with the reflectancs vs time data
+#     - pars_guess should be a dictionary with keys equal to {'n', 'k', 'ns', 'ks', 'G', 's', 'wvln'}
+#     - pars_to_fit should be a comma-separated string. E.g., 'ns,ks,G,s' or 'n,k,s'
+#     '''
+
+#     pfit_keys = pars_to_fit.split(',')
+
+#     if not set(pfit_keys).issubset(set(refl_pars)):
+#         raise Exception(f"Invalid pars_to_fit. Must be subset of {','.join(refl_pars)}")
+
+#     pfix = {}
+#     for p in refl_pars:
+#         if p not in pfit_keys:
+#             pfix[p] = pars_guess[p]
+
+#     pfit = {pars_guess[p] for p in pfit_keys}
+
+#     refl_func = lambda t, *p_arr: calc_reflectance(t, **{k: p for k, p in zip(pfit_keys, p_arr)}, **pfix)
+
+#     p0 = [pars_guess[p] for p in pars_to_fit]
+
+#     rel_time = time - time[0]
+
+#     try:
+#         popt, pcov = opt.curve_fit(refl_func, rel_time, refl, p0 = p0)
+#     except:
+#         pars_opt = pars_guess
+#         refl_fit = refl_func(rel_time, *p0, **pfix)
+#         print("WARNING: fit failed.")
+#         return pars_opt, refl_fit
+
+#     pars_opt = {**pfix, k:p for k,p in zip(pfit_keys, popt)}
+
+#     refl_fit = refl_func(rel_time, *popt, **pfix)
+
+#     return pars_opt, refl_fit
 
 def fit_reflectance(refl, time, refl_pars_guess):
     # 'reflectance' and 'time' should be 1D numpy arrays of the same length
@@ -133,7 +170,7 @@ def fit_reflectance(refl, time, refl_pars_guess):
     fixed_vals = {key: par_guess[key] for key in par_keys[p_fix]}
 
     refl_func = lambda t, *p: calc_reflectance(t, **{key: p_val for key, p_val in zip(par_keys[p_fit], p)}, **fixed_vals)
-    #refl_func = get_restricted_refl_func(**fixed_vals)
+
     p0 = dict_to_list(par_guess, par_keys[p_fit])
 
     rel_time = time - time[0]
@@ -146,10 +183,7 @@ def fit_reflectance(refl, time, refl_pars_guess):
         print("WARNING: fit failed.")
         return refl_pars_fit, refl_fit
 
-    #p_err = np.sqrt(np.diag(p_cov))
-
     par_opt = list_to_dict(p_opt, par_keys[p_fit])
-    #par_err = list_to_dict(p_err, par_keys[p_fit])
     
     for key in par_keys[p_fix]:
         par_opt[key] = par_guess[key]
@@ -162,24 +196,7 @@ def fit_reflectance(refl, time, refl_pars_guess):
     refl_pars_fit.s.value = par_opt['s']
     refl_pars_fit.wvln.value = par_opt['wvln']
     
-    #refl_fit = refl_func(rel_time, **par_opt)
     refl_fit = calc_reflectance(rel_time, **par_opt)
-
-    #for key in par_keys[p_fix]:
-    #    par_opt[key] = par_guess[key]
-    #    par_err[key] = 0.0
-
-    #par_opt_rel = {key: (par_opt[key] - par_guess[key])/par_guess[key] for key in par_guess}
-    #par_err_rel = {key: par_err[key]/par_guess[key] for key in par_guess}
-
-    #fit_error = np.average((refl_fit - refl)**2)
-
-    #fit_results = { 'par_opt': par_opt, 
-    #                'par_err': par_err, 
-    #                'par_opt_rel': par_opt_rel,
-    #                'par_err_rel': par_err_rel,
-    #                'refl_fit': refl_fit,
-    #                'fit_error': fit_error}
 
     return refl_pars_fit, refl_fit
 
@@ -205,42 +222,40 @@ def print_fitted_value(name, x_fit, x_guess, units = '', print_error = True):
     return string + '\n'
 
 class Layer():
-    def __init__(self, material, thickness, t_total):
+    def __init__(self, material, growth_rate, t_start = -np.inf, t_end = np.inf):
+        '''
+        - material should be of class Material
+        - growth_rate should be a float (if using angtroms, should call use_angstroms_for_structure())
+        - If t_start and t_end are specified, will automatically use them to restrict the data provided in set_refl_data()
+        '''
         self.material = material
-        self.thickness = thickness
-        self.t_total = t_total
-        self.G = thickness/t_total
-        
-        self.t_buffer = 10.0
-        self.t_start = 0.0
-        self.t_end = 0.0
+        self.material_beneath = None
+        self.G = growth_rate
+
+        self.t_start = t_start
+        self.t_end = t_end
+
+        self.name = ''
 
         self.wvln_scale = 1.0
         self.use_angstroms = False
-        
-    def set_t_buffer(self, t_buffer):
-        self.t_buffer = t_buffer
-        self.calc_t_end()
-        
-    def set_refl_t_start(self, t_start):
-        self.t_start = t_start
-        self.calc_t_end() 
-        
-    def calc_t_end(self):
-        self.t_end = self.t_start + self.t_total - self.t_buffer
-        
+                
     def set_name(self, name):
         self.name = name
         
     def set_material_beneath(self, material):
         self.material_beneath = material                       
     
-    def set_refl_data(self, raw_t, raw_R):
-        # raw_R should be a dictionary of numpy arrays at different wavelengths
-        mask = (raw_t > self.t_start) & (raw_t < self.t_end)
+    def set_refl_data(self, t, R):
+        '''
+        t should be a numpy array of time values
+        R should be a dictionary of numpy arrays. One entry for each wavelength.
+        '''
+
+        mask = (t >= self.t_start) & (t <= self.t_end)
         
-        self.t_data = raw_t[mask]
-        self.refl_data = {wvln: raw_R[wvln][mask] for wvln in raw_R}
+        self.t_data = t[mask]
+        self.refl_data = {key: R[key][mask] for key in R}
     
     def use_angstroms_for_structure(self, use_angstroms = True):
         self.use_angstroms = use_angstroms
@@ -255,8 +270,14 @@ class Layer():
         self.refl_pars_guess = {}
         
         for wvln in self.refl_data:
+
+            if self.material_beneath is not None:
+                Ns_guess = self.material_beneath.N[wvln]
+            else:
+                Ns_guess = 1.0 + 0j
+
             self.refl_pars_guess[wvln] = Refl_parameters(self.material.N[wvln], 
-                                                         self.material_beneath.N[wvln],
+                                                         Ns_guess,
                                                          self.G, 
                                                          1.0, 
                                                          float(wvln)*self.wvln_scale)
@@ -330,9 +351,15 @@ class Layer():
         
         fig, ax = plt.subplots()
         
+        n = 0
         for wvln in self.refl_data:
-            ax.plot(self.t_data, self.refl_data[wvln], '.', label = wvln + " nm data")
-            ax.plot(self.t_data, self.refl_fit[wvln], '-', label = wvln + " nm fit")
+            if wvln in wvln_colors_light:
+                color = wvln_colors_light[wvln]
+            else:
+                color = f'C{n}'
+                n+=1
+            ax.plot(self.t_data, self.refl_data[wvln], '-', label = wvln + " nm data", color = color)
+            ax.plot(self.t_data, self.refl_fit[wvln], ':k', label = wvln + " nm fit")
         
         ax.set_xlabel('Time (s)')
         ax.set_ylabel('Refl.')
@@ -349,40 +376,95 @@ class Structure():
         
         self.substrate = substrate
         self.layers = []
+        self.layer_names = []
         self.use_angstroms = False
         self.fit_type = 'fix nk'
+
+        self.use_data_file = False
         
     def set_refl_data(self, t_data, R_data):
         self.t_data = t_data
         self.R_data = R_data
-                
-    def set_t_buffer(self, t_buffer):
-        for layer in self.layers:
-            layer.set_t_buffer(t_buffer)      
-           
+
+    def set_refl_data_file(self, fname):
+        self.refl_data_file = fname
+        self.use_data_file = True
+
+        self.update_refl_data()
+
+    def update_refl_data(self):
+        
+        if self.use_data_file:
+            raw_data = np.genfromtxt(self.refl_data_file, skip_header = 3, usecols = (0,1,2))
+
+            self.t_data = raw_data[:,0]*3600*24
+            self.R_data = {
+                '950.3': raw_data[:,1],
+                '469.5': raw_data[:,2]
+                }
+            self.t_data -= self.t_data[0]
+
+        else:
+            pass
+
+    def plot_full_refl_data(self):
+        
+        self.update_refl_data()
+
+        fig, ax = plt.subplots()
+        
+        n = 0
+        for wvln in self.R_data:
+            if wvln in wvln_colors_dark:
+                color = wvln_colors_dark[wvln]
+            else:
+                color = f'C{n}'
+                n+=1
+            ax.plot(self.t_data, self.R_data[wvln], '-', label = wvln + " nm", color = color)
+        
+        ax.set_xlabel('Time (s)')
+        ax.set_ylabel('Refl.')
+        ax.legend()
+
+        title = 'Full reflectane data'
+        if self.use_data_file:
+            title += f' ("{self.refl_data_file}")'
+        ax.set_title(title)
+
+        return fig, ax
+
+    def get_full_refl_data(self):
+        self.update_refl_data()
+        return self.t_data, self.R_data
+
     def use_angstroms_for_structure(self, use_angstroms = True):
         self.use_angstroms = use_angstroms
         for layer in self.layers:
             layer.use_angstroms_for_structure(use_angstroms)
             layer.set_refl_pars_guess(self.fit_type)
 
-    def add_layer(self, name, material, thickness, t_total, t_start):
+    def add_layer(self, name, material, growth_rate, t_start, t_end, use_layer_beneath = False):
         
-        new_layer = Layer(material, thickness, t_total)
+        new_layer = Layer(material, growth_rate, t_start, t_end)
+
+        if name in self.layer_names:
+            raise Exception(f'Layer name "{name}" already used. Each layer must have a unique name.')
+        
         new_layer.set_name(name)
-        new_layer.set_refl_t_start(t_start)
-                       
-        if self.layers:
-            new_layer.set_material_beneath(self.layers[-1].material)
-        else:
-            new_layer.set_material_beneath(self.substrate)      
+        
+        # If possible & requested, use the previous layer to generate an initial guess for the substrate dielectric constant
+        if use_layer_beneath:
+            if self.layers:
+                new_layer.set_material_beneath(self.layers[-1].material)  
+            else:
+                new_layer.set_material_beneath(self.substrate)  
         
         new_layer.set_refl_data(self.t_data, self.R_data)
         new_layer.use_angstroms_for_structure(self.use_angstroms)
         new_layer.set_refl_pars_guess()
         
         self.layers.append(new_layer)
-        
+        self.layer_names.append(name)
         
     def set_fit_type(self, fit_type):
         for layer in self.layers:
@@ -391,7 +473,11 @@ class Structure():
         self.fit_type = fit_type
 
     def calc_refl_fits(self):
+
+        self.update_refl_data()
+
         for layer in self.layers:
+            layer.set_refl_data(self.t_data, self.R_data)
             layer.calc_refl_fit()
             
     def display_fit_results(self):
@@ -402,4 +488,37 @@ class Structure():
     def print_growth_rate_summary(self):
         for layer in self.layers:
             print(layer.print_growth_rate_summary())
-            
+    
+    def get_layer_by_name(self, name):
+        for layer in self.layers:
+            if layer.name == name:
+                return layer
+
+    def get_fit_convergence(self, layer_name, t_buffer, t_step):
+        layer = self.get_layer_by_name(layer_name)
+
+        self.update_refl_data()
+
+        t_out = []
+        p_out = []
+        
+        t_start = layer.t_start
+        t_end = layer.t_end
+
+        t = t_start + t_buffer
+
+        while (t <= t_end) and (t <= self.t_data[-1]):
+            layer.t_end = t
+            layer.set_refl_data(self.t_data, self.R_data)
+            layer.calc_refl_fit()
+
+            t_out.append(t)
+            p_out.append(layer.refl_pars_fit)
+
+            t += t_step
+        layer.t_end = t_end
+        layer.set_refl_data(self.t_data, self.R_data)
+        layer.calc_refl_fit()
+
+        return t_out, p_out
+
