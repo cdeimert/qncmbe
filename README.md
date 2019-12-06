@@ -53,7 +53,7 @@ So the `-e` flag is useful if you are planning to make changes to the module. Ho
 ## To Do
 
 - Add code for tracking element usage (`cellusage`)
-- Add code for reflectance fitting (`reflfit`)
+- Take the code for simulating reflectance oscillations (contained in Reflectance_oscillation_calculator*.ipynb files) and turn it into a proper package + examples.
 - Add code for analyzing Al dynamics measurements?
 
 ## Authors
