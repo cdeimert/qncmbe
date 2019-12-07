@@ -5,7 +5,8 @@ A collection of useful Python tools for the QNC-MBE lab at the University of Wat
 - `graded_alloys` provides functions for growing graded alloys with MBE. (Particularly in AlGaAs -- creating smoothly-graded alloys by varying the Al cell temperature as a function of time.)
 - `normalization` provides functions for normalizing units. Can be useful when doing calculations mixing eV, kg, cm, nm, etc.
 - `cell_usage` allows you to estimate effusion cell element consumption over time by examining the cell temperature history.
-- `refl_fit` includes tools for fitting reflectance oscillations during MBE growth
+- `refl_fit` includes tools fitting reflectance oscillations during MBE growth
+- `refl_sim` includes a simple transfer matrix simulator for calculating reflectance oscillations vs time.
 
 ## Installation
 
@@ -13,14 +14,16 @@ A collection of useful Python tools for the QNC-MBE lab at the University of Wat
 
 You need to install Python first. If you don't have Python, the Anaconda (v3.x) distribution should come with almost all the packages you need (https://www.anaconda.com/distribution/). Despite what the installer says, I would recommend that you DO add anaconda to your system PATH variable during installation.
 
-To install this package, you need the full folder structure with all the python files. If you didnt' get this from one of the authors already, you should be able to download it from https://github.com/cdeimert/qncmbe.
+To install this package, you need the full folder structure with all the python files. If you didn't get this from one of the authors already, you should be able to download it from https://github.com/cdeimert/qncmbe.
 
-Then, in a Command Prompt, navigate to the multipass folder, which contains `setup.py`. From there, run
+Once you have the main qncmbe directory navigate to it in a command prompt. (You should be in the folder containing `setup.py`.) From there, run
 
 ```pip install .```
 
-Or, alternatively, run something like
+in Command Prompt. Or, alternatively, run something like
+
 ```pip install path\to\folder```
+
 where `folder` is the folder containing `setup.py`.
 
 (If you installed Anaconda and did not add Python to the Windows PATH, you might need to do this from the *Anaconda Prompt* rather than the standard Command Prompt.)
