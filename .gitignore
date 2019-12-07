@@ -1,3 +1,8 @@
+
+examples/cell_usage/saved_cell_data
+
+### Below: default Python exclusions from github
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

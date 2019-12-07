@@ -6,7 +6,7 @@ Also, your computer must have access to the server \\insitu1.nexus.uwaterloo.ca
 '''
 
 import datetime as dt
-from qncmbe.data_export.data_export import get_data
+from qncmbe.data_export.data_export_utils import get_data
 from qncmbe.data_export.value_names import value_names_database
 import matplotlib.pyplot as plt
 

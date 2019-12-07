@@ -1,10 +1,10 @@
 # qncmbe
 A collection of useful Python tools for the QNC-MBE lab at the University of Waterloo
 
+- `cell_usage_tracking` allows you to estimate effusion cell element consumption over time by examining the cell temperature history.
 - `dataexport` provides functions for gathering data from various computers in the QNC-MBE lab. Particularly aimed at collecting data after growths.
 - `graded_alloys` provides functions for growing graded alloys with MBE. (Particularly in AlGaAs -- creating smoothly-graded alloys by varying the Al cell temperature as a function of time.)
 - `normalization` provides functions for normalizing units. Can be useful when doing calculations mixing eV, kg, cm, nm, etc.
-- `cell_usage` allows you to estimate effusion cell element consumption over time by examining the cell temperature history.
 - `refl_fit` includes tools fitting reflectance oscillations during MBE growth
 - `refl_sim` includes a simple transfer matrix simulator for calculating reflectance oscillations vs time.
 
@@ -52,12 +52,6 @@ Then, from the main directory (the one containing `setup.py`) run
 The `-e` is short for `--editable`. Essentially, it will install the package as a *link* to the current folder, rather than copying it into the python installation. So, when you `import` from a Python script, it will automatically import the latest version. 
 
 So the `-e` flag is useful if you are planning to make changes to the module. However, it means that you have to maintain a local copy of the code.
-
-## To Do
-
-- Add code for tracking element usage (`cellusage`)
-- Take the code for simulating reflectance oscillations (contained in Reflectance_oscillation_calculator*.ipynb files) and turn it into a proper package + examples.
-- Add code for analyzing Al dynamics measurements?
 
 ## Authors
 
