@@ -5,9 +5,8 @@ You must first install the qncmbe python module (see README).
 Also, your computer must have access to the server \\insitu1.nexus.uwaterloo.ca
 '''
 
-
 import datetime as dt
-from qncmbe.data_export import get_data
+from qncmbe.data_export.data_export import get_data
 from qncmbe.data_export.value_names import value_names_database
 import matplotlib.pyplot as plt
 
@@ -15,10 +14,10 @@ import matplotlib.pyplot as plt
 def main():
 
 	# Start time. datetime() is a function from the datetime package, and its arguments are (year, month, day, hour, minute, second)
-	start_time = dt.datetime(2018,8,2,0,0,0)
+	start_time = dt.datetime(2019,9,24,17,30,0)
 
     # End time. Something like "start_time + dt.timedelta(hours = 24)" will set the end time to 24 hours after the start time.
-	end_time = start_time + dt.timedelta(hours = 13)
+	end_time = start_time + dt.timedelta(hours = 3)
 
 	# x value for the plot. Usually "Molly time", but could also be, e.g., "BET time". 
 	# For full options, refer to Value_names_database.csv
