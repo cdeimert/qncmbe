@@ -5,6 +5,7 @@ A collection of useful Python tools for the QNC-MBE lab at the University of Wat
 - `dataexport` provides functions for gathering data from various computers in the QNC-MBE lab. Particularly aimed at collecting data after growths.
 - `graded_alloys` provides functions for growing graded alloys with MBE. (Particularly in AlGaAs -- creating smoothly-graded alloys by varying the Al cell temperature as a function of time.)
 - `normalization` provides functions for normalizing units. Can be useful when doing calculations mixing eV, kg, cm, nm, etc.
+- `plotting` just makes `matplotlib` look a little nicer, in my opinion. (In the future, should add functions for adhering to Journal guidelines.)
 - `refl_fit` includes tools fitting reflectance oscillations during MBE growth
 - `refl_sim` includes a simple transfer matrix simulator for calculating reflectance oscillations vs time.
 
@@ -56,3 +57,5 @@ So the `-e` flag is useful if you are planning to make changes to the module. Ho
 ## Authors
 
 Chris Deimert (cdeimert@uwaterloo.ca)
+
+(It's lonely down here...)
