@@ -24,15 +24,19 @@ def get_data(start_time, end_time, value_names_list, delta_t = -1, interp = Fals
 
 	SPECIAL CASE:
 	If delta_t == -1, raw Molly data is returned.
-	In this case, each data value is only stored whenever it changes.
-	This means that each data signal has a different time array, and the time values are not equally spaced.
-	So, in this case "Molly time" is not returned as a separate array. 
+
+	Molly data is stored only when the value changes. 
+	Molly checks each signal for changes every 2s, and if the value doesn't change, it doesn't store anything. (Mostly...)
+	Every time the value does change, we get a new pair of values: the time it changed, and the value it changed to.
+
+	So, for raw Molly data, each data array has its own time array, which is a list of all the times Molly detected a change in that signal.
+
+	In this case "Molly time" is not returned as a separate array. 
 	Rather, each Molly data signal is now a dictionary with two numpy arrays: one for 'time' and one for 'vals'
 
 	So, e.g., suppose you are looking at 'Ga1 tip measured'.
 	If delta_t = 2.0, then your time array would be data['Molly time'] (equally spaced at 2s), and your values array would be data['Ga1 tip measured']
 	If delta_t = -1, then your time array would be data['Ga1 tip measured']['time'] and your values array would be data['Ga1 tip measured']['vals']
-
 	'''
 
 	local_value_names = {
@@ -75,30 +79,46 @@ def get_value_names_list(location = "all"):
 
 def get_raw_Molly_data(start_time, end_time, value_names):
 	'''
-	First, get data from each hour
-	Start with start_time, but rounded DOWN to the nearest hour.
-	Ensures that all the needed hours are captured. E.g., if start_time is 14:50 and 
-	end_time is 15:20, this will capture from 14:00 to 16:00.
-	'''
+	Gets raw Molly data (uneven timesteps, unique time array for each value)
+	Since the files are stored in one-hour chunks, it loops through hour by hour.
 
+	This function returns all the one-hour chunks necessary to cover start_time to end_time.
+	It also includes an extra hour buffer on each end for safety.
+
+	Return value is a dictionary with keys equal to value names.
+	Each dictionary element is another dictionary with two keys: 'time' (containing a numpy time array) and 'vals' (containing a numpy value array)
+	'''
 
 	delta = dt.timedelta(hours=1)
 
-	datetime = start_time.replace(minute = 0, second = 0, microsecond = 0)
+	hour = start_time.replace(minute=0, second=0, microsecond=0)
 
-	# If the start time is an even hour, capture the hour before.
-	# E.g., if start time is 3:00, then capture starting from 2:00
-	if datetime == start_time:
-		datetime -= delta
+
+	# Start with the previous hour to be safe.
+	#
+	# In principle, this shouldn't be necessary, but there are weird edge cases because Molly only stores a value every time the value *changes*. 
+	# E.g., if you're loading the data for hour 02:00:00, and the last time the value changed was at 01:59:57, 
+	# then Molly might not include that in the 02:00:00 hour data file. However, if the last time the value changed was
+	# a long time before, then Molly *does* include it in the data file (sometimes as a negative time).
+	# I don't really get the logic, but it seems that including the extra hour makes things safer. I hope.
+	hour -= delta
+
+	# Since Molly time is relative to midnight, need to manually keep track of the days
+	start_day = start_time.replace(hour=0, minute=0, second=0, microsecond=0)
+	day = hour.replace(hour=0, minute=0, second=0, microsecond=0)
 
 	data = {}
 
-	num_days = 0
+	while(hour <= end_time + delta):
 
-	while(datetime <= end_time):
+		data_hour = get_raw_Molly_data_hour(hour, value_names)
 
-		data_hour = get_raw_Molly_data_hour(datetime, value_names)
+		num_days = (day - start_day).days
+
 		for name in value_names:
+
+			#if data_hour[name]['time'][0]
+
 			data_hour[name]['time'] += num_days*86400
 
 			if (not name in data):
@@ -107,12 +127,9 @@ def get_raw_Molly_data(start_time, end_time, value_names):
 			data[name]['time'].append(data_hour[name]['time'])
 			data[name]['vals'].append(data_hour[name]['vals'])
 
-		new_datetime = datetime + delta
+		hour += delta
 
-		if new_datetime.day != datetime.day:
-			num_days += 1
-
-		datetime = new_datetime
+		day = hour.replace(hour=0, minute=0, second=0, microsecond=0)
 
 	# Concatenate so that all the data is in one list
 	for name in value_names:
@@ -144,7 +161,6 @@ def get_Molly_data(start_time, end_time, value_names, delta_t, interp = False):
 	# Find total number of seconds between start and end time 
 	tot_seconds = (end_time - start_time).total_seconds()
 
-
 	if delta_t == -1:
 		# If delta_t is -1, then return the raw data without interpolating
 		# In this case, there will be a separate time array associated with each value
@@ -162,8 +178,8 @@ def get_Molly_data(start_time, end_time, value_names, delta_t, interp = False):
 
 
 	# Create interpolated time vector so that all values share the same time.
-	time_interp = np.arange(0.0, tot_seconds, delta_t)
-	num = len(time_interp)
+	# arange excludes the endpoint by default. The 1e-3*delta_t buffer is a "safety" for that
+	time_interp = np.arange(0.0, tot_seconds + 1e-3*delta_t, delta_t)
 
 	data = {}
 	for name in raw_value_names:
@@ -199,6 +215,26 @@ def get_Molly_data(start_time, end_time, value_names, delta_t, interp = False):
 	return data
 
 def get_raw_Molly_data_hour(export_time, value_names):
+	'''
+	Converts the binary Molly data files into numpy arrays.
+
+	Molly data is stored in one hour chunks, sorted by date. 
+	E.g. /2019/08-Aug/16day-21hr-binary.txt
+	There is a corresponding header file in plaintext
+	E.g. /2019/08-Aug/16day-21hr.txt
+	This tells you how to read the binary file.
+
+	Values are only stored when they change. (And it checks for changes every ~2s)
+	So, e.g., when Molly detects an Al base temperature changes, it adds a pair of values: the time it changed (relative to midnight that day) and the value it changed to
+
+	So every hour, each data signal ends up with its own list of times and values.
+	The header file essentially tells you what order the values are in, and how many values there were that hour.
+	Then you can go through the binary file sequentially to get the values.
+
+	This function does that for a single hour chunk, outputting a dictionary.
+	The dictionary contains one entry for each value requested.
+	Each entry of the output dictionary is itself a dictionary with two keys: "val" and "time", corresponding to the time and value sequence in the Molly data.
+	'''
 
 	header_path, binary_path = get_filepaths(export_time)
 
@@ -209,6 +245,11 @@ def get_raw_Molly_data_hour(export_time, value_names):
 	return data_hour
 
 def get_filepaths(export_time):
+	'''
+	Find the path for the Molly binary file for a given hour.
+
+	Mostly used in get_raw_Molly_data_hour()
+	'''
 	path = r"\\insitu1.nexus.uwaterloo.ca\Documents\QNC MBE Data\Production Data\Molly data"
 	year = str(export_time.year)
 	month = str(export_time.month)
@@ -226,6 +267,11 @@ def get_filepaths(export_time):
 	return header_path, binary_path
 
 def get_line_numbers(header_path, value_names):
+	'''
+	Searches the header file for the given value_names and returns their location and size in the binary file.
+
+	The output is used in get_data_from_binary(), and mostly used in get_raw_Molly_data_hour()
+	'''
 
 	try:
 		header = open(header_path, "r")
@@ -266,6 +312,12 @@ def get_line_numbers(header_path, value_names):
 	return total_values, values_offset
 
 def get_data_from_binary(binary_path, total_values, values_offset, value_names):
+	'''
+	Reads the binary data for value_names from the given binary file (binary_path).
+	total_values, values_offset are essentially the size and location of the data in the binary file. Returned by get_line_numbers()
+
+	This is used in get_raw_Molly_data_hour()
+	'''
 
 	try:
 		binary = open(binary_path, "rb")
@@ -277,7 +329,6 @@ def get_data_from_binary(binary_path, total_values, values_offset, value_names):
 		return data
 
 	try:
-		num = len(total_values)
 
 		data = {}
 		for name in value_names:

@@ -29,7 +29,7 @@ cells = cells_str.split(',') # Convert string into list
 
 ucalc = CellUsageCalculator(
     start_date = '2019-05-13',
-    end_date = '2019-05-16',
+    end_date = '2019-12-06',
     cells = cells,
     cell_pars_file = 'Z:\\Excell Calculators\\Calibration Parameters V2 2019.xlsx',
     save_dir = os.path.join(this_dir, 'saved_cell_data')
@@ -38,12 +38,12 @@ ucalc = CellUsageCalculator(
 fig, ax = plt.subplots()
 ucalc.plot_temperatures(fig,ax)
 
-fig, ax = plt.subplots()
-ucalc.plot_mass_usage(fig,ax)
+#fig, ax = plt.subplots()
+#ucalc.plot_mass_usage(fig,ax)
 
-fig, ax = plt.subplots()
-ucalc.plot_particle_usage(fig, ax)
+#fig, ax = plt.subplots()
+#ucalc.plot_particle_usage(fig, ax)
 
-ucalc.generate_usage_csv()
+#ucalc.generate_usage_csv()
 
 plt.show()

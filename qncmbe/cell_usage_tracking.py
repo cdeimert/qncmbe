@@ -15,6 +15,8 @@ This was determined approximately in 2017 by comparing the estimated usage to th
 However, it would be worth doing more accurate measurements in the future.
 
 See example file for example of usage.
+
+NOTE: There is something screwy with the data import. It's only importing data from 23:00 to 00:00 each day.
 '''
 
 import qncmbe.data_export.data_export_utils as datexp

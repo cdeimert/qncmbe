@@ -26,7 +26,8 @@ def main():
 
 	# list of y values for the plot.
 
-	y_values = ["GM1 BFM"]
+	y_values = ["Al1 base measured"]
+	#y_values = ["Ga2 tip setpoint"]
 
 	simple_plot(start_time, end_time, x_value, y_values)
 
@@ -37,7 +38,7 @@ def simple_plot(start_time, end_time, x_value, y_values):
 	export_values = [x_value] + y_values
 
 	delta_t = 2.0
-	data = get_data(start_time, end_time, export_values, delta_t)
+	data = get_data(start_time, end_time, export_values, delta_t, interp = True)
 
 	fig, ax = plt.subplots()
 
