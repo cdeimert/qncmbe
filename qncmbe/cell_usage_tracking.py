@@ -25,6 +25,7 @@ import openpyxl as xl
 import numpy as np
 from scipy.integrate import cumtrapz
 import datetime as dt
+import matplotlib.dates as mdates
 
 try:
     # To deal with the error message
@@ -68,7 +69,7 @@ class CellUsageCalculator():
         - save_dir is the directory in which partial data will be saved
             (To avoid collecting enormous amounts of data from Molly at once (takes a very long time), data is loaded one day at a time and saved into save_dir.)
         - delta_t is the spacing (s) between data samples. Default is 300 s (5 min)
-        - regen_data determines whether or not to regenerate the Cell_data_ files. Should set this to True if, e.g., you've added an additional cell since the last run
+        - regen_data determines whether or not to regenerate the Cell_data_yyyy-mm-dd.csv files. Should set this to True if, e.g., you've added an additional cell since the last run
         '''
 
         fmt_str = '%Y-%m-%d'
@@ -122,9 +123,18 @@ class CellUsageCalculator():
         while day <= self.end_date:
             fname = f'cell_temperatures_{day.date()}.csv'
             fpath = os.path.join(self.save_dir, fname)
-            
-            if self.regen_data or (not os.path.exists(fpath)):
-                print(f"Collecting data for {day}")
+
+            write_data = True
+
+            if os.path.exists(fpath):
+                if self.regen_data:
+                    print(f"Found temperature data for {day.date()} but overwriting it!")
+                else: 
+                    write_data = False
+            else:
+                print(f"No temperature data for {day.date()}. Generating it...")
+
+            if write_data:
                 
                 data = datexp.get_data(
                             start_time = day,
@@ -387,6 +397,26 @@ class CellUsageCalculator():
         ax.set_ylabel('Number of atoms')
         ax.set_title('Cell usage')
 
+    def print_total_usage(self):
+
+        header = f'Total element usage ({self.start_date.date()} to {self.end_date.date()})'
+
+        string = '='*len(header)
+        string += f'\n{header}\n'
+        string += '='*len(header)
+
+        m = self.get_mass_usage()
+        N = self.get_particle_usage()
+
+        for cell in self.cells:
+            string += f'\n{cell}: {m[cell][-1]:7.2f} g   ({N[cell][-1]:.3e} atoms)'
+        
+        string += '\n'
+        string += '='*len(header)
+
+        print(string)
+        return string
+
 
 def plot_cell_val(fig, ax, t, val, cells, start_date, use_date_format = True):
     '''
@@ -409,7 +439,8 @@ def plot_cell_val(fig, ax, t, val, cells, start_date, use_date_format = True):
     ax.legend()
 
     if use_date_format:
-        ax.set_xlabel('Time')
+        ax.set_xlabel('')
+        ax.format_xdata = mdates.DateFormatter('%Y-%m-%d %H:%M:%S')
         fig.autofmt_xdate()
     else:
         ax.set_xlabel(f'Time (days from {start_date.date()})')
