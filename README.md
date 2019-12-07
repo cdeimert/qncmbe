@@ -2,7 +2,7 @@
 A collection of useful Python tools for the QNC-MBE lab at the University of Waterloo.
 
 - `cell_usage_tracking` allows you to estimate effusion cell element consumption over time by examining the cell temperature history.
-- `dataexport` provides functions for gathering data from various computers in the QNC-MBE lab. Particularly aimed at collecting data after growths.
+- `data_export` provides functions for gathering data from various computers in the QNC-MBE lab. Particularly aimed at collecting data after growths.
 - `graded_alloys` provides functions for growing graded alloys with MBE. (Particularly in AlGaAs -- creating smoothly-graded alloys by varying the Al cell temperature as a function of time.)
 - `normalization` provides functions for normalizing units. Can be useful when doing calculations mixing eV, kg, cm, nm, etc.
 - `plotting` just makes `matplotlib` look a little nicer, in my opinion. (In the future, it could be extended to help follow journal guidelines.)
