@@ -37,3 +37,17 @@ def print_allowed_value_names(full_csv = False):
     print(out_str)
 
     return out_str
+
+
+def get_value_names_list(location = "all"):
+	'''
+    Gets a list of all value names from the value names database if location == "all"
+	Otherwise, only returns value names from a particular location (either "Molly", "SVT", or "BET")
+    '''
+
+	value_names_list = []
+	for val in value_names_database:
+		if (location == "all") or (location == value_names_database[val]["Location"]):
+			value_names_list.append(val)
+
+	return value_names_list

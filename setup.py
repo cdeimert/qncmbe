@@ -13,7 +13,8 @@ setup(
         'numpy',
         'scipy',
         'matplotlib',
-        'cycler'
+        'cycler',
+        'PyQt5'
     ],
     include_package_data = True,
     zip_safe = False
