@@ -174,7 +174,10 @@ class ImportFrame(QtWidgets.QMainWindow,Ui_MainWindow):
 
 		for n, col in enumerate(wks.GetColumns()):
 			name = Molly_value_names[n]
-			wks.SetData([data[name]],0,n)
+
+			arr = data[name] if len(data[name])>0 else None
+			wks.SetData([arr],0,n)
+
 			col.SetLongName(name)
 			col.SetUnits(value_names_database[name]['Units'])
 
@@ -190,7 +193,10 @@ class ImportFrame(QtWidgets.QMainWindow,Ui_MainWindow):
 
 		for n, col in enumerate(wks.GetColumns()):
 			name = BET_value_names[n]
-			wks.SetData([data[name]],0,n)
+
+			arr = data[name] if len(data[name])>0 else None
+			wks.SetData([arr],0,n)
+
 			col.SetLongName(name)
 			col.SetUnits(value_names_database[name]['Units'])
 
@@ -206,7 +212,10 @@ class ImportFrame(QtWidgets.QMainWindow,Ui_MainWindow):
 
 		for n, col in enumerate(wks.GetColumns()):
 			name = SVT_value_names[n]
-			wks.SetData([data[name]],0,n)
+
+			arr = data[name] if len(data[name])>0 else None
+			wks.SetData([arr],0,n)
+
 			col.SetLongName(name)
 			col.SetUnits(value_names_database[name]['Units'])
 
