@@ -16,7 +16,6 @@ setup(
         'openpyxl',
         'OriginExt<=1.0.6', # Version 1.0.7 seems to be buggy and not load correctly
         'PyQt5',
-        'pywin32',
         'scipy'
     ],
     include_package_data = True,
