@@ -148,103 +148,74 @@ class ImportFrame(QtWidgets.QMainWindow,Ui_MainWindow):
 			self.runtime_messages.setPlainText("Error: future times included. Check before running again.")
 			return
 
-#		try:
-		t = tm.time()
+		try:
+			t = tm.time()
 
-		Molly_value_names = get_value_names_list("Molly")
-		BET_value_names = get_value_names_list("BET")
-		SVT_value_names = get_value_names_list("SVT")
+			locs = ["Molly", "BET", "SVT"]
+			value_names = {loc: get_value_names_list(loc) for loc in locs}
 
-		all_value_names = Molly_value_names + BET_value_names + SVT_value_names
+			all_value_names = []
+			for loc in locs:
+				all_value_names = all_value_names + value_names[loc]
 
-		if generate_null_data:
-			data = {val: None for val in all_value_names}
-		else:
-			data = get_data(start_time, end_time, all_value_names, t_step)
+			if generate_null_data:
+				data = {val: [] for val in all_value_names}
+			else:
+				data = get_data(start_time, end_time, all_value_names, t_step)
 
-		wks = origin.FindWorksheet("MollyData")
+			wksht_names = {
+				"Molly": "MollyData",
+				"BET": "LabViewData",
+				"SVT": "SVTData"
+			}
 
-		ncols = len(Molly_value_names)
+			for loc in locs:
 
-		if wks.GetColumns().GetCount() > ncols:
-			self.runtime_messages.setPlainText("Error: too many columns in template file. Check before running again.")
+				wks = origin.FindWorksheet(wksht_names[loc])
+
+				ncols = len(value_names[loc])
+
+				if wks.GetColumns().GetCount() > ncols:
+					self.runtime_messages.setPlainText("Error: too many columns in template file. Check before running again.")
+					return
+
+				wks.SetData([None], 0, ncols-1)
+
+				for n, col in enumerate(wks.GetColumns()):
+					name = value_names[loc][n]
+
+					arr = data[name] if len(data[name])>0 else None
+					wks.SetData([arr],0,n)
+
+					col.SetLongName(name)
+					col.SetUnits(value_names_database[name]['Units'])
+
+			wks = origin.FindWorksheet("ImportInfo")
+
+			if generate_null_data:
+				wks.SetData([[None],[None],[None]])
+			else:
+				wks.SetData([[t_step],[str(start_time)], [str(end_time)]])
+			
+			cols = wks.GetColumns()
+			
+			col = next(cols)
+			col.SetLongName('Time step')
+			col.SetUnits('s')
+
+			next(cols).SetLongName('Start time')
+			next(cols).SetLongName('End time')
+
+			t = tm.time() - t
+
+			if generate_null_data:
+				self.runtime_messages.setPlainText("Special case detected! (Time step = 0)\nGenerated null data (can be used as a template).\nRun again with a valid timestep to import real data.")	
+			else:
+				self.runtime_messages.setPlainText("Import complete!\nRun time: {:.4f} (s)".format(t))
+
+		except:
+			self.runtime_messages.setPlainText("Import failed.")
 			return
-
-		wks.SetData([None], 0, ncols-1)
-
-		for n, col in enumerate(wks.GetColumns()):
-			name = Molly_value_names[n]
-
-			arr = data[name] if len(data[name])>0 else None
-			wks.SetData([arr],0,n)
-
-			col.SetLongName(name)
-			col.SetUnits(value_names_database[name]['Units'])
-
-		wks = origin.FindWorksheet("LabViewData")
-
-		ncols = len(BET_value_names)
-
-		if wks.GetColumns().GetCount() > ncols:
-			self.runtime_messages.setPlainText("Error: too many columns in template file. Check before running again.")
-			return
-
-		wks.SetData([None], 0, ncols-1)
-
-		for n, col in enumerate(wks.GetColumns()):
-			name = BET_value_names[n]
-
-			arr = data[name] if len(data[name])>0 else None
-			wks.SetData([arr],0,n)
-
-			col.SetLongName(name)
-			col.SetUnits(value_names_database[name]['Units'])
-
-		wks = origin.FindWorksheet("SVTData")
-
-		ncols = len(SVT_value_names)
-
-		if wks.GetColumns().GetCount() > ncols:
-			self.runtime_messages.setPlainText("Error: too many columns in template file. Check before running again.")
-			return
-
-		wks.SetData([None], 0, ncols-1)
-
-		for n, col in enumerate(wks.GetColumns()):
-			name = SVT_value_names[n]
-
-			arr = data[name] if len(data[name])>0 else None
-			wks.SetData([arr],0,n)
-
-			col.SetLongName(name)
-			col.SetUnits(value_names_database[name]['Units'])
-
-		wks = origin.FindWorksheet("ImportInfo")
-
-		if generate_null_data:
-			wks.SetData([[None],[None],[None]])
-		else:
-			wks.SetData([[t_step],[str(start_time)], [str(end_time)]])
-		
-		cols = wks.GetColumns()
-		
-		col = next(cols)
-		col.SetLongName('Time step')
-		col.SetUnits('s')
-
-		next(cols).SetLongName('Start time')
-		next(cols).SetLongName('End time')
-
-		t = tm.time() - t
-
-		if generate_null_data:
-			self.runtime_messages.setPlainText("Special case detected! (Time step = 0)\nGenerated null data (can be used as a template).\nRun again with a valid timestep to import real data.")	
-		else:
-			self.runtime_messages.setPlainText("Import complete!\nRun time: {:.4f} (s)".format(t))
-
-		#except:
-		#	self.runtime_messages.setPlainText("Import failed.")
-		#	return
 
 		origin.Save(full_filename)
 
