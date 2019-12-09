@@ -2,6 +2,7 @@
 Functions for generating smooth composition profiles in AlGaAs by varying the Al cell temperature as a function of time
 '''
 
+# Non-standard library imports (included in setup.py)
 import numpy as np
 from scipy.integrate import cumtrapz
 import scipy.signal as sig

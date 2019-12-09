@@ -72,6 +72,7 @@ Notice that the hbar has dropped out of the formula!
 This amount of work does not need to be done generally. If the equation is dimensionally consistent, all the scaling factors will cancel out. To obtain the normalized formulas, simply set hbar, q0, kB --> 1.
 '''
 
+# Non-standard library imports (included in setup.py)
 from numpy import pi
 
 def parse_units_string(string):

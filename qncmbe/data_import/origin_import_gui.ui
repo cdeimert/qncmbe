@@ -177,7 +177,7 @@ Make sure insitu has up-to-date data before running this script! (Molly binaries
      </layout>
     </item>
     <item>
-     <widget class="QPushButton" name="export_button">
+     <widget class="QPushButton" name="import_button">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -255,7 +255,7 @@ Make sure insitu has up-to-date data before running this script! (Molly binaries
   <tabstop>path</tabstop>
   <tabstop>file_button</tabstop>
   <tabstop>file</tabstop>
-  <tabstop>export_button</tabstop>
+  <tabstop>import_button</tabstop>
   <tabstop>runtime_messages</tabstop>
   <tabstop>intro_message</tabstop>
  </tabstops>

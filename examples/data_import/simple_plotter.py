@@ -6,8 +6,8 @@ Also, your computer must have access to the server \\insitu1.nexus.uwaterloo.ca
 '''
 
 import datetime as dt
-from qncmbe.data_export.data_export_utils import get_data
-from qncmbe.data_export.value_names import value_names_database
+from qncmbe.data_import.data_import_utils import get_data
+from qncmbe.data_import.value_names import value_names_database
 import matplotlib.pyplot as plt
 
 
@@ -21,7 +21,7 @@ def main():
 
 	# x value for the plot. Usually "Molly time", but could also be, e.g., "BET time". 
 	# For full options, refer to Value_names_database.csv
-	# or call qncmbe.data_export.value_names.print_allowed_value_names()
+	# or call qncmbe.data_import.value_names.print_allowed_value_names()
 	x_value = "Molly time"
 
 	# list of y values for the plot.
@@ -35,10 +35,10 @@ def main():
 
 def simple_plot(start_time, end_time, x_value, y_values):
 
-	export_values = [x_value] + y_values
+	import_values = [x_value] + y_values
 
 	delta_t = 2.0
-	data = get_data(start_time, end_time, export_values, delta_t, interp = True)
+	data = get_data(start_time, end_time, import_values, delta_t, interp = True)
 
 	fig, ax = plt.subplots()
 

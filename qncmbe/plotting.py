@@ -2,8 +2,8 @@
 Simple module to make plots look a little bit better
 '''
 
+# Non-standard library imports (included in setup.py)
 import matplotlib.pyplot as plt
-
 from cycler import cycler
 
 light = '#FFFFFF'

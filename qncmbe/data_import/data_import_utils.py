@@ -1,4 +1,4 @@
-# Standard library imports
+# Standard library imports (not included in setup.py)
 import datetime as dt
 import os
 from glob import glob
@@ -7,9 +7,11 @@ import struct
 import time as tm
 import csv
 
-# Other imports
+# qncmbe imports
+from .value_names import value_names_database
+
+# Non-standard library imports (included in setup.py)
 import numpy as np
-from qncmbe.data_export.value_names import value_names_database
 
 def get_data(start_time, end_time, value_names_list, delta_t = -1, interp = False):
 	'''
@@ -46,7 +48,7 @@ def get_data(start_time, end_time, value_names_list, delta_t = -1, interp = Fals
 	}
 	for val in value_names_list:
 		if val not in value_names_database:
-			raise Exception(f'Invalid value "{val}" in value_names_list. Not found in value_names_database')
+			raise Exception('Invalid value "{}" in value_names_list. Not found in value_names_database'.format((val)))
 		local_value_names[value_names_database[val]['Location']].append(value_names_database[val]['Local value name'])
 
 	# Generate dictionary of data for each location
@@ -214,7 +216,7 @@ def get_Molly_data(start_time, end_time, value_names, delta_t, interp = False):
 
 	return data
 
-def get_raw_Molly_data_hour(export_time, value_names):
+def get_raw_Molly_data_hour(import_time, value_names):
 	'''
 	Converts the binary Molly data files into numpy arrays.
 
@@ -236,7 +238,7 @@ def get_raw_Molly_data_hour(export_time, value_names):
 	Each entry of the output dictionary is itself a dictionary with two keys: "val" and "time", corresponding to the time and value sequence in the Molly data.
 	'''
 
-	header_path, binary_path = get_filepaths(export_time)
+	header_path, binary_path = get_filepaths(import_time)
 
 	total_values, values_offset = get_line_numbers(header_path, value_names)
 
@@ -244,22 +246,22 @@ def get_raw_Molly_data_hour(export_time, value_names):
 
 	return data_hour
 
-def get_filepaths(export_time):
+def get_filepaths(import_time):
 	'''
 	Find the path for the Molly binary file for a given hour.
 
 	Mostly used in get_raw_Molly_data_hour()
 	'''
 	path = r"\\insitu1.nexus.uwaterloo.ca\Documents\QNC MBE Data\Production Data\Molly data"
-	year = str(export_time.year)
-	month = str(export_time.month)
-	day = str(export_time.day)
-	hour = str(export_time.hour)
+	year = str(import_time.year)
+	month = str(import_time.month)
+	day = str(import_time.day)
+	hour = str(import_time.hour)
 
-	subfolder = export_time.strftime("%Y")
-	subsubfolder = export_time.strftime("%m-%b")
-	header_filename = export_time.strftime("%dday-%Hhr.txt")
-	binary_filename = export_time.strftime("%dday-%Hhr-binary.txt")
+	subfolder = import_time.strftime("%Y")
+	subsubfolder = import_time.strftime("%m-%b")
+	header_filename = import_time.strftime("%dday-%Hhr.txt")
+	binary_filename = import_time.strftime("%dday-%Hhr-binary.txt")
 
 	header_path = os.path.join(path, subfolder, subsubfolder, header_filename)
 	binary_path = os.path.join(path, subfolder, subsubfolder, binary_filename)
@@ -350,8 +352,8 @@ def get_data_from_binary(binary_path, total_values, values_offset, value_names):
 	return data
 
 
-#def export_to_csv(start_time, end_time, value_names, delta_t, file_name, delimiter = '\t'):
-def export_to_csv(value_names, data, file_name, delimiter = ','):
+#def import_to_csv(start_time, end_time, value_names, delta_t, file_name, delimiter = '\t'):
+def import_to_csv(value_names, data, file_name, delimiter = ','):
  
 	#data = get_Molly_data(start_time, end_time, value_names, delta_t)
 

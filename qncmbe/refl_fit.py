@@ -6,6 +6,7 @@ This is part of the qncmbe package. Please see the example file
 
 '''
 
+# Non-standard library imports (included in setup.py)
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as opt

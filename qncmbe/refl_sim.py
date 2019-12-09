@@ -1,4 +1,4 @@
-
+# Non-standard library imports (included in setup.py)
 import numpy as np
 
 

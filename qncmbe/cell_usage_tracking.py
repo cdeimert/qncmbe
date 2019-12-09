@@ -15,17 +15,20 @@ This was determined approximately in 2017 by comparing the estimated usage to th
 However, it would be worth doing more accurate measurements in the future.
 
 See example file for example of usage.
-
-NOTE: There is something screwy with the data import. It's only importing data from 23:00 to 00:00 each day.
 '''
 
-import qncmbe.data_export.data_export_utils as datexp
+# Standard library imports (not included in setup.py)
 import os
+import datetime as dt
+
+# Non-standard library imports (included in setup.py)
 import openpyxl as xl
 import numpy as np
 from scipy.integrate import cumtrapz
-import datetime as dt
 import matplotlib.dates as mdates
+
+# qncmbe imports
+import qncmbe.data_import.data_import_utils as datimp
 
 try:
     # To deal with the error message
@@ -136,7 +139,7 @@ class CellUsageCalculator():
 
             if write_data:
                 
-                data = datexp.get_data(
+                data = datimp.get_data(
                             start_time = day,
                             end_time = day + delta,
                             value_names_list = self.value_names_list,

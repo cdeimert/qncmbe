@@ -1,6 +1,8 @@
+# Standard library imports (not included in setup.py)
 from collections import OrderedDict
 import csv
 import os.path as path
+
 
 thisdir = path.dirname(path.abspath(__file__))
 database_file = path.join(thisdir, 'value_names_database.csv')

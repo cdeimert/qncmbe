@@ -10,11 +10,12 @@ setup(
     license='MIT',
     packages=['qncmbe'],
     install_requires=[
-        'numpy',
-        'scipy',
-        'matplotlib',
         'cycler',
-        'PyQt5'
+        'matplotlib',
+        'numpy',
+        'openpyxl',
+        'PyQt5',
+        'scipy'
     ],
     include_package_data = True,
     zip_safe = False
