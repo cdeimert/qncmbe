@@ -14,7 +14,7 @@ setup(
         'matplotlib',
         'numpy',
         'openpyxl',
-        'win32com',
+        'pywin32',
         'PyQt5',
         'scipy'
     ],
