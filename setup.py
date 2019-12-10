@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='qncmbe',
@@ -8,7 +8,7 @@ setup(
     author='Chris Deimert',
     author_email='cdeimert@uwaterloo.ca',
     license='MIT',
-    packages=['qncmbe'],
+    packages=find_packages(exclude=['tests','tests.*','examples','examples.*']),
     install_requires=[
         'cycler',
         'matplotlib',
