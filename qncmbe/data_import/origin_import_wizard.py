@@ -208,7 +208,7 @@ class ImportFrame(QtWidgets.QMainWindow,Ui_MainWindow):
 		# Import data
 
 		try:
-			self.runtime_messages.appendPlainText("Collecting data... (this may take a while)")
+			self.runtime_messages.appendPlainText('Collecting data... (this may take a while, and the window might say "Not Responding")')
 			self.runtime_messages.repaint()
 			t = tm.time()
 
@@ -242,7 +242,7 @@ class ImportFrame(QtWidgets.QMainWindow,Ui_MainWindow):
 				ncols = len(value_names[loc])
 				origin.Execute(f'wks.ncols={ncols}') # Set the number of columns
 
-				arr2d = np.stack([data[name] for name in value_names[loc]]).transpose()
+				arr2d = np.stack([np.nan_to_num(data[name]) for name in value_names[loc]]).transpose()
 				origin.PutWorksheet(wkbk_names[loc],arr2d.tolist(),0,0) # Set data in the worksheet
 
 				for n in range(ncols):
