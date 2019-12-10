@@ -14,7 +14,7 @@ setup(
         'matplotlib',
         'numpy',
         'openpyxl',
-        'OriginExt<=1.0.6', # Version 1.0.7 seems to be buggy and not load correctly
+        'win32com',
         'PyQt5',
         'scipy'
     ],
