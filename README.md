@@ -21,7 +21,7 @@ You need to install Python first. If you don't have Python, the Anaconda (v3.x) 
 
 To install this package, you need the full folder structure with all the python files. If you didn't get this from one of the authors already, you should be able to download it from https://github.com/cdeimert/qncmbe.
 
-Once you have the main qncmbe directory navigate to it in a command prompt. (You should be in the folder containing `setup.py`.) From there, run
+Once you have the main qncmbe directory navigate to it in a command prompt (you may need to run with admin privilages). You should be in the folder containing `setup.py`. From there, run
 
 ```pip install .```
 
@@ -31,7 +31,7 @@ in Command Prompt. Or, alternatively, run something like
 
 where `folder` is the folder containing `setup.py`.
 
-(If you installed Anaconda and did not add Python to the Windows PATH, you might need to do this from the *Anaconda Prompt* rather than the standard Command Prompt.)
+(If you installed Anaconda and did not add Python to the Windows PATH, you might need to do this from the *Anaconda Prompt* rather than the standard Command Prompt. Again, with admin privilages.)
 
 ### Jupyter launcher
 
