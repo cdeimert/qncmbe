@@ -1,20 +1,20 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='qncmbe',
-    version='0.1',
+    version='0.2',
     description='Python tools for the QNC-MBE lab at the University of Waterloo',
     url='https://github.com/cdeimert/multipass',
     author='Chris Deimert',
     author_email='cdeimert@uwaterloo.ca',
     license='MIT',
-    packages=['qncmbe'],
+    packages=find_packages(exclude=['tests','tests.*','examples','examples.*']),
     install_requires=[
         'cycler',
         'matplotlib',
         'numpy',
         'openpyxl',
-        'OriginExt<=1.0.6', # Version 1.0.7 seems to be buggy and not load correctly
+        'pywin32',
         'PyQt5',
         'scipy'
     ],
