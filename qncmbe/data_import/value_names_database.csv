@@ -1,111 +1,111 @@
 Value name,Location,Local value name,Measurement type,Units
 Molly time,Molly,Time,Time,s
-Ga1 tip measured,Molly,Instances.Ga1_tip.Measured,Temperature,캜
-Ga1 tip working setpoint,Molly,Instances.Ga1_tip.WorkingSetpoint,Temperature,캜
-Ga1 tip setpoint,Molly,Instances.Ga1_tip.Setpoint,Temperature,캜
-Ga1 tip ramp rate,Molly,Instances.Ga1_tip.RampRate,Ramp rate,캜/s
+Ga1 tip measured,Molly,Instances.Ga1_tip.Measured,Temperature,째C
+Ga1 tip working setpoint,Molly,Instances.Ga1_tip.WorkingSetpoint,Temperature,째C
+Ga1 tip setpoint,Molly,Instances.Ga1_tip.Setpoint,Temperature,째C
+Ga1 tip ramp rate,Molly,Instances.Ga1_tip.RampRate,Ramp rate,째C/s
 Ga1 tip output percent,Molly,Instances.Ga1_tip.OutputPercent,Output percent,% of max voltage
 Ga1 tip voltage,Molly,Instances.Ga1_tip_Voltage.Reading,Voltage,V
 Ga1 tip current,Molly,Instances.Ga1_tip_Current.Reading,Current,A
 Ga1 tip max current,Molly,Instances.Ga1_tip_MaxCurrent.Reading,Current,A
 Ga1 tip operation mode,Molly,Instances.Ga1_tip_OperationMode.Value,Status,0 = CC
 Ga1 tip shutter status,Molly,Instances.Ga1_tip.ShutterStatus,Status,0 = open
-Ga1 base measured,Molly,Instances.Ga1_base.Measured,Temperature,캜
-Ga1 base working setpoint,Molly,Instances.Ga1_base.WorkingSetpoint,Temperature,캜
-Ga1 base setpoint,Molly,Instances.Ga1_base.Setpoint,Temperature,캜
-Ga1 base ramp rate,Molly,Instances.Ga1_base.RampRate,Ramp rate,캜/s
+Ga1 base measured,Molly,Instances.Ga1_base.Measured,Temperature,째C
+Ga1 base working setpoint,Molly,Instances.Ga1_base.WorkingSetpoint,Temperature,째C
+Ga1 base setpoint,Molly,Instances.Ga1_base.Setpoint,Temperature,째C
+Ga1 base ramp rate,Molly,Instances.Ga1_base.RampRate,Ramp rate,째C/s
 Ga1 base output percent,Molly,Instances.Ga1_base.OutputPercent,Output percent,% of max voltage
 Ga1 base voltage,Molly,Instances.Ga1_base_Voltage.Reading,Voltage,V
 Ga1 base current,Molly,Instances.Ga1_base_Current.Reading,Current,A
 Ga1 base max current,Molly,Instances.Ga1_base_MaxCurrent.Reading,Current,A
 Ga1 base operation mode,Molly,Instances.Ga1_base_OperationMode.Value,Status,0 = CC
-Ga2 tip measured,Molly,Instances.Ga2_tip.Measured,Temperature,캜
-Ga2 tip working setpoint,Molly,Instances.Ga2_tip.WorkingSetpoint,Temperature,캜
-Ga2 tip setpoint,Molly,Instances.Ga2_tip.Setpoint,Temperature,캜
-Ga2 tip ramp rate,Molly,Instances.Ga2_tip.RampRate,Ramp rate,캜/s
+Ga2 tip measured,Molly,Instances.Ga2_tip.Measured,Temperature,째C
+Ga2 tip working setpoint,Molly,Instances.Ga2_tip.WorkingSetpoint,Temperature,째C
+Ga2 tip setpoint,Molly,Instances.Ga2_tip.Setpoint,Temperature,째C
+Ga2 tip ramp rate,Molly,Instances.Ga2_tip.RampRate,Ramp rate,째C/s
 Ga2 tip output percent,Molly,Instances.Ga2_tip.OutputPercent,Output percent,% of max voltage
 Ga2 tip voltage,Molly,Instances.Ga2_tip_Voltage.Reading,Voltage,V
 Ga2 tip current,Molly,Instances.Ga2_tip_Current.Reading,Current,A
 Ga2 tip max current,Molly,Instances.Ga2_tip_MaxCurrent.Reading,Current,A
 Ga2 tip operation mode,Molly,Instances.Ga2_tip_OperationMode.Value,Status,0 = CC
 Ga2 tip shutter status,Molly,Instances.Ga2_tip.ShutterStatus,Status,0 = open
-Ga2 base measured,Molly,Instances.Ga2_base.Measured,Temperature,캜
-Ga2 base working setpoint,Molly,Instances.Ga2_base.WorkingSetpoint,Temperature,캜
-Ga2 base setpoint,Molly,Instances.Ga2_base.Setpoint,Temperature,캜
-Ga2 base ramp rate,Molly,Instances.Ga2_base.RampRate,Ramp rate,캜/s
+Ga2 base measured,Molly,Instances.Ga2_base.Measured,Temperature,째C
+Ga2 base working setpoint,Molly,Instances.Ga2_base.WorkingSetpoint,Temperature,째C
+Ga2 base setpoint,Molly,Instances.Ga2_base.Setpoint,Temperature,째C
+Ga2 base ramp rate,Molly,Instances.Ga2_base.RampRate,Ramp rate,째C/s
 Ga2 base output percent,Molly,Instances.Ga2_base.OutputPercent,Output percent,% of max voltage
 Ga2 base voltage,Molly,Instances.Ga2_base_Voltage.Reading,Voltage,V
 Ga2 base current,Molly,Instances.Ga2_base_Current.Reading,Current,A
 Ga2 base max current,Molly,Instances.Ga2_base_MaxCurrent.Reading,Current,A
 Ga2 base operation mode,Molly,Instances.Ga2_base_OperationMode.Value,Status,0 = CC
-Al1 tip measured,Molly,Instances.Al1_tip.Measured,Temperature,캜
-Al1 tip working setpoint,Molly,Instances.Al1_tip.WorkingSetpoint,Temperature,캜
-Al1 tip setpoint,Molly,Instances.Al1_tip.Setpoint,Temperature,캜
-Al1 tip ramp rate,Molly,Instances.Al1_tip.RampRate,Ramp rate,캜/s
+Al1 tip measured,Molly,Instances.Al1_tip.Measured,Temperature,째C
+Al1 tip working setpoint,Molly,Instances.Al1_tip.WorkingSetpoint,Temperature,째C
+Al1 tip setpoint,Molly,Instances.Al1_tip.Setpoint,Temperature,째C
+Al1 tip ramp rate,Molly,Instances.Al1_tip.RampRate,Ramp rate,째C/s
 Al1 tip output percent,Molly,Instances.Al1_tip.OutputPercent,Output percent,% of max voltage
 Al1 tip voltage,Molly,Instances.Al1_tip_Voltage.Reading,Voltage,V
 Al1 tip current,Molly,Instances.Al1_tip_Current.Reading,Current,A
 Al1 tip max current,Molly,Instances.Al1_tip_MaxCurrent.Reading,Current,A
 Al1 tip operation mode,Molly,Instances.Al1_tip_OperationMode.Value,Status,0 = CC
 Al1 tip shutter status,Molly,Instances.Al1_tip.ShutterStatus,Status,0 = open
-Al1 base measured,Molly,Instances.Al1_base.Measured,Temperature,캜
-Al1 base working setpoint,Molly,Instances.Al1_base.WorkingSetpoint,Temperature,캜
-Al1 base setpoint,Molly,Instances.Al1_base.Setpoint,Temperature,캜
-Al1 base ramp rate,Molly,Instances.Al1_base.RampRate,Ramp rate,캜/s
+Al1 base measured,Molly,Instances.Al1_base.Measured,Temperature,째C
+Al1 base working setpoint,Molly,Instances.Al1_base.WorkingSetpoint,Temperature,째C
+Al1 base setpoint,Molly,Instances.Al1_base.Setpoint,Temperature,째C
+Al1 base ramp rate,Molly,Instances.Al1_base.RampRate,Ramp rate,째C/s
 Al1 base output percent,Molly,Instances.Al1_base.OutputPercent,Output percent,% of max voltage
 Al1 base voltage,Molly,Instances.Al1_base_Voltage.Reading,Voltage,V
 Al1 base current,Molly,Instances.Al1_base_Current.Reading,Current,A
 Al1 base max current,Molly,Instances.Al1_base_MaxCurrent.Reading,Current,A
 Al1 base operation mode,Molly,Instances.Al1_base_OperationMode.Value,Status,0 = CC
-In1 tip measured,Molly,Instances.In1_tip.Measured,Temperature,캜
-In1 tip working setpoint,Molly,Instances.In1_tip.WorkingSetpoint,Temperature,캜
-In1 tip setpoint,Molly,Instances.In1_tip.Setpoint,Temperature,캜
-In1 tip ramp rate,Molly,Instances.In1_tip.RampRate,Ramp rate,캜/s
+In1 tip measured,Molly,Instances.In1_tip.Measured,Temperature,째C
+In1 tip working setpoint,Molly,Instances.In1_tip.WorkingSetpoint,Temperature,째C
+In1 tip setpoint,Molly,Instances.In1_tip.Setpoint,Temperature,째C
+In1 tip ramp rate,Molly,Instances.In1_tip.RampRate,Ramp rate,째C/s
 In1 tip output percent,Molly,Instances.In1_tip.OutputPercent,Output percent,% of max voltage
 In1 tip voltage,Molly,Instances.In1_tip_Voltage.Reading,Voltage,V
 In1 tip current,Molly,Instances.In1_tip_Current.Reading,Current,A
 In1 tip max current,Molly,Instances.In1_tip_MaxCurrent.Reading,Current,A
 In1 tip operation mode,Molly,Instances.In1_tip_OperationMode.Value,Status,0 = CC
 In1 tip shutter status,Molly,Instances.In1_tip.ShutterStatus,Status,0 = open
-In1 base measured,Molly,Instances.In1_base.Measured,Temperature,캜
-In1 base working setpoint,Molly,Instances.In1_base.WorkingSetpoint,Temperature,캜
-In1 base setpoint,Molly,Instances.In1_base.Setpoint,Temperature,캜
-In1 base ramp rate,Molly,Instances.In1_base.RampRate,Ramp rate,캜/s
+In1 base measured,Molly,Instances.In1_base.Measured,Temperature,째C
+In1 base working setpoint,Molly,Instances.In1_base.WorkingSetpoint,Temperature,째C
+In1 base setpoint,Molly,Instances.In1_base.Setpoint,Temperature,째C
+In1 base ramp rate,Molly,Instances.In1_base.RampRate,Ramp rate,째C/s
 In1 base output percent,Molly,Instances.In1_base.OutputPercent,Output percent,% of max voltage
 In1 base voltage,Molly,Instances.In1_base_Voltage.Reading,Voltage,V
 In1 base current,Molly,Instances.In1_base_Current.Reading,Current,A
 In1 base max current,Molly,Instances.In1_base_MaxCurrent.Reading,Current,A
 In1 base operation mode,Molly,Instances.In1_base_OperationMode.Value,Status,0 = CC
-In2 tip measured,Molly,Instances.In2_tip.Measured,Temperature,캜
-In2 tip working setpoint,Molly,Instances.In2_tip.WorkingSetpoint,Temperature,캜
-In2 tip setpoint,Molly,Instances.In2_tip.Setpoint,Temperature,캜
-In2 tip ramp rate,Molly,Instances.In2_tip.RampRate,Ramp rate,캜/s
+In2 tip measured,Molly,Instances.In2_tip.Measured,Temperature,째C
+In2 tip working setpoint,Molly,Instances.In2_tip.WorkingSetpoint,Temperature,째C
+In2 tip setpoint,Molly,Instances.In2_tip.Setpoint,Temperature,째C
+In2 tip ramp rate,Molly,Instances.In2_tip.RampRate,Ramp rate,째C/s
 In2 tip output percent,Molly,Instances.In2_tip.OutputPercent,Output percent,% of max voltage
 In2 tip voltage,Molly,Instances.In2_tip_Voltage.Reading,Voltage,V
 In2 tip current,Molly,Instances.In2_tip_Current.Reading,Current,A
 In2 tip max current,Molly,Instances.In2_tip_MaxCurrent.Reading,Current,A
 In2 tip operation mode,Molly,Instances.In2_tip_OperationMode.Value,Status,0 = CC
 In2 tip shutter status,Molly,Instances.In2_tip.ShutterStatus,Status,0 = open
-In2 base measured,Molly,Instances.In2_base.Measured,Temperature,캜
-In2 base working setpoint,Molly,Instances.In2_base.WorkingSetpoint,Temperature,캜
-In2 base setpoint,Molly,Instances.In2_base.Setpoint,Temperature,캜
-In2 base ramp rate,Molly,Instances.In2_base.RampRate,Ramp rate,캜/s
+In2 base measured,Molly,Instances.In2_base.Measured,Temperature,째C
+In2 base working setpoint,Molly,Instances.In2_base.WorkingSetpoint,Temperature,째C
+In2 base setpoint,Molly,Instances.In2_base.Setpoint,Temperature,째C
+In2 base ramp rate,Molly,Instances.In2_base.RampRate,Ramp rate,째C/s
 In2 base output percent,Molly,Instances.In2_base.OutputPercent,Output percent,% of max voltage
 In2 base voltage,Molly,Instances.In2_base_Voltage.Reading,Voltage,V
 In2 base current,Molly,Instances.In2_base_Current.Reading,Current,A
 In2 base max current,Molly,Instances.In2_base_MaxCurrent.Reading,Current,A
 In2 base operation mode,Molly,Instances.In2_base_OperationMode.Value,Status,0 = CC
-Si1 base measured,Molly,Instances.Si1_base.Measured,Temperature,캜
-Si1 base working setpoint,Molly,Instances.Si1_base.WorkingSetpoint,Temperature,캜
-Si1 base setpoint,Molly,Instances.Si1_base.Setpoint,Temperature,캜
-Si1 base ramp rate,Molly,Instances.Si1_base.RampRate,Ramp rate,캜/s
+Si1 base measured,Molly,Instances.Si1_base.Measured,Temperature,째C
+Si1 base working setpoint,Molly,Instances.Si1_base.WorkingSetpoint,Temperature,째C
+Si1 base setpoint,Molly,Instances.Si1_base.Setpoint,Temperature,째C
+Si1 base ramp rate,Molly,Instances.Si1_base.RampRate,Ramp rate,째C/s
 Si1 base output percent,Molly,Instances.Si1_base.OutputPercent,Output percent,% of max voltage
 Si1 base voltage,Molly,Instances.Si1_base_Voltage.Reading,Voltage,V
 Si1 base current,Molly,Instances.Si1_base_Current.Reading,Current,A
 Si1 base max current,Molly,Instances.Si1_base_MaxCurrent.Reading,Current,A
 Si1 base operation mode,Molly,Instances.Si1_base_OperationMode.Value,Status,0 = CC
 Si1 base shutter status,Molly,Instances.Si1_base.ShutterStatus,Status,0 = open
-C1 base measured,Molly,Instances.C1_base.Measured,Temperature,캜
+C1 base measured,Molly,Instances.C1_base.Measured,Temperature,째C
 C1 current measured,Molly,Instances.C1_Current.Measured,Current,A
 C1 current working setpoint,Molly,Instances.C1_Current.WorkingSetpoint,Current,A
 C1 current setpoint,Molly,Instances.C1_Current.Setpoint,Current,A
@@ -114,20 +114,20 @@ C1 voltage working setpoint,Molly,Instances.C1_Voltage.WorkingSetpoint,Voltage,V
 C1 voltage setpoint,Molly,Instances.C1_Voltage.Setpoint,Voltage,V
 C1 operation mode,Molly,Instances.C1_PS_OperationMode.Value,Status,0 = CC
 C1 shutter status,Molly,Instances.C1_Current.ShutterStatus,Status,0 = open
-GaTe1 tip measured,Molly,Instances.GaTe1_tip.Measured,Temperature,캜
-GaTe1 tip working setpoint,Molly,Instances.GaTe1_tip.WorkingSetpoint,Temperature,캜
-GaTe1 tip setpoint,Molly,Instances.GaTe1_tip.Setpoint,Temperature,캜
-GaTe1 tip ramp rate,Molly,Instances.GaTe1_tip.RampRate,Ramp rate,캜/s
+GaTe1 tip measured,Molly,Instances.GaTe1_tip.Measured,Temperature,째C
+GaTe1 tip working setpoint,Molly,Instances.GaTe1_tip.WorkingSetpoint,Temperature,째C
+GaTe1 tip setpoint,Molly,Instances.GaTe1_tip.Setpoint,Temperature,째C
+GaTe1 tip ramp rate,Molly,Instances.GaTe1_tip.RampRate,Ramp rate,째C/s
 GaTe1 tip output percent,Molly,Instances.GaTe1_tip.OutputPercent,Output percent,% of max voltage
 GaTe1 tip voltage,Molly,Instances.GaTe1_tip_Voltage.Reading,Voltage,V
 GaTe1 tip current,Molly,Instances.GaTe1_tip_Current.Reading,Current,A
 GaTe1 tip max current,Molly,Instances.GaTe1_tip_MaxCurrent.Reading,Current,A
 GaTe1 tip operation mode,Molly,Instances.GaTe1_tip_OperationMode.Value,Status,0 = CC
 GaTe1 tip shutter status,Molly,Instances.GaTe1_tip.ShutterStatus,Status,0 = open
-GaTe1 base measured,Molly,Instances.GaTe1_base.Measured,Temperature,캜
-GaTe1 base working setpoint,Molly,Instances.GaTe1_base.WorkingSetpoint,Temperature,캜
-GaTe1 base setpoint,Molly,Instances.GaTe1_base.Setpoint,Temperature,캜
-GaTe1 base ramp rate,Molly,Instances.GaTe1_base.RampRate,Ramp rate,캜/s
+GaTe1 base measured,Molly,Instances.GaTe1_base.Measured,Temperature,째C
+GaTe1 base working setpoint,Molly,Instances.GaTe1_base.WorkingSetpoint,Temperature,째C
+GaTe1 base setpoint,Molly,Instances.GaTe1_base.Setpoint,Temperature,째C
+GaTe1 base ramp rate,Molly,Instances.GaTe1_base.RampRate,Ramp rate,째C/s
 GaTe1 base output percent,Molly,Instances.GaTe1_base.OutputPercent,Output percent,% of max voltage
 GaTe1 base voltage,Molly,Instances.GaTe1_base_Voltage.Reading,Voltage,V
 GaTe1 base current,Molly,Instances.GaTe1_base_Current.Reading,Current,A
@@ -138,19 +138,19 @@ As1 valve working setpoint,Molly,Instances.As1_valve.WorkingSetpoint,Valve posit
 As1 valve setpoint,Molly,Instances.As1_valve.Setpoint,Valve position,mil
 As1 valve ramp rate,Molly,Instances.As1_valve.RampRate,Ramp rate,mil/s
 As1 valve shutter status,Molly,Instances.As1_valve.ShutterStatus,Status,0 = open
-As1 crack measured,Molly,Instances.As1_crack.Measured,Temperature,캜
-As1 crack working setpoint,Molly,Instances.As1_crack.WorkingSetpoint,Temperature,캜
-As1 crack setpoint,Molly,Instances.As1_crack.Setpoint,Temperature,캜
-As1 crack ramp rate,Molly,Instances.As1_crack.RampRate,Ramp rate,캜/s
+As1 crack measured,Molly,Instances.As1_crack.Measured,Temperature,째C
+As1 crack working setpoint,Molly,Instances.As1_crack.WorkingSetpoint,Temperature,째C
+As1 crack setpoint,Molly,Instances.As1_crack.Setpoint,Temperature,째C
+As1 crack ramp rate,Molly,Instances.As1_crack.RampRate,Ramp rate,째C/s
 As1 crack output percent,Molly,Instances.As1_crack.OutputPercent,Output percent,% of max voltage
 As1 crack voltage,Molly,Instances.As1_crack_Voltage.Reading,Voltage,V
 As1 crack current,Molly,Instances.As1_crack_Current.Reading,Current,A
 As1 crack max current,Molly,Instances.As1_crack_MaxCurrent.Reading,Current,A
 As1 crack operation mode,Molly,Instances.As1_crack_OperationMode.Value,Status,0 = CC
-As1 bulk measured,Molly,Instances.As1_bulk.Measured,Temperature,캜
-As1 bulk working setpoint,Molly,Instances.As1_bulk.WorkingSetpoint,Temperature,캜
-As1 bulk setpoint,Molly,Instances.As1_bulk.Setpoint,Temperature,캜
-As1 bulk ramp rate,Molly,Instances.As1_bulk.RampRate,Ramp rate,캜/s
+As1 bulk measured,Molly,Instances.As1_bulk.Measured,Temperature,째C
+As1 bulk working setpoint,Molly,Instances.As1_bulk.WorkingSetpoint,Temperature,째C
+As1 bulk setpoint,Molly,Instances.As1_bulk.Setpoint,Temperature,째C
+As1 bulk ramp rate,Molly,Instances.As1_bulk.RampRate,Ramp rate,째C/s
 As1 bulk output percent,Molly,Instances.As1_bulk.OutputPercent,Output percent,% of max voltage
 As1 bulk voltage,Molly,Instances.As1_bulk_Voltage.Reading,Voltage,V
 As1 bulk current,Molly,Instances.As1_bulk_Current.Reading,Current,A
@@ -161,49 +161,49 @@ Sb1 valve working setpoint,Molly,Instances.Sb1_valve.WorkingSetpoint,Valve posit
 Sb1 valve setpoint,Molly,Instances.Sb1_valve.Setpoint,Valve position,mil
 Sb1 valve ramp rate,Molly,Instances.Sb1_valve.RampRate,Ramp rate,mil/s
 Sb1 valve shutter status,Molly,Instances.Sb1_valve.ShutterStatus,Status,0 = open
-Sb1 crack measured,Molly,Instances.Sb1_crack.Measured,Temperature,캜
-Sb1 crack working setpoint,Molly,Instances.Sb1_crack.WorkingSetpoint,Temperature,캜
-Sb1 crack setpoint,Molly,Instances.Sb1_crack.Setpoint,Temperature,캜
-Sb1 crack ramp rate,Molly,Instances.Sb1_crack.RampRate,Ramp rate,캜/s
+Sb1 crack measured,Molly,Instances.Sb1_crack.Measured,Temperature,째C
+Sb1 crack working setpoint,Molly,Instances.Sb1_crack.WorkingSetpoint,Temperature,째C
+Sb1 crack setpoint,Molly,Instances.Sb1_crack.Setpoint,Temperature,째C
+Sb1 crack ramp rate,Molly,Instances.Sb1_crack.RampRate,Ramp rate,째C/s
 Sb1 crack output percent,Molly,Instances.Sb1_crack.OutputPercent,Output percent,% of max voltage
 Sb1 crack voltage,Molly,Instances.Sb1_crack_Voltage.Reading,Voltage,V
 Sb1 crack current,Molly,Instances.Sb1_crack_Current.Reading,Current,A
 Sb1 crack max current,Molly,Instances.Sb1_crack_MaxCurrent.Reading,Current,A
 Sb1 crack operation mode,Molly,Instances.Sb1_crack_OperationMode.Value,Status,0 = CC
-Sb1 bulk measured,Molly,Instances.Sb1_bulk.Measured,Temperature,캜
-Sb1 bulk working setpoint,Molly,Instances.Sb1_bulk.WorkingSetpoint,Temperature,캜
-Sb1 bulk setpoint,Molly,Instances.Sb1_bulk.Setpoint,Temperature,캜
-Sb1 bulk ramp rate,Molly,Instances.Sb1_bulk.RampRate,Ramp rate,캜/s
+Sb1 bulk measured,Molly,Instances.Sb1_bulk.Measured,Temperature,째C
+Sb1 bulk working setpoint,Molly,Instances.Sb1_bulk.WorkingSetpoint,Temperature,째C
+Sb1 bulk setpoint,Molly,Instances.Sb1_bulk.Setpoint,Temperature,째C
+Sb1 bulk ramp rate,Molly,Instances.Sb1_bulk.RampRate,Ramp rate,째C/s
 Sb1 bulk output percent,Molly,Instances.Sb1_bulk.OutputPercent,Output percent,% of max voltage
 Sb1 bulk voltage,Molly,Instances.Sb1_bulk_Voltage.Reading,Voltage,V
 Sb1 bulk current,Molly,Instances.Sb1_bulk_Current.Reading,Current,A
 Sb1 bulk max current,Molly,Instances.Sb1_bulk_MaxCurrent.Reading,Current,A
 Sb1 bulk operation mode,Molly,Instances.Sb1_bulk_OperationMode.Value,Status,0 = CC
-Sb1 cond measured,Molly,Instances.Sb1_cond.Measured,Temperature,캜
-Sb1 cond working setpoint,Molly,Instances.Sb1_cond.WorkingSetpoint,Temperature,캜
-Sb1 cond setpoint,Molly,Instances.Sb1_cond.Setpoint,Temperature,캜
-Sb1 cond ramp rate,Molly,Instances.Sb1_cond.RampRate,Ramp rate,캜/s
+Sb1 cond measured,Molly,Instances.Sb1_cond.Measured,Temperature,째C
+Sb1 cond working setpoint,Molly,Instances.Sb1_cond.WorkingSetpoint,Temperature,째C
+Sb1 cond setpoint,Molly,Instances.Sb1_cond.Setpoint,Temperature,째C
+Sb1 cond ramp rate,Molly,Instances.Sb1_cond.RampRate,Ramp rate,째C/s
 Sb1 cond output percent,Molly,Instances.Sb1_cond.OutputPercent,Output percent,% of max voltage
 Sb1 cond voltage,Molly,Instances.Sb1_cond_Voltage.Reading,Voltage,V
 Sb1 cond current,Molly,Instances.Sb1_cond_Current.Reading,Current,A
 Sb1 cond max current,Molly,Instances.Sb1_cond_MaxCurrent.Reading,Current,A
 Sb1 cond operation mode,Molly,Instances.Sb1_cond_OperationMode.Value,Status,0 = CC
-GM1 subs center measured,Molly,Instances.GM1_subs_center.Measured,Temperature,캜
-GM1 subs center working setpoint,Molly,Instances.GM1_subs_center.WorkingSetpoint,Temperature,캜
-GM1 subs center setpoint,Molly,Instances.GM1_subs_center.Setpoint,Temperature,캜
-GM1 subs center ramp rate,Molly,Instances.GM1_subs_center.RampRate,Ramp rate,캜/s
+GM1 subs center measured,Molly,Instances.GM1_subs_center.Measured,Temperature,째C
+GM1 subs center working setpoint,Molly,Instances.GM1_subs_center.WorkingSetpoint,Temperature,째C
+GM1 subs center setpoint,Molly,Instances.GM1_subs_center.Setpoint,Temperature,째C
+GM1 subs center ramp rate,Molly,Instances.GM1_subs_center.RampRate,Ramp rate,째C/s
 GM1 subs center output percent,Molly,Instances.GM1_subs_center.OutputPercent,Output percent,% of max voltage
 GM1 subs center voltage,Molly,Instances.GM1_subs_center_Voltage.Reading,Voltage,V
 GM1 subs center current,Molly,Instances.GM1_subs_center_Current.Reading,Current,A
 GM1 subs center max current,Molly,Instances.GM1_subs_center_MaxCurrent.Reading,Current,A
 GM1 subs center operation mode,Molly,Instances.GM1_subs_center_OperationMode.Value,Status,0 = CC
-GM1 subs rot measured,Molly,Instances.GM1_subs_rot.Measured,Angle,�
-GM1 subs rot working setpoint,Molly,Instances.GM1_subs_rot.WorkingSetpoint,Angle,�
+GM1 subs rot measured,Molly,Instances.GM1_subs_rot.Measured,Angle,째
+GM1 subs rot working setpoint,Molly,Instances.GM1_subs_rot.WorkingSetpoint,Angle,째
 GM1 subs rot ramp rate,Molly,Instances.GM1_subs_rot.RampRate,Rotation rate,rpm
-PM1 subs measured,Molly,Instances.PM1_subs.Measured,Temperature,캜
-PM1 subs working setpoint,Molly,Instances.PM1_subs.WorkingSetpoint,Temperature,캜
-PM1 subs setpoint,Molly,Instances.PM1_subs.Setpoint,Temperature,캜
-PM1 subs ramp rate,Molly,Instances.PM1_subs.RampRate,Ramp rate,캜/s
+PM1 subs measured,Molly,Instances.PM1_subs.Measured,Temperature,째C
+PM1 subs working setpoint,Molly,Instances.PM1_subs.WorkingSetpoint,Temperature,째C
+PM1 subs setpoint,Molly,Instances.PM1_subs.Setpoint,Temperature,째C
+PM1 subs ramp rate,Molly,Instances.PM1_subs.RampRate,Ramp rate,째C/s
 PM1 subs output percent,Molly,Instances.PM1_subs.OutputPercent,Output percent,% of max voltage
 PM1 subs voltage,Molly,Instances.PM1_subs_Voltage.Reading,Voltage,V
 PM1 subs current,Molly,Instances.PM1_subs_Current.Reading,Current,A
@@ -233,19 +233,19 @@ GM1 BFM arm status,Molly,Instances.GM1_BFM_Arm_Status.Value,Status,0 = in
 GM1 recipe running status,Molly,Instances.GM1_RecipeRunning.Status,Status,0 = running
 PM1 recipe running status,Molly,Instances.PM1_RecipeRunning.Status,Status,0 = running
 LL1 recipe running status,Molly,Instances.LL1_RecipeRunning.Status,Status,0 = running
-SVT time Robo MBE engine 1,SVT,SVT Time (RoboMBE Engine 1),Time,s
+SVT time Robo MBE engine,SVT,SVT Time (RoboMBE Engine),Time,s
 Pyro intensity 950,SVT,PI 950,Pyrometer reading,
 Pyro intensity 850,SVT,PI 850,Pyrometer reading,
 Refl uncalib 950,SVT,Refl 950,Reflectance (unnormalized),
 Refl uncalib 470,SVT,Refl 470,Reflectance (unnormalized),
 SVT time Robo MBE IS4K temp,SVT,SVT Time (RoboMBE IS4K Temp),Time,s
-Emiss temp,SVT,Emiss Temp,Temperature,캜
-Ratio temp,SVT,Ratio Temp,Temperature,캜
+Emiss temp,SVT,Emiss Temp,Temperature,째C
+Ratio temp,SVT,Ratio Temp,Temperature,째C
 SVT time Robo MBE IS4K refl,SVT,SVT Time (RoboMBE IS4K Refl),Time,s
 Refl calib 950,SVT,Calib 950,Reflectance (normalized),
 Refl calib 470,SVT,Calib 470,Reflectance (normalized),
 BET time,BET,BET Time,Time,s
-BET temp,BET,BET Temp,Temperature,캜
+BET temp,BET,BET Temp,Temperature,째C
 ISP time,BET,ISP Time,Time,s
-ISP temp,BET,ISP Temp,Temperature,캜
+ISP temp,BET,ISP Temp,Temperature,째C
 ISP integral,BET,ISP Integral,Time,s

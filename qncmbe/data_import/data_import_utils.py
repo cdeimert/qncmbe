@@ -462,7 +462,7 @@ def get_SVT_data(start_time, end_time, value_names):
 
 	'''
 	Only allowed value names are:
-		SVT Time (RoboMBE Engine 1)
+		SVT Time (RoboMBE Engine)
 		PI 950
 		PI 850
 		Refl 950
@@ -476,100 +476,213 @@ def get_SVT_data(start_time, end_time, value_names):
 	'''
 	if not value_names: return {} # Redundant, but increases speed.
 
-	path = "\\\\insitu1.nexus.uwaterloo.ca\\QNC_MBE_Data\\ZW-XP1\\"
-	#path = r"\\insitu1.nexus.uwaterloo.ca\Documents\QNC MBE Data\Production Data\SVT Data"
+	path = "\\\\zw-xp1\\QNC_MBE_Data"
 
-	# Different values are stored in different files and columns, so need information about which value is where.
-	info = {}
+	data = {val: [] for val in value_names}
 
-	# TODO: deal with the issue that the SVT computer sometimes splits files from long growths
-	# into, e.g. Refl, Refm, Refn...
-	info['SVT Time (RoboMBE Engine 1)'] = {'subloc': 'Engine 1', 'col': 0}
-	info['PI 950'] = {'subloc': 'Engine 1', 'col': 1}
-	info['PI 850'] = {'subloc': 'Engine 1', 'col': 2}
-	info['Refl 950'] = {'subloc': 'Engine 1', 'col': 3}
-	info['Refl 470'] = {'subloc': 'Engine 1', 'col': 4}
+	for name in os.listdir(path):
+		full_name = os.path.join(path, name)
+		if is_SVT_folder(full_name):
 
-	info['SVT Time (RoboMBE IS4K Temp)'] = {'subloc': 'IS4K Temp', 'col': 0}
-	info['Emiss Temp'] = {'subloc': 'IS4K Temp', 'col': 3}
-	info['Ratio Temp'] = {'subloc': 'IS4K Temp', 'col': 2}
+			# Check if folder has data within the requested time span, otherwise skip it
+			folder_zero_time, folder_start_time, folder_end_time = get_SVT_folder_time_info(full_name)
+			if (end_time >= folder_start_time) and (start_time <= folder_end_time):
+				
+				t_min = (start_time - folder_zero_time).total_seconds()
+				t_max = (end_time - folder_zero_time).total_seconds()
+				
+				folder_data = get_SVT_data_from_folder(full_name, [t_min, t_max])
+				
+				for val in value_names:
+					data[val].append(folder_data[val])
 
-	info['SVT Time (RoboMBE IS4K Refl)'] = {'subloc': 'IS4K Refl', 'col': 0}
-	info['Calib 950'] = {'subloc': 'IS4K Refl', 'col': 1}
-	info['Calib 470'] = {'subloc': 'IS4K Refl', 'col': 2}
-
-	cols = {}
-	cols['Engine 1'] = (0,1,2,3,4)
-	cols['IS4K Temp'] = (0,1,2,3)
-	cols['IS4K Refl'] = (0,1,2)
-
-	sublocs = []
-	for name in value_names:
-		subloc = info[name]['subloc']
-		if info[name]['subloc'] not in sublocs:
-			sublocs.append(subloc)
-
-	# Get list of all the .txt files in all the subdirectories
-	dir_files = [y for x in os.walk(path) for y in glob(os.path.join(x[0], '*.txt'))]
-
-	files = {subloc: [] for subloc in sublocs}
-
-	for subloc in sublocs:
-
-		for dir_file in dir_files:
-			if dir_file.endswith(subloc + '.txt'):
-				ctime = dt.datetime.fromtimestamp(os.path.getctime(dir_file))
-				mtime = dt.datetime.fromtimestamp(os.path.getmtime(dir_file))
-
-				time_condition = (start_time < mtime) and (end_time > ctime)
-
-				if time_condition:
-
-					# Note: this offset may fail if the creation time is not on the same day as
-					# the first time value. I really wish there was a more robust way to do this...
-					offset = (ctime.replace(hour = 0, minute = 0, second = 0, microsecond = 0) - start_time).total_seconds()
-					files[subloc].append({'name': dir_file, 'offset': offset, 'chour': ctime.hour})
-
-	# Get all the required data from files
-	raw_data ={}
-	for subloc in sublocs:
-		raw_data[subloc] = []
-		for file in files[subloc]:
-			try:
-				file_data = np.genfromtxt(file['name'], usecols = cols[subloc], skip_header = 3)
-				# Note, setting skip_header = 3 will typically discard the first two data points, but
-				# otherwise there can be problems when someone starts logging before turning on the Engine
-			except:
-				print("Error loading file " + file['name'])
-
-			# Try to catch the condition where the creation time is at, e.g., 23:59, but the first
-			# time value is at, e.g., 00:01. Then the offset calculated above is off by a day.
-			if (file['chour'] >= 20) and (file_data[0,0] < 0.25):
-				file_data[:,0] -= 1
-
-			# Apply time offset
-			file_data[:,0] *= 86400
-			file_data[:,0] += file['offset']
-
-
-			raw_data[subloc].append(file_data)
-
-		if len(raw_data[subloc]) != 0:
-			raw_data[subloc] = np.concatenate(raw_data[subloc], axis=0)
-			sorted_inds = np.argsort(raw_data[subloc][:,0])
-			raw_data[subloc] = raw_data[subloc][sorted_inds, :]
-
-			total_time = (end_time - start_time).total_seconds()
-			trimmed_inds = np.logical_and(0.0 < raw_data[subloc][:,0], raw_data[subloc][:,0] < total_time)
-			raw_data[subloc] = raw_data[subloc][trimmed_inds,:]
-		else:
-			raw_data[subloc] = np.zeros((0,5))
-
-
-	data = {}
-	for name in value_names:
-		subloc = info[name]['subloc']
-		col = info[name]['col']
-		data[name] = raw_data[subloc][:,col]
+	# Merge everything into a single numpy array.
+	for val in data:
+		data[val] = np.concatenate(data[val])
 
 	return data
+
+
+
+def is_SVT_folder(folder):
+	'''
+	Checks if the given folder is a valid SVT data folder
+	'''
+
+	if os.path.exists(os.path.join(folder, 'time_info.txt')):
+		return True
+
+	engine = False
+	temp = False
+	refl = False
+
+	try:
+		for name in os.listdir(folder):
+			if name.endswith('Engine 1.txt'):
+				engine = True
+			if name.endswith('IS4K Temp.txt'):
+				temp = True
+			if name.endswith('IS4K Refl.txt'):
+				refl = True
+	except:
+		pass
+
+	return all([engine, temp, refl])
+
+def get_SVT_folder_time_info(folder):
+
+	time_file = os.path.join(folder, 'time_info.txt')
+
+	fmt_string = "%Y-%m-%d %H:%M:%S.%f"
+
+	line0 = "(Generated by Python qncmbe data_import module. Do not modify.)\n"
+	line1 = f'Parent folder = "{folder}"\n'
+
+	try:
+		with open(time_file) as tf:
+			if tf.readline() != line0:
+				raise ValueError
+			if not tf.readline().startswith('Parent folder = '):
+				raise ValueError
+
+			arr = []
+			for n in range(3):
+				date_string = tf.readline().split(' = ')[-1].strip('\n')
+				arr.append(dt.datetime.strptime(date_string, fmt_string))
+
+			t_zero, t_start, t_end = arr
+	except:
+		data = get_SVT_data_from_folder(folder)
+
+		t = data['SVT Time (RoboMBE Engine)']
+
+		engine_file = ''
+		for name in os.listdir(folder):
+			if name.endswith('Engine 1.txt'):
+				engine_file = os.path.join(folder, name)
+		
+		# Times are just relative to midnight on some day.
+		# So compare with the file creation date to figure out which day.
+
+		creation_time = dt.datetime.fromtimestamp(os.path.getctime(engine_file))
+
+		t_zero = creation_time.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+
+		diff = (t_zero + dt.timedelta(seconds=t[0]) - creation_time).total_seconds()
+
+		while abs(diff) > 86400/2:
+			t_zero -= np.sign(diff)*dt.timedelta(seconds=86400)
+
+			diff = (t_zero + dt.timedelta(seconds=t[0]) - creation_time).total_seconds()
+
+		t_start = t_zero + dt.timedelta(seconds=t[0])
+		t_end = t_zero + dt.timedelta(seconds=t[-1])
+
+		with open(time_file, 'w') as tf:
+			tf.write(line0)
+			tf.write(line1)
+			tf.write(f'Zero_time = {t_zero.strftime(fmt_string)}\n')
+			tf.write(f'Data_start_time = {t_start.strftime(fmt_string)}\n')
+			tf.write(f'Data_end_time = {t_end.strftime(fmt_string)}')
+
+	return t_zero, t_start, t_end
+
+def get_SVT_data_from_folder(folder, time_limits = None):
+
+	col_info = {
+		'Engine 1.txt': {
+			'SVT Time (RoboMBE Engine)': 0,
+			'PI 950': 1,
+			'PI 850': 2,
+			'Refl 950': 3,
+			'Refl 470': 4
+		},
+		'IS4K Temp.txt': {
+			'SVT Time (RoboMBE IS4K Temp)': 0,
+			'Emiss Temp': 3,
+			'Ratio Temp': 2
+		},
+		'IS4K Refl.txt': {
+			'SVT Time (RoboMBE IS4K Refl)': 0,
+			'Calib 950': 1,
+			'Calib 470': 2
+		}
+	}
+
+	data = {}
+	for name in os.listdir(folder):
+		full_name = os.path.join(folder, name)
+
+		for basename in col_info:
+			if name.endswith(basename):
+
+				keys = []
+				cols = []
+
+				for k,c in col_info[basename].items():
+					keys.append(k)
+					cols.append(c)
+
+				fdata = read_SVT_data_file(full_name, cols, True)
+
+				for n, k in enumerate(keys):
+					data[k] = fdata[:,n]
+
+	for key in data:
+		if 'Time' in key:
+			data[key] *= 3600*24
+
+	if time_limits is not None:
+		t_min = time_limits[0]
+		t_max = time_limits[1]
+		for basename in col_info:
+			for key in col_info[basename]:
+				if 'Time' in key:
+					time_key = key
+					
+				t = data[time_key]
+					
+			mask = (t >= t_min) & (t <= t_max)
+			for key in col_info[basename]:
+				data[key] = data[key][mask]
+
+			data[time_key] -= t[0]
+
+	return data
+
+
+def read_SVT_data_file(filepath, cols, try_increments = True):
+	'''
+	Reads a single SVT data file. E.g., "G0123_IS4K Refl.txt".
+	
+	If try_increments is True, then will automatically search for incremented files like "G0123_IS4K Refm.txt" and get the data from them too.
+	This is useful since the SVT software's default behaviour is to switch to a new file if the first one gets too long.
+	'''
+
+	data = []
+	name = filepath
+	keep_going = True
+	while keep_going:
+		with open(name) as f:
+			for line in f:
+				try:
+					data.append([float(line.split()[i]) for i in cols])
+				except (ValueError, IndexError):
+					continue
+
+		name = increment_SVT_filename(name)
+
+		if try_increments:
+			keep_going = os.path.exists(name)
+		else:
+			keep_going = False
+
+	return np.array(data)
+
+def increment_SVT_filename(filepath):
+
+	basename = filepath.strip('.txt')
+	lastchar = basename[-1]
+
+	return basename[:-1] + chr(ord(lastchar) + 1) + '.txt'
+

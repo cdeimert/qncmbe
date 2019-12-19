@@ -4,7 +4,7 @@ setup(
     name='qncmbe',
     version='0.2',
     description='Python tools for the QNC-MBE lab at the University of Waterloo',
-    url='https://github.com/cdeimert/multipass',
+    url='https://github.com/cdeimert/qncmbe',
     author='Chris Deimert',
     author_email='cdeimert@uwaterloo.ca',
     license='MIT',
