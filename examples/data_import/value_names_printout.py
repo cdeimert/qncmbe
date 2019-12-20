@@ -1,5 +1,6 @@
 '''
-Super simple script which just prints out the allowed value names for qncmbe.data_import
+Super simple script which just prints out the allowed value names for
+qncmbe.data_import
 '''
 
 import qncmbe.data_import.value_names as valnames
