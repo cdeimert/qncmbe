@@ -139,6 +139,16 @@ class CellUsageCalculator():
         day = self.start_date
         delta = dt.timedelta(days=1)
 
+        day_after_end = self.end_date + dt.timedelta(days=1)
+        hfile, bfile = datimp.get_Molly_data_path(day_after_end)
+        
+        if not os.path.exists(hfile):
+            raise FileNotFoundError(
+                f'Could not find data file\n\t"{hfile}"\n'
+                f"Make sure all data from {day_after_end} and earlier has "
+                "been syncronized with server, or change end_date!"
+            )
+
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
 

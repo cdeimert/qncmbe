@@ -2,7 +2,7 @@
 Example file for the reflectance fitting module qncmbe.refl_fit
 
 Based on the data from QNC-MBE growth G0641, which is included
-('G0641_IS4K Refl.txt')
+('G0641' folder)
 '''
 from qncmbe.refl_fit import Material, Structure, plt
 
@@ -27,8 +27,7 @@ filepath = 'examples\\refl_fit\\G0641_IS4K Refl.txt'
 # computer
 #
 # growth = 'G0641'
-# filepath = f'\\\\insitu1.nexus.uwaterloo.ca\\QNC_MBE_Data\\'\
-#            f'ZW-XP1\\{growth}\\{growth}_IS4K Refl.txt'
+# filepath = f'\\\\zw-xp1\\QNC_MBE_Data\\{growth}\\{growth}_IS4K Refl.txt'
 
 # Set up Structure class.
 # This class stores all the reflectance data, and info about the layers grown

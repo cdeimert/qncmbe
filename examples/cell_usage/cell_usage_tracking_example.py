@@ -30,15 +30,14 @@ import os
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 
-start = '2019-05-13'
-end = '2019-12-06'
-cells = 'Ga1,Ga2,Al1,In1,In2'.split(',')
 cell_pars_file = 'Z:\\Excell Calculators\\Calibration Parameters V2 2019.xlsx'
-save_dir = os.path.join(this_dir, 'saved_cell_data')
 
 ucalc = CellUsageCalculator(
-    start_date=start, end_date=end, cells=cells,
-    cell_pars_file=cell_pars_file, save_dir=save_dir
+    start_date='2019-05-13',
+    end_date='2019-12-18',
+    cells='Ga1,Ga2,Al1,In1,In2'.split(','),
+    cell_pars_file=cell_pars_file,
+    save_dir=os.path.join(this_dir, 'saved_cell_data')
 )
 
 fig, ax = plt.subplots()

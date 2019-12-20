@@ -279,7 +279,7 @@ def get_raw_Molly_data_hour(import_time, value_names):
     "time", corresponding to the time and value sequence in the Molly data.
     '''
 
-    header_path, binary_path = get_filepaths(import_time)
+    header_path, binary_path = get_Molly_data_path(import_time)
 
     total_values, values_offset = get_line_numbers(header_path, value_names)
 
@@ -290,7 +290,7 @@ def get_raw_Molly_data_hour(import_time, value_names):
     return data_hour
 
 
-def get_filepaths(import_time):
+def get_Molly_data_path(import_time):
     '''
     Find the path for the Molly binary file for a given hour.
 

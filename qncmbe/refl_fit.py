@@ -13,6 +13,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
 
+from qncmbe.data_import.data_import_utils import read_SVT_data_file
+
 wvln_colors_light = {
     '469.5': '#80b1d3',
     '950.3': '#fb8072'
@@ -313,8 +315,7 @@ class Structure():
     def update_refl_data(self):
 
         if self.use_data_file:
-            raw_data = np.genfromtxt(
-                self.refl_data_file, skip_header=3, usecols=(0, 1, 2))
+            raw_data = read_SVT_data_file(self.refl_data_file, cols=(0, 1, 2))
 
             self.t_data = raw_data[:, 0]*3600*24
             self.R_data = {
