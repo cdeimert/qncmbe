@@ -225,15 +225,23 @@ class Growth():
         self.add_growth_step(open_shutters, t, T_Al_vs_t, name)
 
     def add_smooth_ramp_step(
-        self, duration, xi, xf, Si_doped=False, dt=0.5, name='Smooth ramp'
+        self, duration, xi, xf, Si_doped=False, Al_open=False,
+        dt=0.5, name='Smooth ramp'
     ):
-        # Will generate a smooth transition in the desired Al temperature
-        # (continuous derivative). Becomes trivial if xi = xf, but can be used
-        # for, e.g., delta doping
+        '''Will generate a smooth transition in the desired Al temperature,
+        starting at the temperature for composition xi, and transition to the
+        temperature for composition xf. Does the transition smoothly so that
+        the derivative in the input temperature is continuous.
+
+        If xi=xf, this function becomes trivial (just holds the Al temperature
+        constant), but then can be used for, e.g., delta doping.
+        '''
 
         open_shutters = ['As1']
         if Si_doped:
             open_shutters += ['Si1']
+        if Al_open:
+            open_shutters += ['Al1']
 
         flux_i = xi*self.flux_Ga/(1 - xi)
         flux_f = xf*self.flux_Ga/(1 - xf)
@@ -262,16 +270,17 @@ class Growth():
         self.add_AlGaAs_step(z - z[0], x, Si_doped, name)
 
     def add_half_PQW_step(
-        self, L_QW, x_min, x_max, Si_doped=False, barrier_first=False,
+        self, L_QW, x_min, x_max, z_shift=0.0,
+        Si_doped=False, barrier_first=False,
         num_z=2000, name='Half PQW'
     ):
 
         if barrier_first:
-            z = np.linspace(0, L_QW, num_z)
+            z = np.linspace(0, L_QW, num_z) - z_shift
         else:
-            z = np.linspace(-L_QW, 0, num_z)
+            z = np.linspace(-L_QW, 0, num_z) + z_shift
 
-        x = (x_max - x_min)*(z/L_QW)**2 + x_min
+        x = (x_max - x_min)*(z/(L_QW-z_shift))**2 + x_min
 
         self.add_AlGaAs_step(z - z[0], x, Si_doped, name)
 
@@ -312,12 +321,19 @@ class Growth():
     def get_Al_composition(self):
 
         flux_Al = self.get_Al_flux()
-        s_Ga = self.get_shutter_status('Ga1')
-        return flux_Al/(flux_Al + self.flux_Ga*s_Ga)
+        s_Ga = self.get_shutter_status(self.Ga_cell)
+
+        flux_total = flux_Al + self.flux_Ga*s_Ga
+
+        comp = np.zeros_like(flux_Al)
+
+        mask = flux_total > 0
+        comp[mask] = flux_Al[mask]/flux_total[mask]
+        return comp
 
     def get_cumulative_thickness(self):
 
-        s_Ga = self.get_shutter_status('Ga1')
+        s_Ga = self.get_shutter_status(self.Ga_cell)
         flux_Al = self.get_Al_flux()
         GR_AlGaAs = (a_perp_AlAs*flux_Al + a_GaAs *
                      self.flux_Ga*s_Ga)*(a_GaAs**2)/4
