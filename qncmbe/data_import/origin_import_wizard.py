@@ -87,6 +87,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             - dt.timedelta(days=1)
         )
+
         self.end.setDateTime(end_time)
 
     def set_default_path(self):
@@ -160,22 +161,16 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             insitudir = "\\\\insitu1.nexus.uwaterloo.ca\\Documents\\"
             insitudir += "QNC MBE Data\\Production Data"
 
-            try:
-                if not os.path.exists(insitudir):
-                    raise Exception()
-            except:  
+            if not os.path.exists(insitudir):
                 self.runtime_messages.appendPlainText(
                     f'Error: could not find/access "{insitudir}". '
                     'Check before running again.'
                 )
                 return
 
-            svtdir = "\\\\insitu1.nexus.uwaterloo.ca\\QNC_MBE_Data\\ZW-XP1"
+            svtdir = "\\\\zw-xp1\\QNC_MBE_Data"
 
-            try:
-                if not os.path.exists(svtdir):
-                    raise Exception()
-            except:  
+            if not os.path.exists(svtdir): 
                 self.runtime_messages.appendPlainText(
                     f'Error: could not find/access "{svtdir}". '
                     'Check before running again.'
@@ -192,6 +187,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             self.runtime_messages.repaint()
             return
+
         if (end_time > dt.datetime.now()):
             self.runtime_messages.appendPlainText(
                 "Error: future times included. Check before running again."
@@ -280,6 +276,21 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Set the number of columns
                 origin.Execute(f'wks.ncols={ncols}')
 
+                # Pad data with None in case column lengths are uneven
+                if loc in ["SVT"]:
+                    max_len = 0
+                    for name in value_names[loc]:
+
+                        if len(data[name]) > max_len:
+                            max_len = len(data[name])
+
+                    for name in value_names[loc]:
+
+                        tmp = np.empty(max_len, dtype=object)
+                        tmp[:len(data[name])] = data[name]
+
+                        data[name] = tmp[:]
+
                 arr2d = np.stack(
                     [np.nan_to_num(data[name]) for name in value_names[loc]]
                 ).transpose()
@@ -300,10 +311,10 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             origin.Execute(f'win -a ImportInfo')
 
             if generate_null_data:
-                origin.PutWorksheet('ImportInfo', [[None], [None]], 0, 0)
+                origin.PutWorksheet('ImportInfo', [[None, None]], 0, 0)
             else:
                 origin.PutWorksheet(
-                    'ImportInfo', [[str(start_time)], [str(end_time)]], 0, 0
+                    'ImportInfo', [[str(start_time), str(end_time)]], 0, 0
                 )
 
             origin.Execute(f'col(1)[L]$ = Start time')

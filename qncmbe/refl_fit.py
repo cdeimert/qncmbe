@@ -37,6 +37,33 @@ class Material():
         self.n[wvln] = n
         self.k[wvln] = k
 
+    def __add__(self, other):
+        result = Material()
+
+        for wvln in self.n:
+            result.set_nk_at_wavelength(
+                wvln=wvln,
+                n=self.n[wvln] + other.n[wvln],
+                k=self.k[wvln] + other.k[wvln]
+            )
+
+
+def create_alloy(name, mat1, mat2, x):
+    result = Material(name)
+
+    for wvln in mat1.n:
+        eps1 = (mat1.n[wvln] + 1j*mat1.k[wvln])**2
+        eps2 = (mat2.n[wvln] + 1j*mat2.k[wvln])**2
+
+        epsr = 1/(x/eps1 + (1-x)/eps2)
+
+        nr = (epsr**0.5).real
+        kr = (epsr**0.5).imag
+
+        result.set_nk_at_wavelength(wvln=wvln, n=nr, k=kr)    
+
+    return result
+
 
 class FittableParameter():
     def __init__(self, val0, is_fitted=False):

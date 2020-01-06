@@ -233,15 +233,15 @@ GM1 BFM arm status,Molly,Instances.GM1_BFM_Arm_Status.Value,Status,0 = in
 GM1 recipe running status,Molly,Instances.GM1_RecipeRunning.Status,Status,0 = running
 PM1 recipe running status,Molly,Instances.PM1_RecipeRunning.Status,Status,0 = running
 LL1 recipe running status,Molly,Instances.LL1_RecipeRunning.Status,Status,0 = running
-SVT time Robo MBE engine,SVT,SVT Time (RoboMBE Engine),Time,s
+SVT time (engine),SVT,SVT Time (RoboMBE Engine),Time,s
 Pyro intensity 950,SVT,PI 950,Pyrometer reading,
 Pyro intensity 850,SVT,PI 850,Pyrometer reading,
 Refl uncalib 950,SVT,Refl 950,Reflectance (unnormalized),
 Refl uncalib 470,SVT,Refl 470,Reflectance (unnormalized),
-SVT time Robo MBE IS4K temp,SVT,SVT Time (RoboMBE IS4K Temp),Time,s
+SVT time (temp),SVT,SVT Time (RoboMBE IS4K Temp),Time,s
 Emiss temp,SVT,Emiss Temp,Temperature,°C
 Ratio temp,SVT,Ratio Temp,Temperature,°C
-SVT time Robo MBE IS4K refl,SVT,SVT Time (RoboMBE IS4K Refl),Time,s
+SVT time (refl),SVT,SVT Time (RoboMBE IS4K Refl),Time,s
 Refl calib 950,SVT,Calib 950,Reflectance (normalized),
 Refl calib 470,SVT,Calib 470,Reflectance (normalized),
 BET time,BET,BET Time,Time,s

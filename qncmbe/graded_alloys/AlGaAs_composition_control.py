@@ -33,6 +33,14 @@ def temperature_to_flux(T_in, A, B, C):
     return A*C*np.exp(-B/T_in)/np.sqrt(T_in)
 
 
+def BFM_to_temperature(BFM_in, A, B):
+    return np.real(-B/lambertw(-B*BFM_in/A, -1))
+
+
+def BFM_to_flux(BFM_in, A, B, C):
+    return temperature_to_flux(BFM_to_temperature(BFM_in, A, B), A, B, C)
+
+
 def calc_Al_shutter_transient(t, s, K_sh, t_sh, zeta_sh, T_sh, n_per=1):
     '''
     t, s are the time and shutter signals
@@ -156,6 +164,8 @@ class Growth():
 
         self.t_total = 0.0
         self.set_dt_max(0.5)
+
+        self.use_T_correction = False
 
     def update_t(self):
         num_t = int(self.t_total/self.dt_max) + 1
@@ -284,6 +294,14 @@ class Growth():
 
         self.add_AlGaAs_step(z - z[0], x, Si_doped, name)
 
+    def set_T_err(self, t_err, T_err):
+
+        t = self.get_t()
+
+        self.T_err = np.interp(t, t_err, T_err)
+
+        self.use_T_correction = True
+
     def get_T_Al(self):
 
         t_raw = np.concatenate([step.t for step in self.steps])
@@ -317,6 +335,13 @@ class Growth():
         flux = s*temperature_to_flux(T, *self.Al_cell_pars['static'])
 
         return flux
+
+    def get_AlGaAs_growth_rate(self):
+
+        flux_Al = self.get_Al_flux()
+        s_Ga = self.get_shutter_status(self.Ga_cell)
+        
+        return (a_perp_AlAs*flux_Al + a_GaAs*self.flux_Ga*s_Ga)*(a_GaAs**2)/4
 
     def get_Al_composition(self):
 
@@ -361,8 +386,14 @@ class Growth():
         else:
             T_s = np.zeros_like(T_Al)
 
+        T_targ = T_Al - T_s
+
+        if self.use_T_correction:
+            T_targ -= self.T_err
+
         T_in = calc_inverse_Al_dynamics(
-            self.t, T_Al - T_s, *self.Al_cell_pars['dynamic'], n_per)
+            self.t, T_targ, *self.Al_cell_pars['dynamic'], n_per
+        )
 
         return T_in
 
