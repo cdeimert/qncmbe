@@ -538,7 +538,7 @@ def get_SVT_data(start_time, end_time, value_names):
 
     path = "\\\\zw-xp1\\QNC_MBE_Data"
 
-    data = {val: [] for val in value_names}
+    data = {val: [[]] for val in value_names}
 
     for name in os.listdir(path):
         full_name = os.path.join(path, name)
@@ -562,14 +562,18 @@ def get_SVT_data(start_time, end_time, value_names):
                 t_max = (end_time - folder_zero_time).total_seconds()
 
                 folder_data = get_SVT_data_from_folder(
-                    full_name, [t_min, t_max])
+                    full_name, [t_min, t_max]
+                )
 
                 for val in value_names:
+                    if 'Time' in val:
+                        folder_data[val] -= t_min
                     data[val].append(folder_data[val])
 
     # Merge everything into a single numpy array.
     for val in data:
         data[val] = np.concatenate(data[val])
+
 
     return data
 
@@ -594,13 +598,21 @@ def is_SVT_folder(folder):
                 temp = True
             if name.endswith('IS4K Refl.txt'):
                 refl = True
-    except:  # noqa E722
+    except NotADirectoryError:
         pass
 
     return all([engine, temp, refl])
 
 
 def get_SVT_folder_time_info(folder):
+    '''
+    Looks at an SVT data ouput folder to figure out the timestamp of the data.
+
+    Returns 3 datetime objects.
+    - t_zero: date + time corresponding to t=0 in the data file
+    - t_start: date + time of the first data point
+    - t_end: date + time of the last data point
+    '''
 
     time_file = os.path.join(folder, 'time_info.txt')
 
@@ -622,7 +634,8 @@ def get_SVT_folder_time_info(folder):
                 arr.append(dt.datetime.strptime(date_string, fmt_string))
 
             t_zero, t_start, t_end = arr
-    except:  # noqa E722
+
+    except (FileNotFoundError, ValueError):
         data = get_SVT_data_from_folder(folder)
 
         t = data['SVT Time (RoboMBE Engine)']
@@ -636,10 +649,12 @@ def get_SVT_folder_time_info(folder):
         # So compare with the file creation date to figure out which day.
 
         creation_time = dt.datetime.fromtimestamp(
-            os.path.getctime(engine_file))
+            os.path.getctime(engine_file)
+        )
 
         t_zero = creation_time.replace(
-            hour=0, minute=0, second=0, microsecond=0)
+            hour=0, minute=0, second=0, microsecond=0
+        )
 
         diff = (
             t_zero + dt.timedelta(seconds=t[0]) - creation_time
@@ -724,8 +739,6 @@ def get_SVT_data_from_folder(folder, time_limits=None):
             for key in col_info[basename]:
                 data[key] = data[key][mask]
 
-            data[time_key] -= t[0]
-
     return data
 
 
@@ -737,6 +750,9 @@ def read_SVT_data_file(filepath, cols, try_increments=True):
     files like "G0123_IS4K Refm.txt" and get the data from them too.
     This is useful since the SVT software's default behaviour is to switch to a
     new file if the first one gets too long.
+
+    Returns data as-is from the file. E.g., time is given in day fraction rather
+    than seconds
     '''
 
     data = []
