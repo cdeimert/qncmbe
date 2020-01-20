@@ -20,7 +20,7 @@ def get_data(start_time, end_time, value_names_list, delta_t=-1, interp=False):
     - value_names_list should be a list of strings. They must correspond to
       entries in the first column of value_names_database.csv
     - delta_t should be the desired time resolution of Molly data in seconds.
-    - intrp is a bool determining whether to linearly interpolate (True) or
+    - interp is a bool determining whether to linearly interpolate (True) or
       step interpolate (False) the data
 
     Returns 'data': a dictionary of numpy arrays, with keys corresponding to
