@@ -4,7 +4,12 @@ Example file for the reflectance fitting module qncmbe.refl_fit
 Based on the data from QNC-MBE growth G0641, which is included
 ('G0641' folder)
 '''
-from qncmbe.refl_fit import Material, Structure, plt
+import matplotlib.pyplot as plt
+
+from qncmbe.refl_fit import Material, Structure
+import qncmbe.plotting as pltutils
+
+pltutils.load_plot_style('qncmbe', update_style_files=False)
 
 # Set up materials
 GaAs = Material('GaAs')

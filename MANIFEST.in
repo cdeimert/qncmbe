@@ -1,2 +1,2 @@
 include qncmbe/data_import/value_names_database.csv
-include qncmbe/plotting_stylelib/*
+include qncmbe/plot_stylelib/*

@@ -1,6 +1,13 @@
+# This mplstyle is from the qncmbe python package
+# Warning: modifications will be overwritten by the qncmbe package installer!
+#
 # Sets appropriate sizes and fonts for AIP papers
-# (Other styles can be called first for aesthetics.)
+# This style does not set any aesthetics (colors, etc.).
+# Another style should be loaded first if certain aesthetics are desired
+#
 # Note: for two-column figure, simply scale by a factor of 2
+#       qncmbe.plotting.scale_figure() can be used for this.
+#
 
 axes.labelsize: 8
 axes.titlesize: 10

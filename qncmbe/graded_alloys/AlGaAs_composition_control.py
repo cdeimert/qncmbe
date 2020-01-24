@@ -9,10 +9,10 @@ from scipy.integrate import cumtrapz
 import scipy.signal as sig
 from scipy.special import lambertw
 
-a_GaAs = 0.565338  # nm
-a_perp_AlAs = 0.566918  # nm
+a_GaAs = 0.565338  # GaAs lattice constant (nm)
+a_perp_AlAs = 0.566918  # AlAs on GaAs lattice const. in growth direction (nm)
 
-# Needed to map cell names into Molly commands for shutter control
+# Info to map cell names into Molly commands for shutter control
 shutter_location = {
     'Ga1': 'Ga1_tip',
     'Ga2': 'Ga2_tip',

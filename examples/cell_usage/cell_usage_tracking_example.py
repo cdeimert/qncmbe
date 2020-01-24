@@ -23,10 +23,13 @@ the actual usage.However, it would be worth doing more accurate measurements
 in the future.
 '''
 
-from qncmbe.cell_usage_tracking import CellUsageCalculator
-from qncmbe.plotting import plt
+import matplotlib.pyplot as plt
 import os
 
+from qncmbe.cell_usage_tracking import CellUsageCalculator
+from qncmbe.plotting import load_plot_style
+
+load_plot_style('qncmbe', update_style_files=False)
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 

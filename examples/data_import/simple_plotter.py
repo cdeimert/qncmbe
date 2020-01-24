@@ -10,13 +10,17 @@ from qncmbe.data_import.data_import_utils import get_data
 from qncmbe.data_import.value_names import value_names_database
 import matplotlib.pyplot as plt
 
+from qncmbe.plotting import load_plot_style
+
+load_plot_style('qncmbe', update_style_files=False)
+
 
 def main():
 
     # Start time. datetime() is a function from the datetime package, and its
     # arguments are (year, month, day, hour, minute, second)
-    #start_time = dt.datetime(2019, 9, 24, 17, 30, 0)
-    start_time = dt.datetime(2019, 12, 23, 8, 0, 0)
+    start_time = dt.datetime(2019, 9, 24, 17, 30, 0)
+    # start_time = dt.datetime(2019, 12, 23, 8, 0, 0)
 
     # End time. Something like "start_time + dt.timedelta(hours = 24)" will set
     # the end time to a certain number of hours after the start time.
@@ -25,12 +29,12 @@ def main():
     # x value for the plot. Usually "Molly time", but could also be, e.g., "BET
     # time". For full options, refer to Value_names_database.csv
     # or call qncmbe.data_import.value_names.print_allowed_value_names()
-    #x_value = "Molly time"
-    x_value = "SVT time (refl)"
+    x_value = "Molly time"
+    # x_value = "SVT time (refl)"
 
     # list of y values for the plot.
-    #y_values = ["Al1 base measured"]
-    y_values = ["Refl calib 950", "Refl calib 470"]
+    y_values = ["Al1 base measured"]
+    # y_values = ["Refl calib 950", "Refl calib 470"]
 
     simple_plot(start_time, end_time, x_value, y_values)
 

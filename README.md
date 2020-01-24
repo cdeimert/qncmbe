@@ -14,23 +14,27 @@ Check out the example scripts!
 
 Note that many of these scripts will only run properly when given access to the QNC-MBE shared drive, which is restricted to QNC-MBE group members.
 
-### For basic users
+### Installing Python
 
-You need to install Python first. If you don't have Python, the Anaconda (v3.x) distribution should come with almost all the packages you need (https://www.anaconda.com/distribution/). Despite what the installer says, I would recommend that you DO add anaconda to your system PATH variable during installation.
+You need to install Python first. If you don't have Python, the Anaconda (v3.x) distribution should come with almost all the packages you need (https://www.anaconda.com/distribution/).
 
-To install this package, you need the full folder structure with all the python files. If you didn't get this from one of the authors already, you should be able to download it from https://github.com/cdeimert/qncmbe.
+It is assumed below that Anaconda was used. Otherwise, the instructions should be similar, though.
 
-Once you have the main qncmbe directory navigate to it in a command prompt (you may need to run with admin privilages). You should be in the folder containing `setup.py`. From there, run
+### Installation
+
+Open Anaconda Navigator.
+
+QNC-MBE group members with an appropriately setup Z: drive should be able to run
+
+```pip install Z:\Lab_code_repository\Python_modules\qncmbe```
+
+Non-QNC-MBE members must obtain the source code (e.g., from https://github.com/cdeimert/qncmbe) and save it somewhere. Navigate to the folder containing `setup.py` and run
 
 ```pip install .```
 
-in Command Prompt. Or, alternatively, run something like
-
-```pip install path\to\folder```
-
-where `folder` is the folder containing `setup.py`.
-
-(If you installed Anaconda and did not add Python to the Windows PATH, you might need to do this from the *Anaconda Prompt* rather than the standard Command Prompt. Again, with admin privilages.)
+Note: to use `qncmbe.data_import.origin_import_wizard`, you may need to install PyQt separately, as pip is not able to automatically install it.
+In Anaconda, PyQt was likely already installed. 
+If not, you may have to run `conda install pyqt`.
 
 ### Jupyter launcher
 
@@ -45,9 +49,9 @@ and then
 
 After this, you can launch jupyter notebooks by navigating to the appropriate folder in the File Explorer, right-clicking, and pressing "Jupyter notebook here"
 
-### For developers (people who plan to edit the code)
+### For developers
 
-First, `git clone` the latest version from https://github.com/cdeimert/qncmbe to a directory of your choice.
+`git clone` the latest version from https://github.com/cdeimert/qncmbe to a directory of your choice.
 
 Then, from the main directory (the one containing `setup.py`) run 
 
@@ -60,5 +64,3 @@ So the `-e` flag is useful if you are planning to make changes to the module. Ho
 ## Authors
 
 Chris Deimert - cdeimert@uwaterloo.ca
-
-(It's lonely down here...)

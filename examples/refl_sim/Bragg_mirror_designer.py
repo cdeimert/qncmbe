@@ -7,10 +7,14 @@ This uses a simple transfer matrix implementation, from the package
 qncmbe.refl_sim
 '''
 
-from qncmbe.refl_sim import Material, Structure
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
+from qncmbe.refl_sim import Material, Structure
+import qncmbe.plotting as pltutils
+
+pltutils.load_plot_style('qncmbe', update_style_files=False)
+
 
 # === Set up materials ===
 GaAs = Material('GaAs')
