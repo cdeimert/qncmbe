@@ -244,4 +244,4 @@ def plot_2D_color(ax, x, y, c, **kwargs):
 
         kwargs['triangles'] = mpl.tri.Triangulation(x_rel, y_rel).triangles
 
-    ax.tripcolor(x, y, c, **kwargs)
+    return ax.tripcolor(x, y, c, **kwargs)

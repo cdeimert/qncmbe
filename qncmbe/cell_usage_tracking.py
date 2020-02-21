@@ -23,7 +23,7 @@ See example file for example of usage.
 
 # Standard library imports (not included in setup.py)
 import os
-import datetime as dt
+import datetime as datetime
 
 # Non-standard library imports (included in setup.py)
 import openpyxl as xl
@@ -95,8 +95,8 @@ class CellUsageCalculator():
 
         fmt_str = '%Y-%m-%d'
 
-        self.start_date = dt.datetime.strptime(start_date, fmt_str)
-        self.end_date = dt.datetime.strptime(end_date, fmt_str)
+        self.start_date = datetime.datetime.strptime(start_date, fmt_str)
+        self.end_date = datetime.datetime.strptime(end_date, fmt_str)
 
         if self.start_date >= self.end_date:
             raise Exception("start_date must be before end_date!")
@@ -137,11 +137,11 @@ class CellUsageCalculator():
         and will regenerate them from Molly (might take a very long time!)
         '''
         day = self.start_date
-        delta = dt.timedelta(days=1)
+        delta = datetime.timedelta(days=1)
 
-        day_after_end = self.end_date + dt.timedelta(days=1)
+        day_after_end = self.end_date + datetime.timedelta(days=1)
         hfile, bfile = datimp.get_Molly_data_path(day_after_end)
-        
+
         if not os.path.exists(hfile):
             raise FileNotFoundError(
                 f'Could not find data file\n\t"{hfile}"\n'
@@ -168,7 +168,8 @@ class CellUsageCalculator():
                     write_data = False
             else:
                 print(
-                    f"No temperature data for {day.date()}. Generating it..."
+                    f"No temperature data for {day.date()}."
+                    " Collecting it..."
                 )
 
             if write_data:
@@ -207,7 +208,7 @@ class CellUsageCalculator():
         self.generate_temperature_data_files()
 
         day = self.start_date
-        delta = dt.timedelta(days=1)
+        delta = datetime.timedelta(days=1)
 
         time_list = []
         temp_list = {cell: [] for cell in self.cells}

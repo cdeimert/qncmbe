@@ -27,7 +27,7 @@ Note: for later versions of Origin there seem to be some simplifications, but I 
 
 # Standard library imports (not included in setup.py)
 import time as tm
-import datetime as dt
+import datetime as datetime
 import os
 import traceback
 
@@ -86,12 +86,12 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
 	def set_default_start(self):
 		end_time = self.get_end_time()
-		start_time = end_time - dt.timedelta(days=1)
+		start_time = end_time - datetime.timedelta(days=1)
 		#start_time = end_time - dt.timedelta(hours=1)
 		self.start.setDateTime(start_time)
 
 	def set_default_end(self):
-		end_time = dt.datetime.today().replace(second = 0, microsecond = 0)
+		end_time = datetime.datetime.today().replace(second = 0, microsecond = 0)
 		#end_time = dt.datetime(year = 2016, month = 7, day = 21, hour = 1)
 		self.end.setDateTime(end_time)
 
@@ -148,7 +148,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 		if (end_time < start_time):
 			self.runtime_messages.setPlainText("Error: end time is before start time. Check before running again.")
 			return
-		if (end_time > dt.datetime.today()):
+		if (end_time > datetime.datetime.today()):
 			self.runtime_messages.setPlainText("Error: future times included. Check before running again.")
 			return
 

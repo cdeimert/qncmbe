@@ -1,0 +1,234 @@
+varname,units
+Instances.Ga1_tip.Measured,°C
+Instances.Ga1_tip.WorkingSetpoint,°C
+Instances.Ga1_tip.Setpoint,°C
+Instances.Ga1_tip.RampRate,°C/s
+Instances.Ga1_tip.OutputPercent,% of max voltage
+Instances.Ga1_tip_Voltage.Reading,V
+Instances.Ga1_tip_Current.Reading,A
+Instances.Ga1_tip_MaxCurrent.Reading,A
+Instances.Ga1_tip_OperationMode.Value,0 = CC
+Instances.Ga1_tip.ShutterStatus,0 = open
+Instances.Ga1_base.Measured,°C
+Instances.Ga1_base.WorkingSetpoint,°C
+Instances.Ga1_base.Setpoint,°C
+Instances.Ga1_base.RampRate,°C/s
+Instances.Ga1_base.OutputPercent,% of max voltage
+Instances.Ga1_base_Voltage.Reading,V
+Instances.Ga1_base_Current.Reading,A
+Instances.Ga1_base_MaxCurrent.Reading,A
+Instances.Ga1_base_OperationMode.Value,0 = CC
+Instances.Ga2_tip.Measured,°C
+Instances.Ga2_tip.WorkingSetpoint,°C
+Instances.Ga2_tip.Setpoint,°C
+Instances.Ga2_tip.RampRate,°C/s
+Instances.Ga2_tip.OutputPercent,% of max voltage
+Instances.Ga2_tip_Voltage.Reading,V
+Instances.Ga2_tip_Current.Reading,A
+Instances.Ga2_tip_MaxCurrent.Reading,A
+Instances.Ga2_tip_OperationMode.Value,0 = CC
+Instances.Ga2_tip.ShutterStatus,0 = open
+Instances.Ga2_base.Measured,°C
+Instances.Ga2_base.WorkingSetpoint,°C
+Instances.Ga2_base.Setpoint,°C
+Instances.Ga2_base.RampRate,°C/s
+Instances.Ga2_base.OutputPercent,% of max voltage
+Instances.Ga2_base_Voltage.Reading,V
+Instances.Ga2_base_Current.Reading,A
+Instances.Ga2_base_MaxCurrent.Reading,A
+Instances.Ga2_base_OperationMode.Value,0 = CC
+Instances.Al1_tip.Measured,°C
+Instances.Al1_tip.WorkingSetpoint,°C
+Instances.Al1_tip.Setpoint,°C
+Instances.Al1_tip.RampRate,°C/s
+Instances.Al1_tip.OutputPercent,% of max voltage
+Instances.Al1_tip_Voltage.Reading,V
+Instances.Al1_tip_Current.Reading,A
+Instances.Al1_tip_MaxCurrent.Reading,A
+Instances.Al1_tip_OperationMode.Value,0 = CC
+Instances.Al1_tip.ShutterStatus,0 = open
+Instances.Al1_base.Measured,°C
+Instances.Al1_base.WorkingSetpoint,°C
+Instances.Al1_base.Setpoint,°C
+Instances.Al1_base.RampRate,°C/s
+Instances.Al1_base.OutputPercent,% of max voltage
+Instances.Al1_base_Voltage.Reading,V
+Instances.Al1_base_Current.Reading,A
+Instances.Al1_base_MaxCurrent.Reading,A
+Instances.Al1_base_OperationMode.Value,0 = CC
+Instances.In1_tip.Measured,°C
+Instances.In1_tip.WorkingSetpoint,°C
+Instances.In1_tip.Setpoint,°C
+Instances.In1_tip.RampRate,°C/s
+Instances.In1_tip.OutputPercent,% of max voltage
+Instances.In1_tip_Voltage.Reading,V
+Instances.In1_tip_Current.Reading,A
+Instances.In1_tip_MaxCurrent.Reading,A
+Instances.In1_tip_OperationMode.Value,0 = CC
+Instances.In1_tip.ShutterStatus,0 = open
+Instances.In1_base.Measured,°C
+Instances.In1_base.WorkingSetpoint,°C
+Instances.In1_base.Setpoint,°C
+Instances.In1_base.RampRate,°C/s
+Instances.In1_base.OutputPercent,% of max voltage
+Instances.In1_base_Voltage.Reading,V
+Instances.In1_base_Current.Reading,A
+Instances.In1_base_MaxCurrent.Reading,A
+Instances.In1_base_OperationMode.Value,0 = CC
+Instances.In2_tip.Measured,°C
+Instances.In2_tip.WorkingSetpoint,°C
+Instances.In2_tip.Setpoint,°C
+Instances.In2_tip.RampRate,°C/s
+Instances.In2_tip.OutputPercent,% of max voltage
+Instances.In2_tip_Voltage.Reading,V
+Instances.In2_tip_Current.Reading,A
+Instances.In2_tip_MaxCurrent.Reading,A
+Instances.In2_tip_OperationMode.Value,0 = CC
+Instances.In2_tip.ShutterStatus,0 = open
+Instances.In2_base.Measured,°C
+Instances.In2_base.WorkingSetpoint,°C
+Instances.In2_base.Setpoint,°C
+Instances.In2_base.RampRate,°C/s
+Instances.In2_base.OutputPercent,% of max voltage
+Instances.In2_base_Voltage.Reading,V
+Instances.In2_base_Current.Reading,A
+Instances.In2_base_MaxCurrent.Reading,A
+Instances.In2_base_OperationMode.Value,0 = CC
+Instances.Si1_base.Measured,°C
+Instances.Si1_base.WorkingSetpoint,°C
+Instances.Si1_base.Setpoint,°C
+Instances.Si1_base.RampRate,°C/s
+Instances.Si1_base.OutputPercent,% of max voltage
+Instances.Si1_base_Voltage.Reading,V
+Instances.Si1_base_Current.Reading,A
+Instances.Si1_base_MaxCurrent.Reading,A
+Instances.Si1_base_OperationMode.Value,0 = CC
+Instances.Si1_base.ShutterStatus,0 = open
+Instances.C1_base.Measured,°C
+Instances.C1_Current.Measured,A
+Instances.C1_Current.WorkingSetpoint,A
+Instances.C1_Current.Setpoint,A
+Instances.C1_Voltage.Measured,V
+Instances.C1_Voltage.WorkingSetpoint,V
+Instances.C1_Voltage.Setpoint,V
+Instances.C1_PS_OperationMode.Value,0 = CC
+Instances.C1_Current.ShutterStatus,0 = open
+Instances.GaTe1_tip.Measured,°C
+Instances.GaTe1_tip.WorkingSetpoint,°C
+Instances.GaTe1_tip.Setpoint,°C
+Instances.GaTe1_tip.RampRate,°C/s
+Instances.GaTe1_tip.OutputPercent,% of max voltage
+Instances.GaTe1_tip_Voltage.Reading,V
+Instances.GaTe1_tip_Current.Reading,A
+Instances.GaTe1_tip_MaxCurrent.Reading,A
+Instances.GaTe1_tip_OperationMode.Value,0 = CC
+Instances.GaTe1_tip.ShutterStatus,0 = open
+Instances.GaTe1_base.Measured,°C
+Instances.GaTe1_base.WorkingSetpoint,°C
+Instances.GaTe1_base.Setpoint,°C
+Instances.GaTe1_base.RampRate,°C/s
+Instances.GaTe1_base.OutputPercent,% of max voltage
+Instances.GaTe1_base_Voltage.Reading,V
+Instances.GaTe1_base_Current.Reading,A
+Instances.GaTe1_base_MaxCurrent.Reading,A
+Instances.GaTe1_base_OperationMode.Value,0 = CC
+Instances.As1_valve.Measured,mil
+Instances.As1_valve.WorkingSetpoint,mil
+Instances.As1_valve.Setpoint,mil
+Instances.As1_valve.RampRate,mil/s
+Instances.As1_valve.ShutterStatus,0 = open
+Instances.As1_crack.Measured,°C
+Instances.As1_crack.WorkingSetpoint,°C
+Instances.As1_crack.Setpoint,°C
+Instances.As1_crack.RampRate,°C/s
+Instances.As1_crack.OutputPercent,% of max voltage
+Instances.As1_crack_Voltage.Reading,V
+Instances.As1_crack_Current.Reading,A
+Instances.As1_crack_MaxCurrent.Reading,A
+Instances.As1_crack_OperationMode.Value,0 = CC
+Instances.As1_bulk.Measured,°C
+Instances.As1_bulk.WorkingSetpoint,°C
+Instances.As1_bulk.Setpoint,°C
+Instances.As1_bulk.RampRate,°C/s
+Instances.As1_bulk.OutputPercent,% of max voltage
+Instances.As1_bulk_Voltage.Reading,V
+Instances.As1_bulk_Current.Reading,A
+Instances.As1_bulk_MaxCurrent.Reading,A
+Instances.As1_bulk_OperationMode.Value,0 = CC
+Instances.Sb1_valve.Measured,mil
+Instances.Sb1_valve.WorkingSetpoint,mil
+Instances.Sb1_valve.Setpoint,mil
+Instances.Sb1_valve.RampRate,mil/s
+Instances.Sb1_valve.ShutterStatus,0 = open
+Instances.Sb1_crack.Measured,°C
+Instances.Sb1_crack.WorkingSetpoint,°C
+Instances.Sb1_crack.Setpoint,°C
+Instances.Sb1_crack.RampRate,°C/s
+Instances.Sb1_crack.OutputPercent,% of max voltage
+Instances.Sb1_crack_Voltage.Reading,V
+Instances.Sb1_crack_Current.Reading,A
+Instances.Sb1_crack_MaxCurrent.Reading,A
+Instances.Sb1_crack_OperationMode.Value,0 = CC
+Instances.Sb1_bulk.Measured,°C
+Instances.Sb1_bulk.WorkingSetpoint,°C
+Instances.Sb1_bulk.Setpoint,°C
+Instances.Sb1_bulk.RampRate,°C/s
+Instances.Sb1_bulk.OutputPercent,% of max voltage
+Instances.Sb1_bulk_Voltage.Reading,V
+Instances.Sb1_bulk_Current.Reading,A
+Instances.Sb1_bulk_MaxCurrent.Reading,A
+Instances.Sb1_bulk_OperationMode.Value,0 = CC
+Instances.Sb1_cond.Measured,°C
+Instances.Sb1_cond.WorkingSetpoint,°C
+Instances.Sb1_cond.Setpoint,°C
+Instances.Sb1_cond.RampRate,°C/s
+Instances.Sb1_cond.OutputPercent,% of max voltage
+Instances.Sb1_cond_Voltage.Reading,V
+Instances.Sb1_cond_Current.Reading,A
+Instances.Sb1_cond_MaxCurrent.Reading,A
+Instances.Sb1_cond_OperationMode.Value,0 = CC
+Instances.GM1_subs_center.Measured,°C
+Instances.GM1_subs_center.WorkingSetpoint,°C
+Instances.GM1_subs_center.Setpoint,°C
+Instances.GM1_subs_center.RampRate,°C/s
+Instances.GM1_subs_center.OutputPercent,% of max voltage
+Instances.GM1_subs_center_Voltage.Reading,V
+Instances.GM1_subs_center_Current.Reading,A
+Instances.GM1_subs_center_MaxCurrent.Reading,A
+Instances.GM1_subs_center_OperationMode.Value,0 = CC
+Instances.GM1_subs_rot.Measured,°
+Instances.GM1_subs_rot.WorkingSetpoint,°
+Instances.GM1_subs_rot.RampRate,rpm
+Instances.PM1_subs.Measured,°C
+Instances.PM1_subs.WorkingSetpoint,°C
+Instances.PM1_subs.Setpoint,°C
+Instances.PM1_subs.RampRate,°C/s
+Instances.PM1_subs.OutputPercent,% of max voltage
+Instances.PM1_subs_Voltage.Reading,V
+Instances.PM1_subs_Current.Reading,A
+Instances.PM1_subs_MaxCurrent.Reading,A
+Instances.PM1_subs_OperationMode.Value,0 = CC
+Instances.GM1_MainShutter_Closed.Value,0 = open
+Instances.GM1_MainShutter_Control.Value,0 = open
+Instances.GM1_Cryo1_Gate.Value,0 = open
+Instances.GM1_Cryo1_Gate_Closed.Value,0 = open
+Instances.GM1_IonPump1_Gate.Value,0 = open
+Instances.GM1_IonPump1_Gate_Closed.Value,0 = open
+Instances.BF_Shutter_1.Value,0 = open
+Instances.BF_Shutter_1_Status.Value,0 = open
+Instances.BF_Shutter_2.Value,0 = open
+Instances.BF_Shutter_2_Status.Value,0 = open
+Instances.BF_Shutter_3.Value,0 = open
+Instances.BF_Shutter_3_Status.Value,0 = open
+Instances.BF_Shutter_4.Value,0 = open
+Instances.BF_Shutter_4_Status.Value,0 = open
+Instances.CT1_Vacuum.Reading,Torr
+Instances.GM1_Vacuum.Reading,Torr
+Instances.GM1_BFM.Reading,Torr
+Instances.GM1_SRS_Vacuum.Reading,Torr
+Instances.PM1_Vacuum.Reading,Torr
+Instances.GM1_BFM_Arm_Control.Value,0 = in
+Instances.GM1_BFM_Arm_Status.Value,0 = in
+Instances.GM1_RecipeRunning.Status,0 = running
+Instances.PM1_RecipeRunning.Status,0 = running
+Instances.LL1_RecipeRunning.Status,0 = running

@@ -21,7 +21,7 @@ you to kill all the processes manually via task manager.
 
 # Standard library imports (not included in setup.py)
 import time as tm
-import datetime as dt
+import datetime as datetime
 import os
 
 # qncmbe imports
@@ -77,15 +77,15 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def set_default_start(self):
         end_time = self.get_end_time()
-        start_time = end_time - dt.timedelta(days=1)
+        start_time = end_time - datetime.timedelta(days=1)
         self.start.setDateTime(start_time)
 
     def set_default_end(self):
         end_time = (
-            dt.datetime.today().replace(
+            datetime.datetime.today().replace(
                 hour=0, minute=0, second=0, microsecond=0
             )
-            - dt.timedelta(days=1)
+            - datetime.timedelta(days=1)
         )
 
         self.end.setDateTime(end_time)
@@ -188,7 +188,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             self.runtime_messages.repaint()
             return
 
-        if (end_time > dt.datetime.now()):
+        if (end_time > datetime.datetime.now()):
             self.runtime_messages.appendPlainText(
                 "Error: future times included. Check before running again."
             )

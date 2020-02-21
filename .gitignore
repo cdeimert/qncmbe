@@ -1,6 +1,7 @@
 
 examples/cell_usage/saved_cell_data
 .vscode
+*.dat
 
 ### Below: default Python exclusions from github
 
