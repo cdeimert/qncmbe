@@ -368,35 +368,3 @@ def parse_datetime_input(datetime_input):
             'datetime_input must be datetime object or valid string.'
         )
 
-
-# def parse_datetime_string(datetime_string):
-#     '''Converts string "YYYY-mm-dd[ HH:MM[:SS]]" into datetime.datetime
-#     object. If optional quantities (denoted by []) are missing, they are
-#     set to zero. Seconds are rounded *down* to the nearest microsecond.
-#     '''
-
-#     result = re.match(
-#         r"^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})"
-#         r"( (?P<hour>\d{2}):(?P<minute>\d{2})"
-#         r"(:(?P<second>\d{2})(\.(?P<microsecond>\d+))?)?)?$",
-#         datetime_string
-#     )
-
-#     if not result:
-#         raise ValueError(
-#             'Invalid datetime string. Should be "YYYY-mm-dd[ HH:MM[:SS]]"')
-
-#     argnames = [
-#         'year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond'
-#     ]
-
-#     args = {}
-
-#     for name in argnames:
-#         if result[name] is not None:
-#             if name == 'microsecond':
-#                 args[name] = int(float(f'0.{result[name]}')*1e6)
-#             else:
-#                 args[name] = int(result[name])
-
-#     return datetime.datetime(**args)
