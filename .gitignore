@@ -1,5 +1,6 @@
 
 examples/cell_usage/saved_cell_data
+tests/example_data
 .vscode
 *.dat
 

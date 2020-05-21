@@ -7,9 +7,11 @@ import qncmbe.plotting as pltutils
 
 pltutils.load_plot_style('qncmbe', update_style_files=False)
 
-thisdir = os.path.dirname(os.path.abspath(__file__))
+this_dir = os.path.dirname(os.path.abspath(__file__))
 
-savedir = os.path.join(thisdir, 'data_saves')
+save_dir = os.path.join(this_dir, 'data_saves')
+
+data_dir = os.path.join(this_dir, 'example_data', 'SVT Data')
 
 names = [
     'refl_calib_950',
@@ -20,10 +22,12 @@ collector = SVTDataCollector(
     start_time="2019-10-04 00:00",
     end_time="2019-10-05 12:00",
     names=names,
-    savedir=savedir
+    savedir=save_dir
 )
 
-data = collector.get_data(force_reload=True)
+collector.main_data_path = data_dir
+
+data = collector.get_data(force_reload=False)
 
 fig, ax = plt.subplots()
 for name in names:

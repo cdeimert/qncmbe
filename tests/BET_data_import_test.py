@@ -7,9 +7,11 @@ import qncmbe.plotting as pltutils
 
 pltutils.load_plot_style('qncmbe', update_style_files=False)
 
-thisdir = os.path.dirname(os.path.abspath(__file__))
+this_dir = os.path.dirname(os.path.abspath(__file__))
 
-savedir = os.path.join(thisdir, 'data_saves')
+save_dir = os.path.join(this_dir, 'data_saves')
+
+data_dir = os.path.join(this_dir, 'example_data')
 
 names = [
     'BET_temp',
@@ -20,10 +22,12 @@ collector = BETDataCollector(
     start_time="2019-12-22 12:00",
     end_time="2019-12-24 14:00",
     names=names,
-    savedir=savedir
+    savedir=save_dir
 )
 
-data = collector.get_data()
+# collector.main_data_path = data_dir
+
+data = collector.get_data(force_reload=True)
 
 fig, ax = plt.subplots()
 for name in names:
