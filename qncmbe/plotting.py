@@ -127,6 +127,27 @@ def greyscale(c):
     return (r + g + b)/3
 
 
+def generate_colormap(color_low=None, color_high=None, num_colors=256):
+    
+    vals = np.ones((num_colors, 4))    
+    
+    mpl_colors = get_mpl_colors()
+    if color_low is None:
+        C0 = clrs.to_rgb(mpl_colors[0])
+    else:
+        C0 = clrs.to_rgb(color_low)
+        
+    if color_high is None:
+        C1 = clrs.to_rgb(mpl_colors[1])
+    else:
+        C1 = clrs.to_rgb(color_high)
+    
+    for i in range(3):
+        vals[:,i] = np.linspace(C0[i], C1[i], num_colors)
+        
+    return mpl.colors.ListedColormap(vals)
+
+
 def scale_figure(fig, scale):
     ''' Return figure rescaled by the given scale factor.
 
