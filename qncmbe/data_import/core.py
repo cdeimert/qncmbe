@@ -6,7 +6,7 @@ from copy import deepcopy
 import textwrap
 
 # qncmbe imports
-from .value_names import value_names_database
+from .data_names import index
 
 # Non-standard library imports (included in setup.py)
 import numpy as np
@@ -23,7 +23,6 @@ class DataElement():
         vals            numpy array of data values
         datetime0       datetime at which t=0
         units           string giving units of the data array
-        is_step_data    bool
 
     Provides method for saving to csv and re-loading.
 
@@ -33,17 +32,13 @@ class DataElement():
     '''
 
     def __init__(
-        self, name, datetime0, time=np.zeros(0), vals=np.zeros(0)
+        self, name, datetime0, units='', time=np.zeros(0), vals=np.zeros(0)
     ):
         self.name = name
         self.datetime0 = datetime0
         self.time = time
         self.vals = vals
-
-        if name not in value_names_database:
-            raise ValueError("Data name not in value_names_database")
-
-        self.units = value_names_database[name]['units']
+        self.units = units
 
     def append(self, other):
         '''Append one DataElement to another. Automatically adjusts the added
@@ -175,12 +170,12 @@ class DataElement():
             )
 
             m = re.search(
-                r'^# time \(s\), (\S+?) \((.*?)\)$',
+                r'^# time \(s\), (?P<name>.*?) \((?P<units>.*?)\)$',
                 f.readline()
             )
 
-            self.name = m.group(1)
-            self.units = m.group(2)
+            # self.name = m.group('name')
+            self.units = m.group('units')
 
         fdata = np.genfromtxt(fname, delimiter=',', skip_header=2)
 
@@ -195,6 +190,17 @@ class DataElement():
         return f'{self.name}.dat'
 
     def plot(self, fig, ax, use_dates=True, **kwargs):
+        '''Plot data of DataElement on a matplotlib figure.
+
+        Arguments:
+            fig, ax     matplotlib Figure and Axis objects
+            use_dates   If True, will use dates when plotting time. Otherwise
+                        will plot time in seconds.
+            kwargs      keyword arguments, passed directly to ax.step()
+
+        If 'label' is not given explicitly as a keyword argument, the plot
+        label is auto-generated based on the DataElement name and units.
+        '''
 
         if 'label' not in kwargs:
             kwargs['label'] = f'{self.name}'
@@ -233,10 +239,10 @@ class DataCollector():
             start_time  datetime object. Can initialize with string (see note)
             end_time    datetime object. Can initialize with string (see note)
             names       list of data elements to collect. Must correspond to
-                        entries in value_names_database. See
+                        entries in index. See
                         value_names.print_allowed_value_names()
             parameters  parameters used for data collection. Taken from the
-                        value_names_database
+                        index
             savedir     directory in which to save/load results after initially
                         fetching them from the remote source. If None, will
                         always load from source
@@ -257,12 +263,14 @@ class DataCollector():
         self.names = names
 
         self.parameters = {
-            name: value_names_database[name]['parameters'] for name in names
+            name: index[name].parameters for name in names
         }
 
-        self.data = {
-            name: DataElement(name, start_time) for name in self.names
-        }
+        self.data = {}
+
+        for name in self.names:
+            units = index[name].units
+            self.data[name] = DataElement(name, start_time, units)
 
         self.savedir = savedir
 
@@ -331,11 +339,11 @@ class DataCollector():
 
     def check_names(self, location):
         for name in self.names:
-            if name not in value_names_database:
+            if name not in index:
                 raise ValueError(
-                    f'Value name {name} not in value_names_database.'
+                    f'Value name {name} not in index.'
                 )
-            if value_names_database[name]['location'] != location:
+            if index[name]['location'] != location:
                 raise ValueError(
                     f'Value name {name} has incorrect location for collector.'
                 )

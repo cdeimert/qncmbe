@@ -13,10 +13,21 @@ import numpy as np
 
 class MollyDataCollector(DataCollector):
 
-    def __init__(self, start_time, end_time, names, savedir=None):
-        '''See docstring for parent (DataCollector)'''
+    def __init__(self, start_time, end_time, names, savedir=None, dt=None):
+        '''See docstring for parent (DataCollector)
+
+        Additional parameter dt allows you to set the timestep, in case
+        you want uniformly-spaced and/or sparse data. Interpolation is done
+        step-wise, since this is how Molly data is collected. (Linear
+        interpolation will give poor results for signals that don't change
+        frequently.)
+
+        If dt = None, raw data is supplied.
+        '''
 
         super().__init__(start_time, end_time, names, savedir)
+
+        self.dt = dt
 
         self.check_names(location='Molly')
 

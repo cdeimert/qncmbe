@@ -1,61 +1,21 @@
+import warnings
+
 # qncmbe imports
-from .core import DataCollector
-from .molly import MollyDataCollector
-from .BET import BETDataCollector
-from .SVT import SVTDataCollector
-from .value_names import value_names_database
-
-# Non-standard library imports (included in setup.py)
-import numpy as np
+from .growths import GrowthDataCollector
 
 
-class GrowthDataCollector(DataCollector):
-    '''Class to collect multiple kinds of data, related to MBE growths.'''
-
-    def __init__(self, start_time, end_time, names, savedir=None):
-
-        super().__init__(start_time, end_time, names, savedir)
-
-        # Sort through names, and split into Molly, BET, and SVT
-
-        self.locations = {"Molly", "BET", "SVT"}
-
-        names_split = {location: [] for location in self.locations}
-
-        for name in self.names:
-            location = value_names_database[name]['location']
-            names_split[location].append(name)
-
-        DataCollectors = {
-            "Molly": MollyDataCollector,
-            "BET": BETDataCollector,
-            "SVT": SVTDataCollector
-        }
-
-        self.collectors = {
-            location: DataCollectors[location](
-                start_time,
-                end_time,
-                names_split[location],
-                savedir
-            ) for location in self.locations
-        }
-
-    def collect_data(self):
-
-        for location in self.locations:
-            self.data.update(self.collectors[location].collect_data())
-
-        return self.data
+warnings.warn("data_import_utils.get_data() is no longer maintained.")
 
 
 def get_data(start_time, end_time, value_names_list, delta_t=-1, interp=False):
-    '''Primary function for getting data from various computers in the
+    '''DEPRECATED: use the GrowthDataCollector class instead.
+    
+    Primary function for getting data from various computers in the
     QNC-MBE lab.
 
     - start_time and end_time should be datetime objects.
     - value_names_list should be a list of strings. They must correspond to
-      entries in the first column of value_names_database.csv
+      entries in the first column of data_names_data_names_index.csv
     - delta_t should be the desired time resolution of Molly data in seconds.
     - interp is a bool determining whether to linearly interpolate (True) or
       step interpolate (False) the data
@@ -88,6 +48,11 @@ def get_data(start_time, end_time, value_names_list, delta_t=-1, interp=False):
     data['Ga1 tip measured']['vals'].
     '''
 
+    warnings.warn(
+        "Deprecated. Use the GrowthDataCollector class instead.",
+        DeprecationWarning
+    )
+
     pass  # TODO: implement for backwards compatibility
 
     # local_value_names = {
@@ -96,13 +61,13 @@ def get_data(start_time, end_time, value_names_list, delta_t=-1, interp=False):
     #     "SVT": []
     # }
     # for val in value_names_list:
-    #     if val not in value_names_database:
+    #     if val not in data_names_index:
     #         raise Exception(
     #             f'Invalid value "{val}" in value_names_list. Not found in '
-    #             'value_names_database'
+    #             'data_names_index'
     #         )
-    #     local_value_names[value_names_database[val]['Location']].append(
-    #         value_names_database[val]['Local value name']
+    #     local_value_names[data_names_index[val]['Location']].append(
+    #         data_names_index[val]['Local value name']
     #     )
 
     # # Generate dictionary of data for each location
@@ -118,7 +83,7 @@ def get_data(start_time, end_time, value_names_list, delta_t=-1, interp=False):
 
     # # Convert from local value names to readable value names
     # for val in value_names_list:
-    #     data[val] = data.pop(value_names_database[val]['Local value name'])
+    #     data[val] = data.pop(data_names_index[val]['Local value name'])
 
     # return data
 

@@ -14,8 +14,8 @@ save_dir = os.path.join(this_dir, 'data_saves')
 data_dir = os.path.join(this_dir, 'example_data', 'SVT Data')
 
 names = [
-    'refl_calib_950',
-    'refl_calib_470'
+    'Refl calib 950',
+    'Refl calib 470'
 ]
 
 collector = SVTDataCollector(

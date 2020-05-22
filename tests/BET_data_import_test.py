@@ -25,9 +25,9 @@ collector = BETDataCollector(
     savedir=save_dir
 )
 
-# collector.main_data_path = data_dir
+collector.main_data_path = data_dir
 
-data = collector.get_data(force_reload=True)
+data = collector.get_data()
 
 fig, ax = plt.subplots()
 for name in names:

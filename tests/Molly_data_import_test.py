@@ -14,9 +14,9 @@ save_dir = os.path.join(this_dir, 'data_saves')
 data_dir = os.path.join(this_dir, 'example_data', 'Molly Data')
 
 names = [
-    'Al1_base_measured',
-    'Al1_base_setpoint',
-    'Al1_base_working_setpoint',
+    'Al1 base measured',
+    'Al1 base setpoint',
+    'Al1 base working setpoint',
 ]
 
 collector = MollyDataCollector(
@@ -32,6 +32,6 @@ data = collector.get_data(force_reload=True)
 
 fig, ax = plt.subplots()
 for name in names:
-    data[name].plot(fig, ax)
+    data[name].plot(fig, ax, marker='.')
 
 plt.show()
