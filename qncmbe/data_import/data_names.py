@@ -21,12 +21,6 @@ class DataInfo():
         self.parameters = parameters
         self.units = units
 
-    def __getitem__(self, item):
-
-        warnings.warn("Deprecated.", DeprecationWarning)
-
-        return self.__getattribute__(item)
-
     def __str__(self):
         string = (
             f"name: {self.display_name}"

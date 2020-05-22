@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-from qncmbe.data_import.data_import_utils import MollyDataCollector
+from qncmbe.data_import.molly import MollyDataCollector
 import qncmbe.plotting as pltutils
 
 pltutils.load_plot_style('qncmbe', update_style_files=False)

@@ -71,7 +71,7 @@ class MollyDataCollector(DataCollector):
             data_hour = self.get_data_from_binary(hour)
 
             for name in self.names:
-                self.data[name].append(data_hour[name])
+                self.data[name].add_data(data_hour[name])
 
             hour += delta
 

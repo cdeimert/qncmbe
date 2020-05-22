@@ -67,7 +67,7 @@ class SVTDataCollector(DataCollector):
                             try_increments=True
                         )
 
-                        self.data[name].append(
+                        self.data[name].add_data(
                             DataElement(
                                 name=name,
                                 datetime0=f_zero_time,
@@ -217,7 +217,7 @@ def read_SVT_data_file(filepath, cols, try_increments=True):
                 except (ValueError, IndexError):
                     continue
 
-        name = SVTDataCollector.increment_SVT_filename(name)
+        name = increment_SVT_filename(name)
 
         if try_increments:
             keep_going = os.path.exists(name)

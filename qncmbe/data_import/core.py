@@ -40,12 +40,15 @@ class DataElement():
         self.vals = vals
         self.units = units
 
-    def append(self, other):
-        '''Append one DataElement to another. Automatically adjusts the added
-        time array based on datetime0 values.'''
+    def add_data(self, other):
+        '''Add data from one DataElement to the present DataElement (still
+        keeping the existing data.)
+
+        Automatically ensures that times are consistent based on the datetime0
+        of each element. Also sorts so that time is sequential.'''
 
         if (self.name != other.name) or (self.units != other.units):
-            raise ValueError("Incompatible DataElement for appending")
+            raise ValueError("Incompatible DataElement for addition")
 
         original_datetime0 = deepcopy(self.datetime0)
 
@@ -100,35 +103,47 @@ class DataElement():
         else:
             mask = (self.time >= ti) & (self.time <= tf)
 
-        new_time = self.time[mask]
-        new_vals = self.vals[mask]
+        # Save endpoint data before trimming
+        if include_endpoints:
+            di = self.step_interpolate(ti)
+            df = self.step_interpolate(tf)
+
+        self.set_data(self.time[mask], self.vals[mask])
 
         if include_endpoints:
-            vi = self.step_interpolate(ti)
-            vf = self.step_interpolate(tf)
+            self.add_data(di)
+            self.add_data(df)
 
-            new_time = np.append(new_time, tf)
-            new_vals = np.append(new_vals, vf)
+    def step_interpolate(self, ti, right=False):
+        '''Step-interpolates the current DataElement at time values ti, and
+        returns in the form of a new DataElement.
 
-            new_time = np.insert(new_time, 0, ti)
-            new_vals = np.insert(new_vals, 0, vi)
+        Step interpolation means it picks the nearest time value in DataElement
+        and uses the corresponding value. It rounds up or down depending on
+        whether right = True or False
 
-        self.set_data(new_time, new_vals)
+        So, if time = [0,1,2,3], vals = [5,7,9,11]
 
-    def step_interpolate(self, time_interp):
-
+        ti=2.5 will return 9 if right=False, 11 if right=True
+        '''
         if len(self.vals) == 0:
-            return np.array([])
+            return deepcopy(self)
         else:
-            inds = np.digitize(time_interp, self.time) - 1
+            if np.isscalar(ti):
+                ti = np.array([ti])
 
-            if np.isscalar(inds):
-                if inds < 0:
-                    inds = 0
+            if right:
+                inds = np.digitize(ti, self.time, right=True)
+                inds[inds >= len(self.time)] = len(self.time)-1
             else:
+                inds = np.digitize(ti, self.time) - 1
                 inds[inds < 0] = 0
 
-            return self.vals[inds]
+        output = deepcopy(self)
+
+        output.set_data(ti[:], self.vals[inds])
+
+        return output
 
     def set_datetime0(self, datetime0):
 
@@ -343,7 +358,7 @@ class DataCollector():
                 raise ValueError(
                     f'Value name {name} not in index.'
                 )
-            if index[name]['location'] != location:
+            if index[name].location != location:
                 raise ValueError(
                     f'Value name {name} has incorrect location for collector.'
                 )

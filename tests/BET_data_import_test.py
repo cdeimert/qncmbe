@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-from qncmbe.data_import.data_import_utils import BETDataCollector
+from qncmbe.data_import.BET import BETDataCollector
 import qncmbe.plotting as pltutils
 
 pltutils.load_plot_style('qncmbe', update_style_files=False)
