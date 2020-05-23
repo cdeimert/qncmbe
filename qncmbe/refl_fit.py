@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
 
-from qncmbe.data_import.SVT import read_SVT_data_file
+from .data_import.SVT import read_SVT_data_file
 
 wvln_colors_light = {
     '469.5': '#80b1d3',

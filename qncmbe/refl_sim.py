@@ -82,33 +82,33 @@ class Structure():
 
             else:
 
-                T = np.matmul(
+                TM = np.matmul(
                     self.layers[i-1].layer_matrix[-1, :, :],
                     self.layers[i-1].transfer_matrix
                 )
 
-                I = np.zeros((2, 2), dtype=complex)
-                I[0, 0] = Ni + Nim1
-                I[0, 1] = Ni - Nim1
-                I[1, 0] = I[0, 1]
-                I[1, 1] = I[0, 0]
+                IM = np.zeros((2, 2), dtype=complex)
+                IM[0, 0] = Ni + Nim1
+                IM[0, 1] = Ni - Nim1
+                IM[1, 0] = IM[0, 1]
+                IM[1, 1] = IM[0, 0]
 
-                I /= 2*Ni
+                IM /= 2*Ni
 
-                T = np.matmul(I, T)
+                TM = np.matmul(IM, TM)
 
-                self.layers[i].set_transfer_matrix(T)
+                self.layers[i].set_transfer_matrix(TM)
 
             # Vacuum interface matrices
-            I = np.zeros((2, 2), dtype=complex)
-            I[0, 0] = 1.0 + Ni
-            I[0, 1] = 1.0 - Ni
-            I[1, 0] = I[0, 1]
-            I[1, 1] = I[0, 0]
+            IM = np.zeros((2, 2), dtype=complex)
+            IM[0, 0] = 1.0 + Ni
+            IM[0, 1] = 1.0 - Ni
+            IM[1, 0] = IM[0, 1]
+            IM[1, 1] = IM[0, 0]
 
-            I /= 2
+            IM /= 2
 
-            self.layers[i].set_vacuum_interface_matrix(I)
+            self.layers[i].set_vacuum_interface_matrix(IM)
 
             # Layer matrices
 
@@ -130,7 +130,7 @@ class Structure():
             L[:, 1, 0] = 0.0 + 1j*0
             L[:, 1, 1] = 1/exp_fact
 
-            self.layers[i].set_layer_matrix(L,t)
+            self.layers[i].set_layer_matrix(L, t)
 
     def calculate_reflectance(self, wavelength):
 
