@@ -4,12 +4,16 @@ import os
 
 # qncmbe imports
 from .core import DataCollector, DataElement
+from .data_names import index
 
 # Non-standard library imports (included in setup.py)
 import numpy as np
 
 
 class SVTDataCollector(DataCollector):
+
+    default_data_path = "\\\\zw-xp1\\QNC_MBE_Data"
+
     def __init__(self, start_time, end_time, names, savedir=None):
         '''See docstring for parent (DataCollector)'''
 
@@ -17,18 +21,22 @@ class SVTDataCollector(DataCollector):
 
         self.check_names(location='SVT')
 
-        self.main_data_path = "\\\\zw-xp1\\QNC_MBE_Data"
+        self.main_data_path = self.default_data_path
+
+    def find_bad_data_paths(self):
+
+        if os.path.exists(self.main_data_path):
+            return []
+        else:
+            return [self.main_data_path]
 
     def collect_data(self):
 
+        self.initialize_data()
+
         # For speed. Skip collection process if no names are requested.
         if not self.names:
-            self.data = {}
-            return self.data
-
-        self.data = {
-            name: DataElement(name, self.start_time) for name in self.names
-        }
+            return {}
 
         for fname in os.listdir(self.main_data_path):
             fpath = os.path.join(self.main_data_path, fname)
@@ -71,6 +79,7 @@ class SVTDataCollector(DataCollector):
                             DataElement(
                                 name=name,
                                 datetime0=f_zero_time,
+                                units=index[name].units,
                                 time=f_arr[:, 0]*3600*24,
                                 vals=f_arr[:, 1]
                             )

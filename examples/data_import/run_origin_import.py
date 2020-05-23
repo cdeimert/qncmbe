@@ -19,13 +19,14 @@ run" behaviour, right click the file, select "Open with" and then point it to
 the location of your python.exe installation.
 '''
 
-from qncmbe.data_import.origin_import_wizard import run_origin_import
+import qncmbe.data_import.origin_import as origin_imp
 import os
+import datetime
 
 # Get the full path of the folder containing this .py file
 this_dir = os.path.dirname(os.path.abspath(__file__))
+template_file = os.path.join(this_dir, "Template.opj")
 
-template_file = os.path.join(this_dir, "Origin_digest_template.opj")
-default_out_path = this_dir
-
-run_origin_import(template_file, default_out_path)
+origin_imp.run_origin_import(
+  template_file=template_file, end_time=datetime.datetime(2019, 12, 17)
+)

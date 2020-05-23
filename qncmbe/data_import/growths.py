@@ -1,3 +1,5 @@
+from pathlib import Path
+
 # qncmbe imports
 from .core import DataCollector
 from .molly import MollyDataCollector
@@ -10,40 +12,81 @@ from .data_names import index
 
 
 class GrowthDataCollector(DataCollector):
-    '''Class to collect multiple kinds of data, related to MBE growths.'''
+    '''Class to collect multiple kinds of data, related to MBE growths.
 
-    def __init__(self, start_time, end_time, names, savedir=None):
+    Currently includes Molly, BET, and SVT data.'''
+
+    locations = {"Molly", "BET", "SVT"}
+
+    def __init__(
+        self, start_time, end_time, names, savedir=None, molly_dt=None
+    ):
 
         super().__init__(start_time, end_time, names, savedir)
 
         # Sort through names, and split into Molly, BET, and SVT
-
-        self.locations = {"Molly", "BET", "SVT"}
-
         names_split = {location: [] for location in self.locations}
 
         for name in self.names:
-            location = index[name]['location']
+            location = index[name].location
             names_split[location].append(name)
 
-        DataCollectors = {
+        # Set up a data collector for each location
+        collector_cls = {
             "Molly": MollyDataCollector,
             "BET": BETDataCollector,
             "SVT": SVTDataCollector
         }
 
-        self.collectors = {
-            location: DataCollectors[location](
-                start_time,
-                end_time,
-                names_split[location],
-                savedir
-            ) for location in self.locations
-        }
+        self.subcollectors = {}
+
+        for location in self.locations:
+
+            kwargs = {
+                'start_time': start_time,
+                'end_time': end_time,
+                'names': names_split[location],
+                'savedir': savedir
+            }
+
+            if location == "Molly":
+                kwargs['dt'] = molly_dt
+
+            self.subcollectors[location] = collector_cls[location](**kwargs)
+
+        self._set_test_mode()
+
+    def set_data_path(self, location, path):
+        self.subcollectors[location].main_data_path = path
+
+    def find_bad_data_paths(self):
+
+        bad_paths = []
+        for loc, coll in self.subcollectors.items():
+            bad_paths += coll.find_bad_data_paths()
+
+        return bad_paths
 
     def collect_data(self):
 
-        for location in self.locations:
-            self.data.update(self.collectors[location].collect_data())
+        self.data = {}
+
+        for loc, coll in self.subcollectors.items():
+            self.data.update(coll.collect_data())
 
         return self.data
+
+    def _set_test_mode(self):
+
+        root = Path(__file__).resolve().parent.parent.parent
+
+        basedir = root.joinpath('tests', 'example_data')
+
+        data_dirs = {
+            "BET": basedir,
+            "SVT": basedir.joinpath('SVT Data'),
+            "Molly": basedir.joinpath('Molly Data')
+        }
+
+        for loc in data_dirs:
+            self.set_data_path(loc, data_dirs[loc])

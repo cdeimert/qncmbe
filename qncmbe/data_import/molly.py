@@ -6,12 +6,18 @@ import struct
 
 # qncmbe imports
 from .core import DataCollector, DataElement
+from .data_names import index
 
 # Non-standard library imports (included in setup.py)
 import numpy as np
 
 
 class MollyDataCollector(DataCollector):
+
+    default_data_path = os.path.join(
+        r"\\insitu1.nexus.uwaterloo.ca", "Documents", "QNC MBE Data",
+        "Production Data", "Molly data"
+    )
 
     def __init__(self, start_time, end_time, names, savedir=None, dt=None):
         '''See docstring for parent (DataCollector)
@@ -29,23 +35,28 @@ class MollyDataCollector(DataCollector):
 
         self.dt = dt
 
+        if dt is not None:
+            if dt <= 0:
+                raise ValueError("Invalid dt. Must be None or >0.")
+
         self.check_names(location='Molly')
 
-        self.main_data_path = os.path.join(
-            r"\\insitu1.nexus.uwaterloo.ca", "Documents", "QNC MBE Data",
-            "Production Data", "Molly data"
-        )
+        self.main_data_path = self.default_data_path
+
+    def find_bad_data_paths(self):
+
+        if os.path.exists(self.main_data_path):
+            return []
+        else:
+            return [self.main_data_path]
 
     def collect_data(self):
 
+        self.initialize_data()
+
         # For speed. Skip collection process if no names are requested.
         if not self.names:
-            self.data = {}
-            return self.data
-
-        self.data = {
-            name: DataElement(name, self.start_time) for name in self.names
-        }
+            return {}
 
         delta = datetime.timedelta(hours=1)
 
@@ -66,23 +77,48 @@ class MollyDataCollector(DataCollector):
         '''
         hour -= delta
 
+        first = {name: True for name in self.names}
+
         while(hour <= self.end_time + delta):
 
             data_hour = self.get_data_from_binary(hour)
 
-            for name in self.names:
-                self.data[name].add_data(data_hour[name])
+            # Add data from each element
+            # Have to skip the first data element on all except the first
+            # hour or there will be duplicates
+
+            if first:
+                for name in self.names:
+                    if first[name]:
+                        self.data[name].add_data(data_hour[name])
+                        if (len(data_hour[name]) != 0):
+                            first[name] = False
+                    else:
+                        if len(data_hour[name]) != 0:
+                            self.data[name].add_data(data_hour[name][1:])
 
             hour += delta
 
         # Cleanup data based on start time and end time
         for name in self.names:
             self.data[name].set_datetime0(self.start_time)
-            self.data[name].trim(
-                self.start_time, self.end_time, include_endpoints=True
-            )
+
+            if self.dt is None:
+                self.data[name].trim(
+                    self.start_time, self.end_time, include_endpoints=True
+                )
+            else:
+                ti = self.get_interpolated_time()
+                self.data[name] = self.data[name].step_interpolate(ti)
 
         return self.data
+
+    def get_interpolated_time(self):
+        if self.dt is None:
+            return None
+        else:
+            tot_seconds = (self.end_time - self.start_time).total_seconds()
+            return np.arange(0.0, tot_seconds, self.dt)
 
     def get_data_path(self, hour):
         '''
@@ -129,7 +165,7 @@ class MollyDataCollector(DataCollector):
                 regex[name] = re.compile(
                     r"^DataItem=Name:"
                     + local_name[name] + ".*?" +
-                    "TotalValues:([0-9].*?);ValueOffset:([0-9].*?)\s*?\n"
+                    r"TotalValues:([0-9].*?);ValueOffset:([0-9].*?)\s*?\n"
                 )
 
             for line in header:
@@ -190,27 +226,34 @@ class MollyDataCollector(DataCollector):
             binary = open(binary_path, "rb")
         except IOError:
             print("Warning: missing binary file " + binary_path)
-            return {name: DataElement(name, datetime0) for name in self.names}
+
+            data_hour = {
+                name: DataElement(name, datetime0, index[name].units)
+                for name in self.names
+            }
 
         try:
 
             data_hour = {}
             for name in self.names:
+                units = index[name].units
+
                 if (total_values[name] < 0) or (values_offset[name] < 0):
                     print(
                         "Warning: Invalid total_values or values_offset for ",
                         name
                     )
-                    data_hour[name] = DataElement(name, datetime0)
+                    data_hour[name] = DataElement(name, datetime0, units)
                     break
 
                 data_hour[name] = DataElement(
-                    name=name, datetime0=datetime0,
+                    name=name, datetime0=datetime0, units=units,
                     time=np.zeros(total_values[name]),
                     vals=np.zeros(total_values[name])
                 )
 
                 binary.seek((values_offset[name]+1)*8)
+
                 for n in range(total_values[name]):
                     data_hour[name].time[n] = struct.unpack(
                         'f', binary.read(4))[0]*86400

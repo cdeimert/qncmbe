@@ -5,6 +5,7 @@ import re
 
 # qncmbe imports
 from .core import DataCollector, DataElement
+from .data_names import index
 
 # Non-standard library imports (included in setup.py)
 import numpy as np
@@ -13,6 +14,12 @@ from dateutil import parser as date_parser
 
 class BETDataCollector(DataCollector):
     '''For collecting data from the band-edge thermometer (BET) software.'''
+
+    default_data_path = os.path.join(
+        r"\\insitu1.nexus.uwaterloo.ca", "Documents", "QNC MBE Data",
+        "Production Data"
+    )
+
     def __init__(self, start_time, end_time, names, savedir=None):
         '''See docstring for parent (DataCollector)'''
 
@@ -22,24 +29,25 @@ class BETDataCollector(DataCollector):
 
         self.folders = {}
 
-        self.main_data_path = os.path.join(
-            r"\\insitu1.nexus.uwaterloo.ca", "Documents", "QNC MBE Data",
-            "Production Data"
-        )
+        self.main_data_path = self.default_data_path
+
+    def find_bad_data_paths(self):
+
+        if os.path.exists(self.main_data_path):
+            return []
+        else:
+            return [self.main_data_path]
 
     def collect_data(self):
         '''Collects data from the "BET data" and "ISP data" folders.
         Automatically determines which files to use include on the creation and
         modification times.'''
 
+        self.initialize_data()
+
         # For speed. Skip collection process if no names are requested.
         if not self.names:
-            self.data = {}
-            return self.data
-
-        self.data = {
-            name: DataElement(name, self.start_time) for name in self.names
-        }
+            return {}
 
         # Loop through files. Add as necessary
         folder_set = {self.parameters[name]['folder'] for name in self.names}
@@ -61,10 +69,11 @@ class BETDataCollector(DataCollector):
                             col = self.parameters[name]['column']
                             tcol = self.parameters[name]['time_column']
 
-                            self.data[name].append(
+                            self.data[name].add_data(
                                 DataElement(
                                     name=name,
                                     datetime0=file_ctime,
+                                    units=index[name].units,
                                     time=file_arr[:, tcol],
                                     vals=file_arr[:, col]
                                 )

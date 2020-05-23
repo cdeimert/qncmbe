@@ -26,6 +26,11 @@ class DataElement():
 
     Provides method for saving to csv and re-loading.
 
+    Slicing (e.g., "my_data_element[2:3]") will return a copy of the
+    DataElement with both time and vals sliced appropriately.
+
+    Assignment by slicing is not supported.
+
     Notes:
         - The time array is sorted in set_data(), and it should remain sorted
         - For now, it is assumed vals is a 1D array of the same length as time
@@ -39,6 +44,18 @@ class DataElement():
         self.time = time
         self.vals = vals
         self.units = units
+
+    def __getitem__(self, slice_):
+        return DataElement(
+            name=deepcopy(self.name),
+            datetime0=deepcopy(self.datetime0),
+            time=self.time[slice_],
+            vals=self.vals[slice_],
+            units=deepcopy(self.units)
+        )
+
+    def __len__(self):
+        return len(self.time)
 
     def add_data(self, other):
         '''Add data from one DataElement to the present DataElement (still
@@ -256,8 +273,10 @@ class DataCollector():
             names       list of data elements to collect. Must correspond to
                         entries in index. See
                         value_names.print_allowed_value_names()
-            parameters  parameters used for data collection. Taken from the
-                        index
+            parameters  dict of parameters used for data collection. Taken from
+                        data_names.index
+            units       dict of units corresponding to each name. Taken from
+                        data_names.index
             savedir     directory in which to save/load results after initially
                         fetching them from the remote source. If None, will
                         always load from source
@@ -267,27 +286,53 @@ class DataCollector():
         is used, so the string format is fairly flexible.
         '''
 
-        self.start_time = parse_datetime_input(start_time)
-        self.end_time = parse_datetime_input(end_time)
+        self.set_start_time(start_time)
+        self.set_end_time(end_time)
 
-        if end_time <= start_time:
+        if self.end_time <= self.start_time:
             raise ValueError(
                 "Start time must be before end time."
             )
 
-        self.names = names
+        self.set_names(names)
+        # Also sets self.parameters, self.units, and initializes self.data
 
-        self.parameters = {
-            name: index[name].parameters for name in names
-        }
+        self.set_savedir(savedir)
+
+    def initialize_data(self):
 
         self.data = {}
 
         for name in self.names:
-            units = index[name].units
-            self.data[name] = DataElement(name, start_time, units)
+            self.data[name] = DataElement(
+                name, self.start_time, self.units[name]
+            )
 
+        return self.data
+
+    def set_names(self, names):
+
+        self.names = names
+
+        self.parameters = {name: index[name].parameters for name in names}
+        self.units = {name: index[name].units for name in names}
+
+        self.initialize_data()
+
+    def set_savedir(self, savedir):
         self.savedir = savedir
+
+    def set_start_time(self, time):
+        self.start_time = parse_datetime_input(time)
+
+    def set_end_time(self, time):
+        self.end_time = parse_datetime_input(time)
+
+    def find_bad_data_paths(self):
+        '''Checks data paths. Returns list of problematic paths.
+        (Returns empty list if everything is okay)
+        '''
+        return []
 
     def collect_data(self):
         '''Collect data from remote source. Must be filled in for child class.
