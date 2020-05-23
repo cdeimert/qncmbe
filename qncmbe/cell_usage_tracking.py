@@ -21,6 +21,11 @@ in the future.
 See example file for example of usage.
 '''
 
+# TODO: update this to use the new data_import library
+# Should be able to make a single data collector and loop through,
+# updating the dates every time. Saving/loading should be automatically
+# dealt with
+
 # Standard library imports (not included in setup.py)
 import os
 import datetime as datetime

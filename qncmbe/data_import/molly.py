@@ -5,7 +5,7 @@ import re
 import struct
 
 # qncmbe imports
-from .core import DataCollector, DataElement
+from .utils import DataCollector, DataElement
 from .data_names import index
 
 # Non-standard library imports (included in setup.py)

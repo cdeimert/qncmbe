@@ -6,42 +6,34 @@ Also, your computer must have access to
 \\insitu1.nexus.uwaterloo.ca and \\zw-xp1
 '''
 
-from qncmbe.data_import.growths import GrowthDataCollector
+# Load packages
+from qncmbe.data_import.core import get_growth_data, print_names_list
 import matplotlib.pyplot as plt
 
 from qncmbe.plotting import load_plot_style
 
 load_plot_style('qncmbe', update_style_files=False)
 
+# Uncomment this line to print a list of allowed data names
+# print_names_list(); exit()
 
-def main():
+# Set start and end times
+start_time = "2019-09-24 17:30"
+end_time = "2019-09-24 20:30"
 
-    start_time = "2019-09-24 17:30"
-    end_time = "2019-09-24 20:30"
+# Pick which data values to plot
+names = [
+    "Al1 base measured",
+    "Al1 tip measured"
+]
 
-    names = [
-        "Al1 base measured",
-        "Al1 tip measured"
-    ]
+# Collect data
+data = get_growth_data(start_time, end_time, names)
 
-    simple_plot(start_time, end_time, names)
+# Plot
+fig, ax = plt.subplots()
 
-    plt.show()
+for name in names:
+    data[name].plot(fig, ax)
 
-
-def simple_plot(start_time, end_time, names):
-
-    collector = GrowthDataCollector(start_time, end_time, names)
-
-    data = collector.get_data()
-
-    fig, ax = plt.subplots()
-
-    for name in names:
-        data[name].plot(fig, ax)
-
-    return fig, ax
-
-
-if __name__ == "__main__":
-    main()
+plt.show()

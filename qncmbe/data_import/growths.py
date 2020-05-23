@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # qncmbe imports
-from .core import DataCollector
+from .utils import DataCollector
 from .molly import MollyDataCollector
 from .BET import BETDataCollector
 from .SVT import SVTDataCollector
@@ -54,7 +54,7 @@ class GrowthDataCollector(DataCollector):
 
             self.subcollectors[location] = collector_cls[location](**kwargs)
 
-        self._set_test_mode()
+        # self._set_test_mode()
 
     def set_data_path(self, location, path):
         self.subcollectors[location].main_data_path = path
@@ -90,3 +90,4 @@ class GrowthDataCollector(DataCollector):
 
         for loc in data_dirs:
             self.set_data_path(loc, data_dirs[loc])
+
