@@ -99,6 +99,8 @@ class GrowthDataCollector(DataCollector):
     def _set_test_mode(self):
         '''Use locally-saved data for speed during testing.'''
 
+        print("WARNING: using GrowthDataCollector in test mode!")
+
         root = Path(__file__).resolve().parent.parent.parent
 
         basedir = root.joinpath('tests', 'example_data')
