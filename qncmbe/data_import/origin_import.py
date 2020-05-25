@@ -368,9 +368,6 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                         )
 
                     self.origin.Execute('wks.nrows=0')
-                    # self.origin.PutWorksheet(
-                    #     wkbk_names[loc], [[]]*ncols, 0, 0
-                    # )
 
                     # Note: it would be cleaner to delete all the columns first
                     # and add them one-by-one, but this ruins any plots
@@ -380,9 +377,12 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
                     for name in subloc_names[subloc]:
 
-                        # Put data on the worksheet
-                        data_el = data[name]
-                        arr2d = np.vstack((data_el.time, data_el.vals))
+                        # Put data on the workshe
+                        time = data[name].time
+                        vals = data[name].vals
+                        units = data[name].units
+
+                        arr2d = np.vstack((time, vals))
 
                         self.origin.PutWorksheet(
                             wkbk_names[loc], arr2d.T.tolist(), 0, n
@@ -391,14 +391,18 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                         # Add time name and units
                         self.origin.Execute(f'col({n+1})[L]$ = Time')
                         self.origin.Execute(f'col({n+1})[U]$ = s')
+
+                        # Set as X-type column for plotting
                         self.origin.Execute(f'wks.col = {n+1}')
-                        self.origin.Execute(f'wks.col.type = 4')  # Set as X-type
+                        self.origin.Execute(f'wks.col.type = 4')
 
                         # Add data name and units
-                        self.origin.Execute(f'col({n+2})[L]$ = {data_el.name}')
-                        self.origin.Execute(f'col({n+2})[U]$ = {data_el.units}')
+                        self.origin.Execute(f'col({n+2})[L]$ = {name}')
+                        self.origin.Execute(f'col({n+2})[U]$ = {units}')
+
+                        # Set as Y-type column for plotting
                         self.origin.Execute(f'wks.col = {n+2}')
-                        self.origin.Execute(f'wks.col.type = 1')  # Set as Y-type
+                        self.origin.Execute(f'wks.col.type = 1')
 
                         n += 2
 
@@ -408,79 +412,6 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                     # Resize columns to fit
                     self.origin.Execute('wautosize')
 
-                '''
-                # Break down into sublocations so that the data can be
-                # split into worksheets for better organization
-                sublocs = []
-                subloc_names = {}
-                subloc_ncols = {}
-
-                for name in names:
-                    subloc = index[name].sublocation
-                    if subloc not in sublocs:
-                        sublocs.append(subloc)
-                        subloc_names[subloc] = []
-                        subloc_ncols[subloc] = 0
-
-                    subloc_names[subloc].append(name)
-                    subloc_ncols[subloc] += 2
-
-                for subloc in sublocs:
-
-                    ncols = subloc_ncols[subloc]
-
-                    # Activate/create a worksheet for the sublocation, with the
-                    # appropriate number of columns
-                    if self.origin.Execute(f'page.active$ = {subloc}'):
-                        self.origin.Execute(f'wks.ncols=0')
-                    else:
-                        self.origin.Execute(
-                            f'newsheet name:={subloc} cols:=0'
-                        )
-                    self.origin.Execute(f'wks.ncols={ncols}')
-
-                    # Pad data with None in case column lengths are uneven
-                    max_len = 1
-                    for name in subloc_names[subloc]:
-                        if len(data[name]) > max_len:
-                            max_len = len(data[name])
-
-                    data_list = []
-
-                    for name in subloc_names[subloc]:
-                        time = np.empty(max_len, dtype=object)
-                        vals = np.empty(max_len, dtype=object)
-                        time[:len(data[name])] = data[name].time
-                        vals[:len(data[name])] = data[name].vals
-
-                        data_list.append(time)
-                        data_list.append(vals)
-
-                    arr2d = np.stack(data_list).transpose()
-
-                    # Set data in the worksheet
-                    self.origin.PutWorksheet(
-                        wkbk_names[loc], arr2d.tolist(), 0, 0
-                    )
-
-                    for n in range(ncols//2):
-                        name = subloc_names[subloc][n]
-                        units = index[name].units
-
-                        # Add time name and units
-                        self.origin.Execute(f'col({2*n+1})[L]$ = Time')
-                        self.origin.Execute(f'col({2*n+1})[U]$ = s')
-                        self.origin.Execute(f'wks.col = {2*n+1}')
-                        self.origin.Execute(f'wks.col.type = 4')
-
-                        # Add data name and units
-                        self.origin.Execute(f'col({2*n+2})[L]$ = {name}')
-                        self.origin.Execute(f'col({2*n+2})[U]$ = {units}')
-                        self.origin.Execute(f'wks.col = {2*n+2}')
-                        self.origin.Execute(f'wks.col.type = 1')
-
-                    self.origin.Execute('wautosize')  # Resize columns to fit
-                '''
                 self.origin.Execute('page.active = 1')
 
                 dt = tm.time() - twrite
