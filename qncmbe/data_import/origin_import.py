@@ -158,11 +158,16 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             self.set_template_file(os.path.abspath(fname))
 
     def set_runtime_message(self, text):
-        self.runtime_messages.setPlainText(text)
+        self.runtime_messages.setPlainText('')
+        self.runtime_messages.insertPlainText(text)
         self.runtime_messages.repaint()
 
-    def add_runtime_message(self, text):
-        self.runtime_messages.appendPlainText(text)
+    def add_runtime_message(self, text, newline=True):
+
+        pre = '\n' if newline else ' '
+
+        self.runtime_messages.insertPlainText(pre + text)
+
         self.runtime_messages.repaint()
 
     def make_save_path(self):
@@ -213,9 +218,51 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return passed
 
+    def load_origin(self):
+        self.origin = None
+        self.add_runtime_message("Loading Origin...")
+        self.origin = win32com.client.Dispatch("Origin.Application")
+
+    def load_template_file(self):
+        template_file = self.get_template_file()
+        self.add_runtime_message(
+            f'Loading template file...'
+        )
+
+        if (
+            (not os.path.exists(template_file))
+            or (not template_file.endswith('.opj'))
+        ):
+
+            self.add_runtime_message(
+                "Error: template file missing/invalid."
+                " Check before running again."
+            )
+            raise RuntimeError("Invalid template file.")
+
+        if not self.origin.Execute(f'doc -o {template_file}'):
+            self.add_runtime_message(
+                f"Error: could not load template file. "
+                "Check before running again."
+            )
+            raise RuntimeError("Error loading template file.")
+
+    def save_template_copy(self):
+        # Save a copy of the template to the given filename
+        filepath = self.get_filepath()
+        self.add_runtime_message("Creating output file...")
+        if not self.origin.Execute(f'save {filepath}'):
+            self.add_runtime_message(
+                "Error: could not save to specified path/file."
+                " Check before running again."
+            )
+            raise RuntimeError("Error saving to origin file.")
+
     def import_data(self):
 
         self.set_runtime_message("Starting the import process...")
+
+        t = tm.time()
 
         start_time = self.get_start_time()
         end_time = self.get_end_time()
@@ -248,45 +295,11 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         try:
-            # Open Origin in background
-            origin = None
-            self.add_runtime_message("Loading Origin...")
-            origin = win32com.client.Dispatch("Origin.Application")
+            self.load_origin()
 
-            template_file = self.get_template_file()
-            self.add_runtime_message(
-                f'Loading template file...'
-            )
+            self.load_template_file()
 
-            if (
-                (not os.path.exists(template_file))
-                or (not template_file.endswith('.opj'))
-            ):
-
-                self.add_runtime_message(
-                    "Error: template file missing/invalid."
-                    " Check before running again."
-                )
-                raise RuntimeError("Invalid template file.")
-
-            if not origin.Execute(f'doc -o {template_file}'):
-                self.add_runtime_message(
-                    f"Error: could not load template file. "
-                    "Check before running again."
-                )
-                raise RuntimeError("Error loading template file.")
-
-            # Save a copy of the template to the given filename
-            self.add_runtime_message("Creating output file...")
-            if not origin.Execute(f'save {filepath}'):
-                self.add_runtime_message(
-                    "Error: could not save to specified path/file."
-                    " Check before running again."
-                )
-                raise RuntimeError("Error saving to origin file.")
-
-            # Open Origin window
-            origin.Visible = 1
+            self.save_template_copy()
 
             # Import data
 
@@ -298,16 +311,10 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                     ' might say "Not Responding")'
                 )
 
-            t = tm.time()
-
             locs = ["Molly", "BET", "SVT"]
 
             if empty_data:
                 data = collector.initialize_data()
-            else:
-                data = collector.get_data()
-
-            self.add_runtime_message("Writing data to Origin...")
 
             wkbk_names = {
                 "Molly": "MollyData",
@@ -317,88 +324,204 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
             for loc in locs:
 
-                loc_names = []
+                names = index.get_names_list(loc)
 
-                for name in full_names_list:
-                    if index[name].location == loc:
-                        loc_names.append(name)
+                if not empty_data:
+                    tcol = tm.time()
+                    self.add_runtime_message(f'Collecting {loc} data...')
+                    collector.set_names(names)
+                    collector.get_data()
+                    data = collector.data
+                    dt = tm.time() - tcol
+                    self.add_runtime_message(
+                        f"Done! ({dt:.4f} s)", newline=False
+                    )
+
+                twrite = tm.time()
+                self.add_runtime_message(f"Writing {loc} data to Origin...")
 
                 # Activate the workbook
-                origin.Execute(f'win -a {wkbk_names[loc]}')
+                if not self.origin.Execute(f'win -a {wkbk_names[loc]}'):
+                    self.origin.Execue(f'newbook {wkbk_names[loc]}')
 
-                ncols = len(loc_names)*2
+                sublocs = []
+                subloc_names = {}
 
-                # Set the number of columns
-                origin.Execute(f'wks.ncols={ncols}')
+                for name in names:
+                    subloc = index[name].sublocation
+                    if subloc not in sublocs:
+                        sublocs.append(subloc)
+                        subloc_names[subloc] = []
 
-                # Pad data with None in case column lengths are uneven
-                max_len = 0
-                for name in loc_names:
+                    subloc_names[subloc].append(name)
 
-                    if len(data[name]) > max_len:
-                        max_len = len(data[name])
+                for subloc in sublocs:
 
-                data_list = []
+                    ncols = len(subloc_names[subloc])*2
 
-                for name in loc_names:
+                    # If first time, create the worksheet
+                    if self.origin.Execute(f'page.active$ = {subloc}'):
+                        self.origin.Execute(f'wks.ncols={ncols}')
+                    else:
+                        self.origin.Execute(
+                            f'newsheet name:={subloc} cols:={ncols}'
+                        )
 
-                    time = np.empty(max_len, dtype=object)
-                    vals = np.empty(max_len, dtype=object)
-                    time[:len(data[name])] = data[name].time
-                    vals[:len(data[name])] = data[name].vals
+                    self.origin.Execute('wks.nrows=0')
+                    # self.origin.PutWorksheet(
+                    #     wkbk_names[loc], [[]]*ncols, 0, 0
+                    # )
 
-                    data_list.append(time)
-                    data_list.append(vals)
+                    # Note: it would be cleaner to delete all the columns first
+                    # and add them one-by-one, but this ruins any plots
+                    # included in the template
 
-                arr2d = np.stack(data_list).transpose()
+                    n = 0
 
-                # Set data in the worksheet
-                origin.PutWorksheet(wkbk_names[loc], arr2d.tolist(), 0, 0)
+                    for name in subloc_names[subloc]:
 
-                for n in range(ncols//2):
-                    name = loc_names[n]
-                    units = index[name].units
+                        # Put data on the worksheet
+                        data_el = data[name]
+                        arr2d = np.vstack((data_el.time, data_el.vals))
 
-                    # Add time name and units
-                    origin.Execute(f'col({2*n+1})[L]$ = Time')
-                    origin.Execute(f'col({2*n+1})[U]$ = s')
-                    origin.Execute(f'wks.col = {2*n+1}')
-                    origin.Execute(f'wks.col.type = 4')
+                        self.origin.PutWorksheet(
+                            wkbk_names[loc], arr2d.T.tolist(), 0, n
+                        )
 
-                    # Add data name and units
-                    origin.Execute(f'col({2*n+2})[L]$ = {name}')
-                    origin.Execute(f'col({2*n+2})[U]$ = {units}')
-                    origin.Execute(f'wks.col = {2*n+2}')
-                    origin.Execute(f'wks.col.type = 1')
+                        # Add time name and units
+                        self.origin.Execute(f'col({n+1})[L]$ = Time')
+                        self.origin.Execute(f'col({n+1})[U]$ = s')
+                        self.origin.Execute(f'wks.col = {n+1}')
+                        self.origin.Execute(f'wks.col.type = 4')  # Set as X-type
 
-            origin.Execute(f'win -a ImportInfo')
+                        # Add data name and units
+                        self.origin.Execute(f'col({n+2})[L]$ = {data_el.name}')
+                        self.origin.Execute(f'col({n+2})[U]$ = {data_el.units}')
+                        self.origin.Execute(f'wks.col = {n+2}')
+                        self.origin.Execute(f'wks.col.type = 1')  # Set as Y-type
+
+                        n += 2
+
+                    # Display long name and units rows only
+                    self.origin.Execute('wks.labels(LU)')
+
+                    # Resize columns to fit
+                    self.origin.Execute('wautosize')
+
+                '''
+                # Break down into sublocations so that the data can be
+                # split into worksheets for better organization
+                sublocs = []
+                subloc_names = {}
+                subloc_ncols = {}
+
+                for name in names:
+                    subloc = index[name].sublocation
+                    if subloc not in sublocs:
+                        sublocs.append(subloc)
+                        subloc_names[subloc] = []
+                        subloc_ncols[subloc] = 0
+
+                    subloc_names[subloc].append(name)
+                    subloc_ncols[subloc] += 2
+
+                for subloc in sublocs:
+
+                    ncols = subloc_ncols[subloc]
+
+                    # Activate/create a worksheet for the sublocation, with the
+                    # appropriate number of columns
+                    if self.origin.Execute(f'page.active$ = {subloc}'):
+                        self.origin.Execute(f'wks.ncols=0')
+                    else:
+                        self.origin.Execute(
+                            f'newsheet name:={subloc} cols:=0'
+                        )
+                    self.origin.Execute(f'wks.ncols={ncols}')
+
+                    # Pad data with None in case column lengths are uneven
+                    max_len = 1
+                    for name in subloc_names[subloc]:
+                        if len(data[name]) > max_len:
+                            max_len = len(data[name])
+
+                    data_list = []
+
+                    for name in subloc_names[subloc]:
+                        time = np.empty(max_len, dtype=object)
+                        vals = np.empty(max_len, dtype=object)
+                        time[:len(data[name])] = data[name].time
+                        vals[:len(data[name])] = data[name].vals
+
+                        data_list.append(time)
+                        data_list.append(vals)
+
+                    arr2d = np.stack(data_list).transpose()
+
+                    # Set data in the worksheet
+                    self.origin.PutWorksheet(
+                        wkbk_names[loc], arr2d.tolist(), 0, 0
+                    )
+
+                    for n in range(ncols//2):
+                        name = subloc_names[subloc][n]
+                        units = index[name].units
+
+                        # Add time name and units
+                        self.origin.Execute(f'col({2*n+1})[L]$ = Time')
+                        self.origin.Execute(f'col({2*n+1})[U]$ = s')
+                        self.origin.Execute(f'wks.col = {2*n+1}')
+                        self.origin.Execute(f'wks.col.type = 4')
+
+                        # Add data name and units
+                        self.origin.Execute(f'col({2*n+2})[L]$ = {name}')
+                        self.origin.Execute(f'col({2*n+2})[U]$ = {units}')
+                        self.origin.Execute(f'wks.col = {2*n+2}')
+                        self.origin.Execute(f'wks.col.type = 1')
+
+                    self.origin.Execute('wautosize')  # Resize columns to fit
+                '''
+                self.origin.Execute('page.active = 1')
+
+                dt = tm.time() - twrite
+                self.add_runtime_message(
+                    f"Done! ({dt:.4f} s)", newline=False
+                )
+
+            if not self.origin.Execute(f'win -a ImportInfo'):
+                self.origin.Execute(f'newbook ImportInfo')
 
             if self.get_empty_data():
-                origin.PutWorksheet('ImportInfo', [[None, None]], 0, 0)
+                self.origin.PutWorksheet('ImportInfo', [[None, None]], 0, 0)
             else:
-                origin.PutWorksheet(
+                self.origin.PutWorksheet(
                     'ImportInfo', [[str(start_time), str(end_time)]], 0, 0
                 )
 
-            origin.Execute(f'col(1)[L]$ = Start time')
-            origin.Execute(f'col(2)[L]$ = End time')
+            self.origin.Execute(f'col(1)[L]$ = Start time')
+            self.origin.Execute(f'col(2)[L]$ = End time')
 
-            self.add_runtime_message("Saving data...")
-            if not origin.Execute(f'save {filepath}'):
+            self.origin.Execute('wks.labels(L)')
+
+            self.add_runtime_message("Saving output file...")
+            if not self.origin.Execute(f'save {filepath}'):
                 self.add_runtime_message(
                     "Error: could not save output file."
                     " Save manually if possible."
                 )
-                raise RuntimeError("Error saving data")
+                raise RuntimeError("Error saving output file")
 
-            t = tm.time() - t
-            self.add_runtime_message(
-                f"Import complete!\nRun time: {t:.4f} s"
-            )
         except RuntimeError:
             self.add_runtime_message("Import failed!")
         finally:
-            del origin
+            self.add_runtime_message("Closing Origin...")
+            self.origin.Exit()
+            del self.origin
+
+        t = tm.time() - t
+        self.add_runtime_message(
+            f"Import complete! (Total time: {t:.4f} s)"
+        )
 
 
 def run_origin_import(**kwargs):

@@ -11,13 +11,20 @@ class DataInfo():
 
     Attributes:
         display_name    Name formatted for display
-        location        Info for what type of DataCollector to use
+        location        Where the data was generated. (E.g., "Molly", "SVT")
+                        Important for deciding which DataCollector to use
+        sublocation     E.g. if location is "Molly", sublocation could specify
+                        which cell the data is associated with. Just useful
+                        for organizing the data later.
         parameters      Additional parameters needed by the DataCollector
         units           units for display
     '''
-    def __init__(self, name='', location='', parameters={}, units=''):
+    def __init__(
+        self, name='', location='', sublocation='', parameters={}, units=''
+    ):
         self.display_name = name
         self.location = location
+        self.sublocation = sublocation
         self.parameters = parameters
         self.units = units
 
@@ -25,6 +32,7 @@ class DataInfo():
         string = (
             f"name: {self.display_name}"
             f"\nlocation: {self.location}"
+            f"\nsublocation: {self.sublocation}"
             f"\nparameters: {self.parameters}"
             f"\nunits: {self.units}"
         )
@@ -141,6 +149,7 @@ class DataNamesIndex(FlexibleDict):
 
                 name = line['name']
                 location = line['location']
+                sublocation = line['sublocation']
                 units = line['units']
 
                 parameters = {}
@@ -157,6 +166,7 @@ class DataNamesIndex(FlexibleDict):
                     self[name] = DataInfo(
                         name=name,
                         location=location,
+                        sublocation=sublocation,
                         parameters=parameters,
                         units=units
                     )
