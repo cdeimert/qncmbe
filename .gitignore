@@ -1,4 +1,6 @@
-
+*.dat
+*.opj
+tests/example_data
 examples/cell_usage/saved_cell_data
 .vscode
 
