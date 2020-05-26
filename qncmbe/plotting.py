@@ -41,7 +41,7 @@ def install_plot_styles():
     print("Found qncmbe plot styles folder:")
     print(f'    "{qncmbe_stylelib_dir}"')
 
-    print("Will installing plot styles:")
+    print("Will install plot styles:")
     qncmbe_style_files = []
     for fname in os.listdir(qncmbe_stylelib_dir):
         fpath = os.path.join(qncmbe_stylelib_dir, fname)
