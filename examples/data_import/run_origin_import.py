@@ -28,5 +28,5 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 template_file = os.path.join(this_dir, "Growth data template.opj")
 
 origin_imp.run_origin_import(
-  template_file=template_file, end_time=datetime.datetime(2019, 12, 17)
+  template_file=template_file, end_time=datetime.datetime(2019, 12, 24)
 )

@@ -528,17 +528,19 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
                 raise RuntimeError("Error saving output file")
 
-            t = tm.time() - t
-            self.add_runtime_message(
-                f"Import complete! (Total time: {t:.4f} s)"
-            )
+            self.add_runtime_message(f"Import complete!")
 
         except RuntimeError:
             self.add_runtime_message("Import failed!")
         finally:
             self.add_runtime_message("Closing Origin...")
-            self.origin.Exit()
-            del self.origin
+
+            try:
+                self.origin.Exit()
+            except TypeError:
+                pass
+            finally:
+                del self.origin
 
             self.add_runtime_message(f'Writing to log file\n  "{logfile}"')
 
@@ -556,6 +558,9 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
             with open(logfile, 'w', encoding='utf-8') as lf:
                 lf.write(log_text)
+
+            t = tm.time() - t
+            self.add_runtime_message(f'Done. (Total time: {t:.4f} s)')
 
 
 
