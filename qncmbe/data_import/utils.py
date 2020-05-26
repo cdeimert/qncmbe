@@ -4,6 +4,7 @@ import os
 import re
 from copy import deepcopy
 import textwrap
+import logging
 
 # qncmbe imports
 from .data_names import index
@@ -12,6 +13,18 @@ from .data_names import index
 import numpy as np
 import matplotlib.dates as mdates
 from dateutil import parser as date_parser
+
+
+logger = logging.getLogger(__name__)
+
+formatter = logging.Formatter('%(levelname)s: %(message)s')
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.WARNING)
+console_handler.setFormatter(formatter)
+
+logging.getLogger().addHandler(console_handler)
+logging.getLogger().setLevel(logging.INFO)
 
 
 class DataElement():
@@ -205,7 +218,6 @@ class DataElement():
                 f.readline()
             )
 
-            # self.name = m.group('name')
             self.units = m.group('units')
 
         fdata = np.genfromtxt(fname, delimiter=',', skip_header=2)
@@ -338,7 +350,7 @@ class DataCollector():
         '''
         return self.data
 
-    def get_data(self, force_reload=False, suppress_messages=True):
+    def get_data(self, force_reload=False):
         '''Get data. Uses the collect_data() method to collect from remote
         source. If self.savedir is set, will automatically save/load from
         this local folder so that the remote data only has to be accessed
@@ -353,15 +365,13 @@ class DataCollector():
             else:
                 try:
                     self.load_data()
-                    if not suppress_messages:
-                        print("Loaded from local save data.")
+                    logger.info("Loaded from local save data.")
 
                 except FileNotFoundError:
-                    if not suppress_messages:
-                        print(
-                            "Local save data unavailable or incomplete."
-                            " Loading from remote source..."
-                        )
+                    logger.info(
+                        "Local save data unavailable or incomplete."
+                        " Loading from remote source..."
+                    )
                     self.collect_data()
                     self.save_data()
 

@@ -23,6 +23,8 @@ you to kill all the processes manually via task manager.
 import time as tm
 import datetime as datetime
 import os
+import logging
+from io import StringIO
 
 # qncmbe imports
 from .growths import GrowthDataCollector
@@ -39,6 +41,20 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 
 qt_creator_file = os.path.join(this_dir, "origin_import.ui")
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qt_creator_file)
+
+logger = logging.getLogger(__name__)
+
+
+class QPlainTextEditHandler(logging.Handler):
+    '''Handler to add log messages (info, warnings, errors, etc) to
+    a Qt gui textbox.'''
+    def __init__(self, plain_text_edit_widget):
+        super().__init__()
+        self.widget = plain_text_edit_widget
+
+    def emit(self, record):
+        msg = self.format(record)
+        self.widget.appendPlainText(msg)
 
 
 class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -69,6 +85,32 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         if template_file is not None:
             self.set_template_file(template_file)
             self.set_default_filepath()
+
+        self.set_up_logging()
+
+    def set_up_logging(self):
+        '''Set up handlers to catch warnings/errors/info from logging and
+        display them. Warnings and Errors are displayed directly on the gui.
+        Info + Warnings + Errors are logged into a Notes pane of the Origin
+        file.'''
+        log_handler = QPlainTextEditHandler(self.runtime_messages)
+        log_handler.setFormatter(
+            logging.Formatter('%(levelname)s: %(message)s')
+        )
+        log_handler.setLevel(logging.WARNING)
+        logging.getLogger().addHandler(log_handler)
+
+        self.log_str = StringIO()
+
+        self.log_str_handler = logging.StreamHandler(self.log_str)
+        self.log_str_handler.setFormatter(
+            logging.Formatter(
+                '%(levelname)s %(asctime)s (%(name)s):\n  %(message)s'
+            )
+        )
+        self.log_str_handler.setLevel(logging.INFO)
+        
+        logging.getLogger().addHandler(self.log_str_handler)
 
     def get_start_time(self):
         return self.start.dateTime().toPyDateTime()
@@ -157,18 +199,23 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         if fname != '':
             self.set_template_file(os.path.abspath(fname))
 
-    def set_runtime_message(self, text):
+    def clear_runtime_message(self):
         self.runtime_messages.setPlainText('')
+
+    def set_runtime_message(self, text):
+        self.clear_runtime_message()
         self.runtime_messages.insertPlainText(text)
         self.runtime_messages.repaint()
+
+        logger.info(text)
 
     def add_runtime_message(self, text, newline=True):
 
         pre = '\n' if newline else ' '
-
         self.runtime_messages.insertPlainText(pre + text)
-
         self.runtime_messages.repaint()
+
+        logger.info(text)
 
     def make_save_path(self):
 
@@ -179,7 +226,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                 os.makedirs(path)
             except OSError:
                 self.add_runtime_message(
-                    "Error: problem with the specified path. "
+                    "ERROR: problem with the specified path. "
                     "Check before running again."
                 )
                 return False
@@ -193,13 +240,20 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if (end_time < start_time):
             self.add_runtime_message(
-                "Error: end time is before start time. "
+                "ERROR: end time is before start time. "
             )
             return False
 
         if (end_time > datetime.datetime.now()):
             self.add_runtime_message(
-                "Error: future times included."
+                "ERROR: future times included."
+            )
+            return False
+
+        if ((end_time - start_time) > datetime.timedelta(days=14)):
+            self.clear_runtime_message()
+            logger.error(
+                "Time range too wide! Must be less than 14 days."
             )
             return False
 
@@ -212,7 +266,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for path in bad_paths:
             self.add_runtime_message(
-                    f'Error: could not find/access data folder\n  "{path}"'
+                    f'ERROR: could not find/access data folder\n  "{path}"'
                 )
             passed = False
 
@@ -235,14 +289,14 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         ):
 
             self.add_runtime_message(
-                "Error: template file missing/invalid."
+                "ERROR: template file missing/invalid."
                 " Check before running again."
             )
             raise RuntimeError("Invalid template file.")
 
         if not self.origin.Execute(f'doc -o {template_file}'):
             self.add_runtime_message(
-                f"Error: could not load template file. "
+                f"ERROR: could not load template file. "
                 "Check before running again."
             )
             raise RuntimeError("Error loading template file.")
@@ -253,12 +307,34 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.add_runtime_message("Creating output file...")
         if not self.origin.Execute(f'save {filepath}'):
             self.add_runtime_message(
-                "Error: could not save to specified path/file."
+                "ERROR: could not save to specified path/file."
                 " Check before running again."
             )
             raise RuntimeError("Error saving to origin file.")
 
+    def get_logfile_name(self, filepath):
+        
+        logfile = os.path.splitext(filepath)[0]
+        postfix = '-import-log.txt'
+
+        n = 0
+        while os.path.exists(logfile + postfix):
+            n += 1
+            postfix = f'-import-log-{n}.txt'
+            if n > 100:
+                self.add_runtime_message(
+                    "ERROR: Too many existing import log files for output"
+                    f" file\n  {filepath}"
+                )
+                return None
+
+        return logfile + postfix
+
     def import_data(self):
+
+        # Clear the logger
+        self.log_str = StringIO()
+        self.log_str_handler.setStream(self.log_str)
 
         self.set_runtime_message("Starting the import process...")
 
@@ -292,6 +368,11 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         passed = self.make_save_path()
 
         if not passed:
+            return
+
+        logfile = self.get_logfile_name(filepath)
+
+        if logfile is None:
             return
 
         try:
@@ -334,7 +415,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                     data = collector.data
                     dt = tm.time() - tcol
                     self.add_runtime_message(
-                        f"Done! ({dt:.4f} s)", newline=False
+                        f"Done collecting {loc} data. ({dt:.4f} s)"
                     )
 
                 twrite = tm.time()
@@ -416,31 +497,41 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 dt = tm.time() - twrite
                 self.add_runtime_message(
-                    f"Done! ({dt:.4f} s)", newline=False
+                    f"Done writing {loc} data to Origin. ({dt:.4f} s)"
                 )
 
-            if not self.origin.Execute(f'win -a ImportInfo'):
-                self.origin.Execute(f'newbook ImportInfo')
+            # note_text = note_text.replace('%', '')
+            # note_text = note_text.replace('\'', '%(quote)')
+            # note_text = note_text.replace('\"', '%(quote)')
 
-            if self.get_empty_data():
-                self.origin.PutWorksheet('ImportInfo', [[None, None]], 0, 0)
-            else:
-                self.origin.PutWorksheet(
-                    'ImportInfo', [[str(start_time), str(end_time)]], 0, 0
-                )
+            # self.origin.Execute(f'note.text$ = ""')
+            # for line in note_text.split('\n'):
+            #     self.origin.Execute(f'note.text$ = note.text$ + "{line}"')
 
-            self.origin.Execute(f'col(1)[L]$ = Start time')
-            self.origin.Execute(f'col(2)[L]$ = End time')
+            # if self.get_empty_data():
+            #     self.origin.Execute('ImportInfo', [[None, None]], 0, 0)
+            # else:
+            #     self.origin.PutWorksheet(
+            #         'ImportInfo', [[str(start_time), str(end_time)]], 0, 0
+            #     )
 
-            self.origin.Execute('wks.labels(L)')
+            # self.origin.Execute(f'col(1)[L]$ = Start time')
+            # self.origin.Execute(f'col(2)[L]$ = End time')
+
+            # self.origin.Execute('wks.labels(L)')
 
             self.add_runtime_message("Saving output file...")
             if not self.origin.Execute(f'save {filepath}'):
                 self.add_runtime_message(
-                    "Error: could not save output file."
+                    "ERROR: could not save output file."
                     " Save manually if possible."
                 )
                 raise RuntimeError("Error saving output file")
+
+            t = tm.time() - t
+            self.add_runtime_message(
+                f"Import complete! (Total time: {t:.4f} s)"
+            )
 
         except RuntimeError:
             self.add_runtime_message("Import failed!")
@@ -449,10 +540,24 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             self.origin.Exit()
             del self.origin
 
-        t = tm.time() - t
-        self.add_runtime_message(
-            f"Import complete! (Total time: {t:.4f} s)"
-        )
+            self.add_runtime_message(f'Writing to log file\n  "{logfile}"')
+
+            log_text = '##### Data import info #####'
+            log_text += f'\n\nQNC-MBE growth data imported to Origin file:'
+            log_text += f'\n  "{filepath}"'
+            log_text += f'\n\nData range from'
+            log_text += f'\n{start_time} (defined as t=0)\nto\n{end_time}'
+            log_text += '\n\nThis data was imported using the qncmbe Python'
+            log_text += ' package (https://github.com/cdeimert/qncmbe)'
+
+            log_text += '\n\n### Runtime warnings and errors ###\n\n'
+
+            log_text += self.log_str.getvalue()
+
+            with open(logfile, 'w', encoding='utf-8') as lf:
+                lf.write(log_text)
+
+
 
 
 def run_origin_import(**kwargs):

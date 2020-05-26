@@ -21,14 +21,10 @@ in the future.
 See example file for example of usage.
 '''
 
-# TODO: update this to use the new data_import library
-# Should be able to make a single data collector and loop through,
-# updating the dates every time. Saving/loading should be automatically
-# dealt with
-
 # Standard library imports (not included in setup.py)
 import os
 import datetime as datetime
+import logging
 
 # Non-standard library imports (included in setup.py)
 import openpyxl as xl
@@ -53,6 +49,8 @@ try:
     register_matplotlib_converters()
 except ImportError:
     pass
+
+logger = logging.getLogger(__name__)
 
 valid_cells = ['Ga1', 'Ga2', 'In1', 'In2', 'Al1']
 
@@ -215,8 +213,8 @@ class CellUsageCalculator():
             row = 10  # Starting row in the table
 
             if sheet.cell(row=row-2, column=2).value != "Growth #":
-                print(
-                    "WARNING: unexpected cell header value. Make sure the "
+                logger.warning(
+                    "Enexpected cell header value. Make sure the "
                     "structure of the Calibration Parameters Excel sheet has "
                     "not been modified."
                 )

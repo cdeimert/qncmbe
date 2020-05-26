@@ -2,6 +2,7 @@
 import datetime
 import os
 import re
+import logging
 
 # qncmbe imports
 from .utils import DataCollector, DataElement
@@ -10,6 +11,9 @@ from .data_names import index
 # Non-standard library imports (included in setup.py)
 import numpy as np
 from dateutil import parser as date_parser
+
+
+logger = logging.getLogger(__name__)
 
 
 class BETDataCollector(DataCollector):
@@ -58,8 +62,8 @@ class BETDataCollector(DataCollector):
                 fpath = os.path.join(folderpath, fname)
                 rv = self.is_data_file(fpath)
                 if rv == -1:
-                    print(
-                        f"Warning: skipping problematic data file\n  {fpath}"
+                    logger.warning(
+                        f'Skipping problematic data file\n  "{fname}"'
                     )
                 elif rv:
                     file_arr = np.loadtxt(fpath, skiprows=1)
@@ -103,9 +107,9 @@ class BETDataCollector(DataCollector):
             return -1
 
         if ctime > mtime:
-            print(
-                "Warning: timestamp inconsistent with modification "
-                f"time:\n {fpath}"
+            logger.error(
+                f'Timestamp inconsistent with modification time in'
+                f'\n  "{basename}"'
             )
             return -1
 
@@ -115,13 +119,13 @@ class BETDataCollector(DataCollector):
         )
 
         if not name_condition:
-            print(f"Warning: unexpected filename format\n  {fpath}")
+            logger.warning(f'Unexpected filename format\n  "{basename}"')
 
         time_condition = (
             (self.start_time < mtime) and (self.end_time > ctime)
         )
 
-        return (time_condition and name_condition)
+        return time_condition
 
     @staticmethod
     def get_file_times(fpath):
@@ -158,9 +162,10 @@ class BETDataCollector(DataCollector):
                 # Some older timestamps are missing the seconds, so need
                 # two cases
                 if match[1] == '':
-                    print(
-                        f"Warning: timestamp missing seconds\n  {fpath}"
+                    logger.warning(
+                        f'Timestamp missing seconds in\n  "{basename}"'
                     )
+
                     if abs((timestamp - file_ctime).total_seconds()) < 60:
                         ctime = file_ctime
                     else:
@@ -173,7 +178,7 @@ class BETDataCollector(DataCollector):
 
         except ValueError:
             ctime = None
-            print(f"Warning: could not parse filename\n  {fpath}")
+            logger.error(f'Could not parse filename\n  "{basename}"')
 
         mtime = file_mtime
 

@@ -1,4 +1,6 @@
+# Standard library imports
 from pathlib import Path
+import logging
 
 # qncmbe imports
 from .utils import DataCollector
@@ -7,8 +9,8 @@ from .BET import BETDataCollector
 from .SVT import SVTDataCollector
 from .data_names import index
 
-# Non-standard library imports (included in setup.py)
-# import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class GrowthDataCollector(DataCollector):
@@ -99,7 +101,7 @@ class GrowthDataCollector(DataCollector):
     def _set_test_mode(self):
         '''Use locally-saved data for speed during testing.'''
 
-        print("WARNING: using GrowthDataCollector in test mode!")
+        logger.warning("Using GrowthDataCollector in test mode!")
 
         root = Path(__file__).resolve().parent.parent.parent
 

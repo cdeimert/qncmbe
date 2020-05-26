@@ -1,6 +1,7 @@
 # Standard library imports (not included in setup.py)
 import datetime
 import os
+import logging
 
 # qncmbe imports
 from .utils import DataCollector, DataElement
@@ -9,6 +10,9 @@ from .data_names import index
 # Non-standard library imports (included in setup.py)
 import numpy as np
 from dateutil import parser as date_parser
+
+
+logger = logging.getLogger(__name__)
 
 
 class SVTDataCollector(DataCollector):
@@ -49,9 +53,9 @@ class SVTDataCollector(DataCollector):
                 t0, ts, te = get_SVT_folder_time_info(fpath)
 
                 if any([t is None for t in [t0, ts, te]]):
-                    print(
-                        "Warning: problem with SVT time info so skipping "
-                        f"folder\n  {fpath}"
+                    logger.warning(
+                        f'Problem with SVT time info.'
+                        f' Skipping folder\n  "{fpath}"'
                     )
                     continue
 
@@ -179,9 +183,9 @@ def get_SVT_folder_time_info(folder):
                     break
 
             if err:
-                print(
-                    f"Warning: Invalid time_info.txt file\n  {time_file}"
-                    "\nRepair or delete it!"
+                logger.error(
+                    f'Invalid time_info.txt file\n  "{time_file}".'
+                    '\n  Repair or delete it!'
                 )
                 return None, None, None
 
@@ -192,8 +196,10 @@ def get_SVT_folder_time_info(folder):
     except FileNotFoundError:
         # If the time_info.txt file has not been generated, generate it.
 
-        print(f"Missing time_info.txt in\n  {folder}")
-        print("Attempting to generate...")
+        logger.info(
+            f'Missing time_info.txt in\n  "{folder}".'
+            '\n  Attempting to generate it...'
+        )
         engine_file = ''
         for name in os.listdir(folder):
             if name.endswith('Engine 1.txt'):
@@ -217,10 +223,10 @@ def get_SVT_folder_time_info(folder):
         )
 
         if modification_time < creation_time:
-            print(
-                "Warning: Cannot automatically generate time_info.txt because "
+            logger.error(
+                "Cannot automatically generate time_info.txt because "
                 "SVT Engine modification time < creation time in"
-                f"\n  {engine_file}"
+                f'\n  "{engine_file}"'
             )
             return None, None, None
 
@@ -249,7 +255,7 @@ def get_SVT_folder_time_info(folder):
             tf.write(f'Data_start_time = {t_start.strftime(fmt_string)}\n')
             tf.write(f'Data_end_time = {t_end.strftime(fmt_string)}')
 
-        print(f"Generated time_info.txt file\n  {time_file}")
+        logger.info(f'Generated time_info.txt file\n  "{time_file}"')
 
     return t_zero, t_start, t_end
 
