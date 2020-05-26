@@ -8,6 +8,7 @@ from .data_names import index
 
 # Non-standard library imports (included in setup.py)
 import numpy as np
+from dateutil import parser as date_parser
 
 
 class SVTDataCollector(DataCollector):
@@ -46,6 +47,13 @@ class SVTDataCollector(DataCollector):
                 # otherwise skip it
 
                 t0, ts, te = get_SVT_folder_time_info(fpath)
+
+                if any([t is None for t in [t0, ts, te]]):
+                    print(
+                        "Warning: problem with SVT time info so skipping "
+                        f"folder\n  {fpath}"
+                    )
+                    continue
 
                 f_zero_time = t0
                 f_start_time = ts
@@ -126,6 +134,8 @@ def get_SVT_folder_time_info(folder):
     - t_zero: date + time corresponding to t=0 in the data file
     - t_start: date + time of the first data point
     - t_end: date + time of the last data point
+
+    If there is a problem, returns None, None, None
     '''
 
     time_file = os.path.join(folder, 'time_info.txt')
@@ -139,33 +149,61 @@ def get_SVT_folder_time_info(folder):
 
     try:
         with open(time_file) as tf:
-            if tf.readline() != line0:
-                raise ValueError
-            if not tf.readline().startswith('Parent folder = '):
-                raise ValueError
 
-            arr = []
-            for n in range(3):
-                date_string = tf.readline().split(' = ')[-1].strip('\n')
-                arr.append(
-                    datetime.datetime.strptime(date_string, fmt_string)
+            t = {
+                'Zero': None, 'Data_start': None, 'Data_end': None
+            }
+
+            err = False
+
+            for line in tf:
+                for key in t:
+                    prefix = f"{key}_time = "
+                    if line.startswith(prefix):
+                        date_str = line.replace(prefix, '').strip('\n')
+
+                        try:
+                            time = date_parser.parse(date_str)
+                        except ValueError:
+                            continue
+
+                        if t[key] is not None:
+                            err = True
+                            break
+
+                        t[key] = time
+
+            for key in t:
+                if t[key] is None:
+                    err = True
+                    break
+
+            if err:
+                print(
+                    f"Warning: Invalid time_info.txt file\n  {time_file}"
+                    "\nRepair or delete it!"
                 )
+                return None, None, None
 
-            t_zero, t_start, t_end = arr
+            t_zero = t['Zero']
+            t_start = t['Data_start']
+            t_end = t['Data_end']
 
-    except (FileNotFoundError, ValueError):
+    except FileNotFoundError:
         # If the time_info.txt file has not been generated, generate it.
 
+        print(f"Missing time_info.txt in\n  {folder}")
+        print("Attempting to generate...")
         engine_file = ''
         for name in os.listdir(folder):
             if name.endswith('Engine 1.txt'):
                 engine_file = os.path.join(folder, name)
 
-        t = SVTDataCollector.read_SVT_data_file(
-                        filepath=engine_file,
-                        cols=[0],
-                        try_increments=True
-                    )
+        t = read_SVT_data_file(
+            filepath=engine_file, cols=[0], try_increments=True
+        )
+
+        t = np.squeeze(t)*86400
 
         # Times are just relative to midnight on some day.
         # So compare with the file creation date to figure out which day.
@@ -173,6 +211,18 @@ def get_SVT_folder_time_info(folder):
         creation_time = datetime.datetime.fromtimestamp(
             os.path.getctime(engine_file)
         )
+
+        modification_time = datetime.datetime.fromtimestamp(
+            os.path.getmtime(engine_file)
+        )
+
+        if modification_time < creation_time:
+            print(
+                "Warning: Cannot automatically generate time_info.txt because "
+                "SVT Engine modification time < creation time in"
+                f"\n  {engine_file}"
+            )
+            return None, None, None
 
         t_zero = creation_time.replace(
             hour=0, minute=0, second=0, microsecond=0
@@ -198,6 +248,8 @@ def get_SVT_folder_time_info(folder):
             tf.write(f'Zero_time = {t_zero.strftime(fmt_string)}\n')
             tf.write(f'Data_start_time = {t_start.strftime(fmt_string)}\n')
             tf.write(f'Data_end_time = {t_end.strftime(fmt_string)}')
+
+        print(f"Generated time_info.txt file\n  {time_file}")
 
     return t_zero, t_start, t_end
 
@@ -226,9 +278,8 @@ def read_SVT_data_file(filepath, cols, try_increments=True):
                 except (ValueError, IndexError):
                     continue
 
-        name = increment_SVT_filename(name)
-
         if try_increments:
+            name = increment_SVT_filename(name)
             keep_going = os.path.exists(name)
         else:
             keep_going = False

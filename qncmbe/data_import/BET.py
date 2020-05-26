@@ -56,7 +56,12 @@ class BETDataCollector(DataCollector):
             folderpath = os.path.join(self.main_data_path, folder)
             for fname in os.listdir(folderpath):
                 fpath = os.path.join(folderpath, fname)
-                if self.is_data_file(fpath):
+                rv = self.is_data_file(fpath)
+                if rv == -1:
+                    print(
+                        f"Warning: skipping problematic data file\n  {fpath}"
+                    )
+                elif rv:
                     file_arr = np.loadtxt(fpath, skiprows=1)
 
                     file_ctime, _ = BETDataCollector.get_file_times(fpath)
@@ -86,19 +91,34 @@ class BETDataCollector(DataCollector):
 
     def is_data_file(self, fpath):
         '''Checks the file (full path specified by fpath) to see if it contains
-        relevant data. Based on self.start_time and self.end_time.'''
+        relevant data. Based on self.start_time and self.end_time.
+
+        Returns -1 if the file is problematic'''
+
+        basename = os.path.basename(fpath)
 
         ctime, mtime = BETDataCollector.get_file_times(fpath)
 
-        time_condition = (
-            (self.start_time < mtime) and (self.end_time > ctime)
-        )
+        if ctime is None:
+            return -1
 
-        basename = os.path.basename(fpath)
+        if ctime > mtime:
+            print(
+                "Warning: timestamp inconsistent with modification "
+                f"time:\n {fpath}"
+            )
+            return -1
 
         name_condition = (
             (basename.startswith('BET') or basename.startswith('ISP'))
             and basename.endswith('.dat')
+        )
+
+        if not name_condition:
+            print(f"Warning: unexpected filename format\n  {fpath}")
+
+        time_condition = (
+            (self.start_time < mtime) and (self.end_time > ctime)
         )
 
         return (time_condition and name_condition)
@@ -107,47 +127,54 @@ class BETDataCollector(DataCollector):
     def get_file_times(fpath):
         '''Gets the creation and modification date of the BET data file.
 
+        returns (ctime, mtime) as datetime objects
+
         Tries to use the file creation time for the best precision. However,
         the file creation time could change significantly if the file is
         copied. So it is verified against the timestamp. If there is a
-        conflict, the timestamp will be used (less precise).'''
+        conflict, the timestamp will be used (less precise).
+        '''
 
         file_mtime = datetime.datetime.fromtimestamp(os.path.getmtime(fpath))
         file_ctime = datetime.datetime.fromtimestamp(os.path.getctime(fpath))
 
-        datetime_regex = (
-            r"(?P<time>\d\d\.\d\d(?P<sec>.\d\d)?) "
-            r"(?P<date>\w+, \w+ \d\d, \d{4})\.dat"
-        )
+        pattern = re.compile(r"(\d\d\.\d\d(.\d\d)?) (\w+, \w+ \d\d, \d{4})")
 
         basename = os.path.basename(fpath)
 
-        match = re.search(datetime_regex, basename)
+        matches = pattern.findall(basename)
 
-        if match is None:
-            raise ValueError(
-                "Invalid/missing timestamp:"
-                f'\n  "{fpath}"'
-            )
-        else:
-            time_str = match.group('time').replace('.', ':')
-            date_str = match.group('date')
-
-            timestamp = date_parser.parse(f'{date_str} {time_str}')
-
-            # Some older timestamps are missing the seconds, so need two cases
-            if match.group('sec') is None:
-                if abs((timestamp - file_ctime).total_seconds()) < 60:
-                    ctime = file_ctime
-                else:
-                    ctime = timestamp
+        try:
+            if len(matches) != 1:
+                raise ValueError
             else:
-                if abs((timestamp - file_ctime).total_seconds()) < 1:
-                    ctime = file_ctime
+                match = matches[0]
+
+                time_str = match[0].replace('.', ':')
+                date_str = match[2]
+
+                timestamp = date_parser.parse(f'{date_str} {time_str}')
+
+                # Some older timestamps are missing the seconds, so need
+                # two cases
+                if match[1] == '':
+                    print(
+                        f"Warning: timestamp missing seconds\n  {fpath}"
+                    )
+                    if abs((timestamp - file_ctime).total_seconds()) < 60:
+                        ctime = file_ctime
+                    else:
+                        ctime = timestamp
                 else:
-                    ctime = timestamp
+                    if abs((timestamp - file_ctime).total_seconds()) < 1:
+                        ctime = file_ctime
+                    else:
+                        ctime = timestamp
+
+        except ValueError:
+            ctime = None
+            print(f"Warning: could not parse filename\n  {fpath}")
 
         mtime = file_mtime
 
         return ctime, mtime
-
