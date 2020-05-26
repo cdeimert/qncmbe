@@ -148,14 +148,17 @@ class CellUsageCalculator():
             molly_dt=self.delta_t
         )
 
-        print(f"Collecting temperature data for {day}...")
+        print(f"Collecting temperature data for {day.strftime('%Y-%m-%d')}...")
         data = collector.get_data(force_reload=self.regen_data)
 
         day += delta
 
         while day <= self.end_date:
 
-            print(f"Collecting temperature data for {day}...")
+            print(
+                f"Collecting temperature data for "
+                f"{day.strftime('%Y-%m-%d')}..."
+            )
 
             collector.set_times(day, day + delta)
             new_data = collector.get_data(force_reload=self.regen_data)
