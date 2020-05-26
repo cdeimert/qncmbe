@@ -162,7 +162,7 @@ class BETDataCollector(DataCollector):
                 # Some older timestamps are missing the seconds, so need
                 # two cases
                 if match[1] == '':
-                    logger.warning(
+                    logger.debug(
                         f'Timestamp missing seconds in\n  "{basename}"'
                     )
 
