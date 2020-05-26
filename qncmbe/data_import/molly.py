@@ -120,46 +120,57 @@ class MollyDataCollector(DataCollector):
             tot_seconds = (self.end_time - self.start_time).total_seconds()
             return np.arange(0.0, tot_seconds, self.dt)
 
-    def get_data_path(self, hour):
-        '''
-        Find the path for the Molly binary file and corresponding header file
-        for a given hour.
-        '''
+    def get_header_path(self, hour):
+        '''Find the path for a Molly header file for a given hour (datetime
+        object).'''
 
         subfolder = hour.strftime("%Y")
         subsubfolder = hour.strftime("%m-%b")
-        header_filename = hour.strftime("%dday-%Hhr.txt")
-        binary_filename = hour.strftime("%dday-%Hhr-binary.txt")
+        filename = hour.strftime("%dday-%Hhr.txt")
 
-        header_path = os.path.join(
-            self.main_data_path, subfolder, subsubfolder, header_filename
-        )
-        binary_path = os.path.join(
-            self.main_data_path, subfolder, subsubfolder, binary_filename
+        return os.path.join(
+            self.main_data_path, subfolder, subsubfolder, filename
         )
 
-        return header_path, binary_path
+    def get_binary_path(self, hour):
+        '''Find the path for a Molly binary file for a given hour (datetime
+        object).'''
 
-    def get_line_numbers(self, header_path):
-        '''Searches the Molly header file for self.names and returns their
-        location and size in the binary file as dictionaries.
+        subfolder = hour.strftime("%Y")
+        subsubfolder = hour.strftime("%m-%b")
+        filename = hour.strftime("%dday-%Hhr-binary.txt")
+
+        return os.path.join(
+            self.main_data_path, subfolder, subsubfolder, filename
+        )
+
+    def get_line_numbers(self, hour):
+        '''Searches the Molly header file from a given hour for self.names and
+        returns their location and size in the binary file as dictionaries.
+
+        Returns None, None if opening the header file leads to an IOError
+        (usually means the file is missing or inaccessible.)
         '''
+
+        header_path = self.get_header_path(hour)
+
+        total_values = {name: 0 for name in self.names}
+        values_offset = {name: 0 for name in self.names}
 
         try:
             header = open(header_path, "r")
         except IOError:
-            print("Warning: missing header file " + header_path)
-            return -1, -1
+            print(
+                "Warning: missing Molly header file for "
+                f"{hour.strftime('%Y-%m-%d')} {hour.strftime('%H')}:00"
+            )
+            return None, None
 
         try:
-            total_values = {}
-            values_offset = {}
             local_name = {}
             found = {}
             regex = {}
             for name in self.names:
-                total_values[name] = 0
-                values_offset[name] = 0
                 local_name[name] = self.parameters[name]['local_name']
                 found[name] = False
                 regex[name] = re.compile(
@@ -177,14 +188,19 @@ class MollyDataCollector(DataCollector):
                             values_offset[name] = int(match.group(2))
                             if found[name]:
                                 print(
-                                    f"Warning: duplicate entries for '{name}'."
+                                    f"Warning: duplicate entries for '{name}'"
+                                    f"{hour.strftime('%Y-%m-%d')} "
+                                    f"{hour.strftime('%H')}:00"
                                 )
                             else:
                                 found[name] = True
 
             for name in self.names:
                 if not found[name]:
-                    print(f"Warning: could not find value '{name}'")
+                    print(
+                        f"Warning: missing '{name}' for "
+                        f"{hour.strftime('%Y-%m-%d')} {hour.strftime('%H')}:00"
+                    )
 
         finally:
             header.close()
@@ -216,38 +232,39 @@ class MollyDataCollector(DataCollector):
         the binary file sequentially to get the values.
         '''
 
-        header_path, binary_path = self.get_data_path(hour)
+        binary_path = self.get_binary_path(hour)
 
-        total_values, values_offset = self.get_line_numbers(header_path)
+        total_values, values_offset = self.get_line_numbers(hour)
 
         datetime0 = hour.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        data_hour = {
+            name: DataElement(name, datetime0, index[name].units)
+            for name in self.names
+        }
+
+        if (total_values is None) and (values_offset is None):
+            return data_hour
 
         try:
             binary = open(binary_path, "rb")
         except IOError:
-            print("Warning: missing binary file " + binary_path)
-
-            data_hour = {
-                name: DataElement(name, datetime0, index[name].units)
-                for name in self.names
-            }
+            print(
+                "Warning: missing Molly binary file for "
+                f"{hour.strftime('%Y-%m-%d')} {hour.strftime('%H')}:00"
+            )
+            return data_hour
 
         try:
-
-            data_hour = {}
             for name in self.names:
-                units = index[name].units
-
                 if (total_values[name] < 0) or (values_offset[name] < 0):
                     print(
                         "Warning: Invalid total_values or values_offset for ",
                         name
                     )
-                    data_hour[name] = DataElement(name, datetime0, units)
                     break
 
-                data_hour[name] = DataElement(
-                    name=name, datetime0=datetime0, units=units,
+                data_hour[name].set_data(
                     time=np.zeros(total_values[name]),
                     vals=np.zeros(total_values[name])
                 )

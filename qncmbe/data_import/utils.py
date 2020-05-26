@@ -41,9 +41,8 @@ class DataElement():
     ):
         self.name = name
         self.datetime0 = datetime0
-        self.time = time
-        self.vals = vals
         self.units = units
+        self.set_data(time, vals)
 
     def __getitem__(self, slice_):
         return DataElement(
