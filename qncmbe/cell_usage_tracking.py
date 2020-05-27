@@ -274,13 +274,15 @@ class CellUsageCalculator():
         numpy array for each cell)
         '''
 
-        print("Calculating element usage...")
-
         if len(self.time) == 0:
             self.collect_temperature_data()
 
         if not self.A:
+            print("Collecting ABC coefficients...")
             self.collect_ABC_coefs()
+            print("Done collecting ABC coefficients.")
+
+        print("Calculating element usage...")
 
         for cell in self.cells:
 
@@ -303,7 +305,7 @@ class CellUsageCalculator():
                 self.particle_usage[cell]*atomic_mass[cell]/avogadro
             )
 
-            print("Done calculating element usage!")
+        print("Done calculating element usage!")
 
     def get_mass_usage(self):
         '''
