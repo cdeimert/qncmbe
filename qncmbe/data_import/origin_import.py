@@ -172,14 +172,14 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 start_str = self.start_time.strftime("%Y-%m-%d")
 
-                save_file = os.path.join(
+                self.save_file = os.path.join(
                     folder, f"Growth data {start_str}.opj"
                 )
             else:
-                save_file = QtCore.QDir.homePath()
+                self.save_file = QtCore.QDir.homePath()
 
         fname, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self, "Choose save file", save_file,
+            self, "Choose save file", self.save_file,
             "Origin file (*.opj)"
         )
 
