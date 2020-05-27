@@ -40,8 +40,12 @@ ucalc = CellUsageCalculator(
     end_date='2020-04-30',
     cells='Ga1,Ga2,Al1,In1,In2'.split(','),
     cell_pars_file=cell_pars_file,
-    save_dir=os.path.join(this_dir, 'saved_cell_data')
+    save_dir=os.path.join(this_dir, 'saved_cell_data'),
+    delta_t=300,
+    force_reload=False  # Note: make sure to force reload if you change delta_t
 )
+
+ucalc.calculate_element_usage()
 
 fig, ax = plt.subplots()
 ucalc.plot_temperatures(fig, ax)

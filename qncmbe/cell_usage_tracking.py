@@ -77,24 +77,24 @@ beam_efficiency = {
 
 
 class CellUsageCalculator():
+    '''
+    - start_date and end_date should be strings of the form 'YYYY-MM-DD'
+    - cells should be a list of cells (e.g., ['Ga1','Ga2','Al1'])
+    - cell_pars_file should be the full filepath to the Excel file
+        containing the ABC parameters for each cell
+    - save_dir is the directory in which partial data will be saved (To
+        avoid collecting enormous amounts of data from Molly at once (takes a
+        very long time), data is loaded one day at a time and saved into
+        save_dir.)
+    - delta_t is the spacing (s) between data samples. Default is 300 s.
+    - regen_data determines whether or not to regenerate the
+        Cell_data_yyyy-mm-dd.csv files. Should set this to True if, e.g.,
+        you've added an additional cell to 'cells' since the last run
+    '''
     def __init__(
         self, start_date, end_date, cells, cell_pars_file,
-        save_dir='.\\saved_cell_data', delta_t=300, regen_data=False
+        save_dir='.\\saved_cell_data', delta_t=300, force_reload=False
     ):
-        '''
-        - start_date and end_date should be strings of the form 'YYYY-MM-DD'
-        - cells should be a list of cells (e.g., ['Ga1','Ga2','Al1'])
-        - cell_pars_file should be the full filepath to the Excel file
-          containing the ABC parameters for each cell
-        - save_dir is the directory in which partial data will be saved (To
-          avoid collecting enormous amounts of data from Molly at once (takes a
-          very long time), data is loaded one day at a time and saved into
-          save_dir.)
-        - delta_t is the spacing (s) between data samples. Default is 300 s.
-        - regen_data determines whether or not to regenerate the
-           Cell_data_yyyy-mm-dd.csv files. Should set this to True if, e.g.,
-           you've added an additional cell to 'cells' since the last run
-        '''
 
         fmt_str = '%Y-%m-%d'
 
@@ -102,18 +102,18 @@ class CellUsageCalculator():
         self.end_date = datetime.datetime.strptime(end_date, fmt_str)
 
         if self.start_date >= self.end_date:
-            raise Exception("start_date must be before end_date!")
+            raise ValueError("start_date must be before end_date!")
 
         self.cell_pars_file = cell_pars_file
         self.save_dir = save_dir
 
         self.delta_t = delta_t
 
-        self.regen_data = regen_data
+        self.force_reload = force_reload
 
         self.cells = cells
         if not set(self.cells).issubset(set(valid_cells)):
-            raise Exception(
+            raise ValueError(
                 "Invalid cell selection. "
                 f"Only allowed values are {valid_cells}"
             )
@@ -147,7 +147,7 @@ class CellUsageCalculator():
         )
 
         print(f"Collecting temperature data for {day.strftime('%Y-%m-%d')}...")
-        data = collector.get_data(force_reload=self.regen_data)
+        data = collector.get_data(force_reload=self.force_reload)
 
         day += delta
 
@@ -159,7 +159,7 @@ class CellUsageCalculator():
             )
 
             collector.set_times(day, day + delta)
-            new_data = collector.get_data(force_reload=self.regen_data)
+            new_data = collector.get_data(force_reload=self.force_reload)
 
             for name in self.names:
                 data[name].add_data(new_data[name])
@@ -274,6 +274,8 @@ class CellUsageCalculator():
         numpy array for each cell)
         '''
 
+        print("Calculating element usage...")
+
         if len(self.time) == 0:
             self.collect_temperature_data()
 
@@ -300,6 +302,8 @@ class CellUsageCalculator():
             self.mass_usage[cell] = (
                 self.particle_usage[cell]*atomic_mass[cell]/avogadro
             )
+
+            print("Done calculating element usage!")
 
     def get_mass_usage(self):
         '''
