@@ -11,6 +11,7 @@ import matplotlib.colors as clrs
 import os
 import shutil
 import numpy as np
+import scipy.interpolate as interpolate
 
 
 def load_plot_style(name, update_style_files=False):
@@ -40,7 +41,7 @@ def install_plot_styles():
     print("Found qncmbe plot styles folder:")
     print(f'    "{qncmbe_stylelib_dir}"')
 
-    print("Will installing plot styles:")
+    print("Will install plot styles:")
     qncmbe_style_files = []
     for fname in os.listdir(qncmbe_stylelib_dir):
         fpath = os.path.join(qncmbe_stylelib_dir, fname)
@@ -126,6 +127,27 @@ def greyscale(c):
     return (r + g + b)/3
 
 
+def generate_colormap(color_low=None, color_high=None, num_colors=256):
+
+    vals = np.ones((num_colors, 4))
+
+    mpl_colors = get_mpl_colors()
+    if color_low is None:
+        C0 = clrs.to_rgb(mpl_colors[0])
+    else:
+        C0 = clrs.to_rgb(color_low)
+
+    if color_high is None:
+        C1 = clrs.to_rgb(mpl_colors[1])
+    else:
+        C1 = clrs.to_rgb(color_high)
+
+    for i in range(3):
+        vals[:, i] = np.linspace(C0[i], C1[i], num_colors)
+
+    return mpl.colors.ListedColormap(vals)
+
+
 def scale_figure(fig, scale):
     ''' Return figure rescaled by the given scale factor.
 
@@ -193,3 +215,54 @@ def plot_periodic(ax, x, y, nper=[0.2, 0.2], reset_zero=False, **kwargs):
     ax.set_xlim([xp[0], xp[-1]])
 
     return xp, yp
+
+
+def interpolate_2D_grid(x, y, z, Nx, Ny=None, **kwargs):
+    '''Simple function to interpolate 2D data assuming x and y form a
+    rectangular grid. Interpolates to an Nx by Ny grid.
+    If Ny is not given, it defaults as equal to Nx.
+
+    Remaining kwargs are passed to scipy.interpolate.griddata. Also 'rescale'
+    default value is changed to True.
+
+    Returns interpolated arrays xi, yi, zi. These are flat 1D arrays of length
+    Nx*Ny'''
+
+    if Ny is None:
+        Ny = Nx
+
+    X = np.linspace(np.min(x), np.max(x), Nx)
+    Y = np.linspace(np.min(y), np.max(y), Ny)
+
+    XX, YY = np.meshgrid(X, Y)
+
+    xi = XX.flatten()
+    yi = YY.flatten()
+
+    if 'rescale' not in kwargs:
+        kwargs['rescale'] = True
+
+    zi = interpolate.griddata(
+        (x, y), z, (xi, yi), **kwargs
+    )
+
+    return xi, yi, zi
+
+
+def plot_2D_color(ax, x, y, c, **kwargs):
+    '''Wrapper for matplotlib's tripcolor function.
+    Difference is that this  one scales the variables before breaking the grid
+    into triangles, to give better results when x and y have different units.
+
+    ax should be a matplotlib Axes object
+    Remaining arguments are the same as tripcolor
+
+    '''
+
+    if 'triangles' not in kwargs:
+        x_rel = x/np.ptp(x)
+        y_rel = y/np.ptp(y)
+
+        kwargs['triangles'] = mpl.tri.Triangulation(x_rel, y_rel).triangles
+
+    return ax.tripcolor(x, y, c, **kwargs)

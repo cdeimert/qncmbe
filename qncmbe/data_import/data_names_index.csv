@@ -1,0 +1,245 @@
+name;location;sublocation;parameters;units
+Ga1 tip measured;Molly;Ga1;local_name='Instances.Ga1_tip.Measured';°C
+Ga1 tip working setpoint;Molly;Ga1;local_name='Instances.Ga1_tip.WorkingSetpoint';°C
+Ga1 tip setpoint;Molly;Ga1;local_name='Instances.Ga1_tip.Setpoint';°C
+Ga1 tip ramp rate;Molly;Ga1;local_name='Instances.Ga1_tip.RampRate';°C/s
+Ga1 tip output percent;Molly;Ga1;local_name='Instances.Ga1_tip.OutputPercent';% of max voltage
+Ga1 tip voltage;Molly;Ga1;local_name='Instances.Ga1_tip_Voltage.Reading';V
+Ga1 tip current;Molly;Ga1;local_name='Instances.Ga1_tip_Current.Reading';A
+Ga1 tip max current;Molly;Ga1;local_name='Instances.Ga1_tip_MaxCurrent.Reading';A
+Ga1 tip operation mode;Molly;Ga1;local_name='Instances.Ga1_tip_OperationMode.Value';0=CC
+Ga1 tip shutter status;Molly;Ga1;local_name='Instances.Ga1_tip.ShutterStatus';0=open
+Ga1 base measured;Molly;Ga1;local_name='Instances.Ga1_base.Measured';°C
+Ga1 base working setpoint;Molly;Ga1;local_name='Instances.Ga1_base.WorkingSetpoint';°C
+Ga1 base setpoint;Molly;Ga1;local_name='Instances.Ga1_base.Setpoint';°C
+Ga1 base ramp rate;Molly;Ga1;local_name='Instances.Ga1_base.RampRate';°C/s
+Ga1 base output percent;Molly;Ga1;local_name='Instances.Ga1_base.OutputPercent';% of max voltage
+Ga1 base voltage;Molly;Ga1;local_name='Instances.Ga1_base_Voltage.Reading';V
+Ga1 base current;Molly;Ga1;local_name='Instances.Ga1_base_Current.Reading';A
+Ga1 base max current;Molly;Ga1;local_name='Instances.Ga1_base_MaxCurrent.Reading';A
+Ga1 base operation mode;Molly;Ga1;local_name='Instances.Ga1_base_OperationMode.Value';0=CC
+Ga2 tip measured;Molly;Ga2;local_name='Instances.Ga2_tip.Measured';°C
+Ga2 tip working setpoint;Molly;Ga2;local_name='Instances.Ga2_tip.WorkingSetpoint';°C
+Ga2 tip setpoint;Molly;Ga2;local_name='Instances.Ga2_tip.Setpoint';°C
+Ga2 tip ramp rate;Molly;Ga2;local_name='Instances.Ga2_tip.RampRate';°C/s
+Ga2 tip output percent;Molly;Ga2;local_name='Instances.Ga2_tip.OutputPercent';% of max voltage
+Ga2 tip voltage;Molly;Ga2;local_name='Instances.Ga2_tip_Voltage.Reading';V
+Ga2 tip current;Molly;Ga2;local_name='Instances.Ga2_tip_Current.Reading';A
+Ga2 tip max current;Molly;Ga2;local_name='Instances.Ga2_tip_MaxCurrent.Reading';A
+Ga2 tip operation mode;Molly;Ga2;local_name='Instances.Ga2_tip_OperationMode.Value';0=CC
+Ga2 tip shutter status;Molly;Ga2;local_name='Instances.Ga2_tip.ShutterStatus';0=open
+Ga2 base measured;Molly;Ga2;local_name='Instances.Ga2_base.Measured';°C
+Ga2 base working setpoint;Molly;Ga2;local_name='Instances.Ga2_base.WorkingSetpoint';°C
+Ga2 base setpoint;Molly;Ga2;local_name='Instances.Ga2_base.Setpoint';°C
+Ga2 base ramp rate;Molly;Ga2;local_name='Instances.Ga2_base.RampRate';°C/s
+Ga2 base output percent;Molly;Ga2;local_name='Instances.Ga2_base.OutputPercent';% of max voltage
+Ga2 base voltage;Molly;Ga2;local_name='Instances.Ga2_base_Voltage.Reading';V
+Ga2 base current;Molly;Ga2;local_name='Instances.Ga2_base_Current.Reading';A
+Ga2 base max current;Molly;Ga2;local_name='Instances.Ga2_base_MaxCurrent.Reading';A
+Ga2 base operation mode;Molly;Ga2;local_name='Instances.Ga2_base_OperationMode.Value';0=CC
+Al1 tip measured;Molly;Al1;local_name='Instances.Al1_tip.Measured';°C
+Al1 tip working setpoint;Molly;Al1;local_name='Instances.Al1_tip.WorkingSetpoint';°C
+Al1 tip setpoint;Molly;Al1;local_name='Instances.Al1_tip.Setpoint';°C
+Al1 tip ramp rate;Molly;Al1;local_name='Instances.Al1_tip.RampRate';°C/s
+Al1 tip output percent;Molly;Al1;local_name='Instances.Al1_tip.OutputPercent';% of max voltage
+Al1 tip voltage;Molly;Al1;local_name='Instances.Al1_tip_Voltage.Reading';V
+Al1 tip current;Molly;Al1;local_name='Instances.Al1_tip_Current.Reading';A
+Al1 tip max current;Molly;Al1;local_name='Instances.Al1_tip_MaxCurrent.Reading';A
+Al1 tip operation mode;Molly;Al1;local_name='Instances.Al1_tip_OperationMode.Value';0=CC
+Al1 tip shutter status;Molly;Al1;local_name='Instances.Al1_tip.ShutterStatus';0=open
+Al1 base measured;Molly;Al1;local_name='Instances.Al1_base.Measured';°C
+Al1 base working setpoint;Molly;Al1;local_name='Instances.Al1_base.WorkingSetpoint';°C
+Al1 base setpoint;Molly;Al1;local_name='Instances.Al1_base.Setpoint';°C
+Al1 base ramp rate;Molly;Al1;local_name='Instances.Al1_base.RampRate';°C/s
+Al1 base output percent;Molly;Al1;local_name='Instances.Al1_base.OutputPercent';% of max voltage
+Al1 base voltage;Molly;Al1;local_name='Instances.Al1_base_Voltage.Reading';V
+Al1 base current;Molly;Al1;local_name='Instances.Al1_base_Current.Reading';A
+Al1 base max current;Molly;Al1;local_name='Instances.Al1_base_MaxCurrent.Reading';A
+Al1 base operation mode;Molly;Al1;local_name='Instances.Al1_base_OperationMode.Value';0=CC
+In1 tip measured;Molly;In1;local_name='Instances.In1_tip.Measured';°C
+In1 tip working setpoint;Molly;In1;local_name='Instances.In1_tip.WorkingSetpoint';°C
+In1 tip setpoint;Molly;In1;local_name='Instances.In1_tip.Setpoint';°C
+In1 tip ramp rate;Molly;In1;local_name='Instances.In1_tip.RampRate';°C/s
+In1 tip output percent;Molly;In1;local_name='Instances.In1_tip.OutputPercent';% of max voltage
+In1 tip voltage;Molly;In1;local_name='Instances.In1_tip_Voltage.Reading';V
+In1 tip current;Molly;In1;local_name='Instances.In1_tip_Current.Reading';A
+In1 tip max current;Molly;In1;local_name='Instances.In1_tip_MaxCurrent.Reading';A
+In1 tip operation mode;Molly;In1;local_name='Instances.In1_tip_OperationMode.Value';0=CC
+In1 tip shutter status;Molly;In1;local_name='Instances.In1_tip.ShutterStatus';0=open
+In1 base measured;Molly;In1;local_name='Instances.In1_base.Measured';°C
+In1 base working setpoint;Molly;In1;local_name='Instances.In1_base.WorkingSetpoint';°C
+In1 base setpoint;Molly;In1;local_name='Instances.In1_base.Setpoint';°C
+In1 base ramp rate;Molly;In1;local_name='Instances.In1_base.RampRate';°C/s
+In1 base output percent;Molly;In1;local_name='Instances.In1_base.OutputPercent';% of max voltage
+In1 base voltage;Molly;In1;local_name='Instances.In1_base_Voltage.Reading';V
+In1 base current;Molly;In1;local_name='Instances.In1_base_Current.Reading';A
+In1 base max current;Molly;In1;local_name='Instances.In1_base_MaxCurrent.Reading';A
+In1 base operation mode;Molly;In1;local_name='Instances.In1_base_OperationMode.Value';0=CC
+In2 tip measured;Molly;In2;local_name='Instances.In2_tip.Measured';°C
+In2 tip working setpoint;Molly;In2;local_name='Instances.In2_tip.WorkingSetpoint';°C
+In2 tip setpoint;Molly;In2;local_name='Instances.In2_tip.Setpoint';°C
+In2 tip ramp rate;Molly;In2;local_name='Instances.In2_tip.RampRate';°C/s
+In2 tip output percent;Molly;In2;local_name='Instances.In2_tip.OutputPercent';% of max voltage
+In2 tip voltage;Molly;In2;local_name='Instances.In2_tip_Voltage.Reading';V
+In2 tip current;Molly;In2;local_name='Instances.In2_tip_Current.Reading';A
+In2 tip max current;Molly;In2;local_name='Instances.In2_tip_MaxCurrent.Reading';A
+In2 tip operation mode;Molly;In2;local_name='Instances.In2_tip_OperationMode.Value';0=CC
+In2 tip shutter status;Molly;In2;local_name='Instances.In2_tip.ShutterStatus';0=open
+In2 base measured;Molly;In2;local_name='Instances.In2_base.Measured';°C
+In2 base working setpoint;Molly;In2;local_name='Instances.In2_base.WorkingSetpoint';°C
+In2 base setpoint;Molly;In2;local_name='Instances.In2_base.Setpoint';°C
+In2 base ramp rate;Molly;In2;local_name='Instances.In2_base.RampRate';°C/s
+In2 base output percent;Molly;In2;local_name='Instances.In2_base.OutputPercent';% of max voltage
+In2 base voltage;Molly;In2;local_name='Instances.In2_base_Voltage.Reading';V
+In2 base current;Molly;In2;local_name='Instances.In2_base_Current.Reading';A
+In2 base max current;Molly;In2;local_name='Instances.In2_base_MaxCurrent.Reading';A
+In2 base operation mode;Molly;In2;local_name='Instances.In2_base_OperationMode.Value';0=CC
+Si1 base measured;Molly;Si1;local_name='Instances.Si1_base.Measured';°C
+Si1 base working setpoint;Molly;Si1;local_name='Instances.Si1_base.WorkingSetpoint';°C
+Si1 base setpoint;Molly;Si1;local_name='Instances.Si1_base.Setpoint';°C
+Si1 base ramp rate;Molly;Si1;local_name='Instances.Si1_base.RampRate';°C/s
+Si1 base output percent;Molly;Si1;local_name='Instances.Si1_base.OutputPercent';% of max voltage
+Si1 base voltage;Molly;Si1;local_name='Instances.Si1_base_Voltage.Reading';V
+Si1 base current;Molly;Si1;local_name='Instances.Si1_base_Current.Reading';A
+Si1 base max current;Molly;Si1;local_name='Instances.Si1_base_MaxCurrent.Reading';A
+Si1 base operation mode;Molly;Si1;local_name='Instances.Si1_base_OperationMode.Value';0=CC
+Si1 base shutter status;Molly;Si1;local_name='Instances.Si1_base.ShutterStatus';0=open
+C1 base measured;Molly;C1;local_name='Instances.C1_base.Measured';°C
+C1 current measured;Molly;C1;local_name='Instances.C1_Current.Measured';A
+C1 current working setpoint;Molly;C1;local_name='Instances.C1_Current.WorkingSetpoint';A
+C1 current setpoint;Molly;C1;local_name='Instances.C1_Current.Setpoint';A
+C1 voltage measured;Molly;C1;local_name='Instances.C1_Voltage.Measured';V
+C1 voltage working setpoint;Molly;C1;local_name='Instances.C1_Voltage.WorkingSetpoint';V
+C1 voltage setpoint;Molly;C1;local_name='Instances.C1_Voltage.Setpoint';V
+C1 operation mode;Molly;C1;local_name='Instances.C1_PS_OperationMode.Value';0=CC
+C1 shutter status;Molly;C1;local_name='Instances.C1_Current.ShutterStatus';0=open
+GaTe1 tip measured;Molly;GaTe1;local_name='Instances.GaTe1_tip.Measured';°C
+GaTe1 tip working setpoint;Molly;GaTe1;local_name='Instances.GaTe1_tip.WorkingSetpoint';°C
+GaTe1 tip setpoint;Molly;GaTe1;local_name='Instances.GaTe1_tip.Setpoint';°C
+GaTe1 tip ramp rate;Molly;GaTe1;local_name='Instances.GaTe1_tip.RampRate';°C/s
+GaTe1 tip output percent;Molly;GaTe1;local_name='Instances.GaTe1_tip.OutputPercent';% of max voltage
+GaTe1 tip voltage;Molly;GaTe1;local_name='Instances.GaTe1_tip_Voltage.Reading';V
+GaTe1 tip current;Molly;GaTe1;local_name='Instances.GaTe1_tip_Current.Reading';A
+GaTe1 tip max current;Molly;GaTe1;local_name='Instances.GaTe1_tip_MaxCurrent.Reading';A
+GaTe1 tip operation mode;Molly;GaTe1;local_name='Instances.GaTe1_tip_OperationMode.Value';0=CC
+GaTe1 tip shutter status;Molly;GaTe1;local_name='Instances.GaTe1_tip.ShutterStatus';0=open
+GaTe1 base measured;Molly;GaTe1;local_name='Instances.GaTe1_base.Measured';°C
+GaTe1 base working setpoint;Molly;GaTe1;local_name='Instances.GaTe1_base.WorkingSetpoint';°C
+GaTe1 base setpoint;Molly;GaTe1;local_name='Instances.GaTe1_base.Setpoint';°C
+GaTe1 base ramp rate;Molly;GaTe1;local_name='Instances.GaTe1_base.RampRate';°C/s
+GaTe1 base output percent;Molly;GaTe1;local_name='Instances.GaTe1_base.OutputPercent';% of max voltage
+GaTe1 base voltage;Molly;GaTe1;local_name='Instances.GaTe1_base_Voltage.Reading';V
+GaTe1 base current;Molly;GaTe1;local_name='Instances.GaTe1_base_Current.Reading';A
+GaTe1 base max current;Molly;GaTe1;local_name='Instances.GaTe1_base_MaxCurrent.Reading';A
+GaTe1 base operation mode;Molly;GaTe1;local_name='Instances.GaTe1_base_OperationMode.Value';0=CC
+As1 valve measured;Molly;As1;local_name='Instances.As1_valve.Measured';mil
+As1 valve working setpoint;Molly;As1;local_name='Instances.As1_valve.WorkingSetpoint';mil
+As1 valve setpoint;Molly;As1;local_name='Instances.As1_valve.Setpoint';mil
+As1 valve ramp rate;Molly;As1;local_name='Instances.As1_valve.RampRate';mil/s
+As1 valve shutter status;Molly;As1;local_name='Instances.As1_valve.ShutterStatus';0=open
+As1 crack measured;Molly;As1;local_name='Instances.As1_crack.Measured';°C
+As1 crack working setpoint;Molly;As1;local_name='Instances.As1_crack.WorkingSetpoint';°C
+As1 crack setpoint;Molly;As1;local_name='Instances.As1_crack.Setpoint';°C
+As1 crack ramp rate;Molly;As1;local_name='Instances.As1_crack.RampRate';°C/s
+As1 crack output percent;Molly;As1;local_name='Instances.As1_crack.OutputPercent';% of max voltage
+As1 crack voltage;Molly;As1;local_name='Instances.As1_crack_Voltage.Reading';V
+As1 crack current;Molly;As1;local_name='Instances.As1_crack_Current.Reading';A
+As1 crack max current;Molly;As1;local_name='Instances.As1_crack_MaxCurrent.Reading';A
+As1 crack operation mode;Molly;As1;local_name='Instances.As1_crack_OperationMode.Value';0=CC
+As1 bulk measured;Molly;As1;local_name='Instances.As1_bulk.Measured';°C
+As1 bulk working setpoint;Molly;As1;local_name='Instances.As1_bulk.WorkingSetpoint';°C
+As1 bulk setpoint;Molly;As1;local_name='Instances.As1_bulk.Setpoint';°C
+As1 bulk ramp rate;Molly;As1;local_name='Instances.As1_bulk.RampRate';°C/s
+As1 bulk output percent;Molly;As1;local_name='Instances.As1_bulk.OutputPercent';% of max voltage
+As1 bulk voltage;Molly;As1;local_name='Instances.As1_bulk_Voltage.Reading';V
+As1 bulk current;Molly;As1;local_name='Instances.As1_bulk_Current.Reading';A
+As1 bulk max current;Molly;As1;local_name='Instances.As1_bulk_MaxCurrent.Reading';A
+As1 bulk operation mode;Molly;As1;local_name='Instances.As1_bulk_OperationMode.Value';0=CC
+Sb1 valve measured;Molly;Sb1;local_name='Instances.Sb1_valve.Measured';mil
+Sb1 valve working setpoint;Molly;Sb1;local_name='Instances.Sb1_valve.WorkingSetpoint';mil
+Sb1 valve setpoint;Molly;Sb1;local_name='Instances.Sb1_valve.Setpoint';mil
+Sb1 valve ramp rate;Molly;Sb1;local_name='Instances.Sb1_valve.RampRate';mil/s
+Sb1 valve shutter status;Molly;Sb1;local_name='Instances.Sb1_valve.ShutterStatus';0=open
+Sb1 crack measured;Molly;Sb1;local_name='Instances.Sb1_crack.Measured';°C
+Sb1 crack working setpoint;Molly;Sb1;local_name='Instances.Sb1_crack.WorkingSetpoint';°C
+Sb1 crack setpoint;Molly;Sb1;local_name='Instances.Sb1_crack.Setpoint';°C
+Sb1 crack ramp rate;Molly;Sb1;local_name='Instances.Sb1_crack.RampRate';°C/s
+Sb1 crack output percent;Molly;Sb1;local_name='Instances.Sb1_crack.OutputPercent';% of max voltage
+Sb1 crack voltage;Molly;Sb1;local_name='Instances.Sb1_crack_Voltage.Reading';V
+Sb1 crack current;Molly;Sb1;local_name='Instances.Sb1_crack_Current.Reading';A
+Sb1 crack max current;Molly;Sb1;local_name='Instances.Sb1_crack_MaxCurrent.Reading';A
+Sb1 crack operation mode;Molly;Sb1;local_name='Instances.Sb1_crack_OperationMode.Value';0=CC
+Sb1 bulk measured;Molly;Sb1;local_name='Instances.Sb1_bulk.Measured';°C
+Sb1 bulk working setpoint;Molly;Sb1;local_name='Instances.Sb1_bulk.WorkingSetpoint';°C
+Sb1 bulk setpoint;Molly;Sb1;local_name='Instances.Sb1_bulk.Setpoint';°C
+Sb1 bulk ramp rate;Molly;Sb1;local_name='Instances.Sb1_bulk.RampRate';°C/s
+Sb1 bulk output percent;Molly;Sb1;local_name='Instances.Sb1_bulk.OutputPercent';% of max voltage
+Sb1 bulk voltage;Molly;Sb1;local_name='Instances.Sb1_bulk_Voltage.Reading';V
+Sb1 bulk current;Molly;Sb1;local_name='Instances.Sb1_bulk_Current.Reading';A
+Sb1 bulk max current;Molly;Sb1;local_name='Instances.Sb1_bulk_MaxCurrent.Reading';A
+Sb1 bulk operation mode;Molly;Sb1;local_name='Instances.Sb1_bulk_OperationMode.Value';0=CC
+Sb1 cond measured;Molly;Sb1;local_name='Instances.Sb1_cond.Measured';°C
+Sb1 cond working setpoint;Molly;Sb1;local_name='Instances.Sb1_cond.WorkingSetpoint';°C
+Sb1 cond setpoint;Molly;Sb1;local_name='Instances.Sb1_cond.Setpoint';°C
+Sb1 cond ramp rate;Molly;Sb1;local_name='Instances.Sb1_cond.RampRate';°C/s
+Sb1 cond output percent;Molly;Sb1;local_name='Instances.Sb1_cond.OutputPercent';% of max voltage
+Sb1 cond voltage;Molly;Sb1;local_name='Instances.Sb1_cond_Voltage.Reading';V
+Sb1 cond current;Molly;Sb1;local_name='Instances.Sb1_cond_Current.Reading';A
+Sb1 cond max current;Molly;Sb1;local_name='Instances.Sb1_cond_MaxCurrent.Reading';A
+Sb1 cond operation mode;Molly;Sb1;local_name='Instances.Sb1_cond_OperationMode.Value';0=CC
+GM1 subs center measured;Molly;GM1;local_name='Instances.GM1_subs_center.Measured';°C
+GM1 subs center working setpoint;Molly;GM1;local_name='Instances.GM1_subs_center.WorkingSetpoint';°C
+GM1 subs center setpoint;Molly;GM1;local_name='Instances.GM1_subs_center.Setpoint';°C
+GM1 subs center ramp rate;Molly;GM1;local_name='Instances.GM1_subs_center.RampRate';°C/s
+GM1 subs center output percent;Molly;GM1;local_name='Instances.GM1_subs_center.OutputPercent';% of max voltage
+GM1 subs center voltage;Molly;GM1;local_name='Instances.GM1_subs_center_Voltage.Reading';V
+GM1 subs center current;Molly;GM1;local_name='Instances.GM1_subs_center_Current.Reading';A
+GM1 subs center max current;Molly;GM1;local_name='Instances.GM1_subs_center_MaxCurrent.Reading';A
+GM1 subs center operation mode;Molly;GM1;local_name='Instances.GM1_subs_center_OperationMode.Value';0=CC
+GM1 subs rot measured;Molly;GM1;local_name='Instances.GM1_subs_rot.Measured';°
+GM1 subs rot working setpoint;Molly;GM1;local_name='Instances.GM1_subs_rot.WorkingSetpoint';°
+GM1 subs rot ramp rate;Molly;GM1;local_name='Instances.GM1_subs_rot.RampRate';rpm
+PM1 subs measured;Molly;PM1;local_name='Instances.PM1_subs.Measured';°C
+PM1 subs working setpoint;Molly;PM1;local_name='Instances.PM1_subs.WorkingSetpoint';°C
+PM1 subs setpoint;Molly;PM1;local_name='Instances.PM1_subs.Setpoint';°C
+PM1 subs ramp rate;Molly;PM1;local_name='Instances.PM1_subs.RampRate';°C/s
+PM1 subs output percent;Molly;PM1;local_name='Instances.PM1_subs.OutputPercent';% of max voltage
+PM1 subs voltage;Molly;PM1;local_name='Instances.PM1_subs_Voltage.Reading';V
+PM1 subs current;Molly;PM1;local_name='Instances.PM1_subs_Current.Reading';A
+PM1 subs max current;Molly;PM1;local_name='Instances.PM1_subs_MaxCurrent.Reading';A
+PM1 subs operation mode;Molly;PM1;local_name='Instances.PM1_subs_OperationMode.Value';0=CC
+GM1 main shutter closed;Molly;GM1;local_name='Instances.GM1_MainShutter_Closed.Value';0=open
+GM1 main shutter control;Molly;GM1;local_name='Instances.GM1_MainShutter_Control.Value';0=open
+GM1 cryo1 gate;Molly;GM1;local_name='Instances.GM1_Cryo1_Gate.Value';0=open
+GM1 cryo1 gate closed;Molly;GM1;local_name='Instances.GM1_Cryo1_Gate_Closed.Value';0=open
+GM1 ion pump1 gate;Molly;GM1;local_name='Instances.GM1_IonPump1_Gate.Value';0=open
+GM1 ion pump1 gate closed;Molly;GM1;local_name='Instances.GM1_IonPump1_Gate_Closed.Value';0=open
+BF shutter 1;Molly;BF;local_name='Instances.BF_Shutter_1.Value';0=open
+BF shutter 1 status;Molly;BF;local_name='Instances.BF_Shutter_1_Status.Value';0=open
+BF shutter 2;Molly;BF;local_name='Instances.BF_Shutter_2.Value';0=open
+BF shutter 2 status;Molly;BF;local_name='Instances.BF_Shutter_2_Status.Value';0=open
+BF shutter 3;Molly;BF;local_name='Instances.BF_Shutter_3.Value';0=open
+BF shutter 3 status;Molly;BF;local_name='Instances.BF_Shutter_3_Status.Value';0=open
+BF shutter 4;Molly;BF;local_name='Instances.BF_Shutter_4.Value';0=open
+BF shutter 4 status;Molly;BF;local_name='Instances.BF_Shutter_4_Status.Value';0=open
+CT1 vacuum;Molly;CT1;local_name='Instances.CT1_Vacuum.Reading';Torr
+GM1 vacuum;Molly;GM1;local_name='Instances.GM1_Vacuum.Reading';Torr
+GM1 BFM;Molly;GM1;local_name='Instances.GM1_BFM.Reading';Torr
+GM1 SRS vacuum;Molly;GM1;local_name='Instances.GM1_SRS_Vacuum.Reading';Torr
+PM1 vacuum;Molly;PM1;local_name='Instances.PM1_Vacuum.Reading';Torr
+GM1 BFM arm control;Molly;GM1;local_name='Instances.GM1_BFM_Arm_Control.Value';0=in
+GM1 BFM arm status;Molly;GM1;local_name='Instances.GM1_BFM_Arm_Status.Value';0=in
+GM1 recipe running status;Molly;GM1;local_name='Instances.GM1_RecipeRunning.Status';0=running
+PM1 recipe running status;Molly;PM1;local_name='Instances.PM1_RecipeRunning.Status';0=running
+LL1 recipe running status;Molly;LL1;local_name='Instances.LL1_RecipeRunning.Status';0=running
+Pyro intensity 950;SVT;Pyro;filename='Engine 1.txt',column=1,time_column=0;
+Pyro intensity 850;SVT;Pyro;filename='Engine 1.txt',column=2,time_column=0;
+Emiss temp;SVT;Pyro;filename='IS4K Temp.txt',column=3,time_column=0;°C
+Ratio temp;SVT;Pyro;filename='IS4K Temp.txt',column=2,time_column=0;°C
+Refl calib 950;SVT;Refl;filename='IS4K Refl.txt',column=1,time_column=0;
+Refl calib 470;SVT;Refl;filename='IS4K Refl.txt',column=2,time_column=0;
+Refl uncalib 950;SVT;Refl;filename='Engine 1.txt',column=3,time_column=0;
+Refl uncalib 470;SVT;Refl;filename='Engine 1.txt',column=4,time_column=0;
+BET temp;BET;BET;folder='BET Data',column=1,time_column=0;°C
+ISP temp;BET;ISP;folder='ISP Data',column=2,time_column=0;°C
+ISP integral;BET;ISP;folder='ISP Data',column=1,time_column=0;s

@@ -7,7 +7,7 @@
 axes.grid: False
 axes.labelcolor: 0.15
 axes.labelsize: 11
-axes.prop_cycle: cycler('color', ['66C2A5', 'FC8D62', '8DA0CB', 'E78AC3', 'A6D854', 'FFD92F', 'E5C494', 'B3B3B3'])
+axes.prop_cycle: cycler('color', ['1b9e77', 'd95f02', '7570b3', 'e7298a', '66a61e', 'e6ab02', 'a6761d', '666666'])
 axes.titlesize: 14
 axes.facecolor: white
 axes.edgecolor: 0.15

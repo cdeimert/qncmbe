@@ -1,2 +1,3 @@
-include qncmbe/data_import/value_names_database.csv
+include qncmbe/data_import/data_names_index.csv
+include qncmbe/data_import/origin_import.ui
 include qncmbe/plot_stylelib/*

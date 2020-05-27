@@ -1,0 +1,30 @@
+# This mplstyle is from the qncmbe python package
+# Warning: modifications will be overwritten by the qncmbe package installer!
+#
+# This is the default QNC-MBE aesthetic
+#
+
+axes.grid: False
+axes.labelcolor: 323232
+#axes.prop_cycle: cycler('color', ['7426A6', 'F8632C', '1FAC6B', 'F8F62C'])
+axes.prop_cycle: cycler('color', ['722F9D', 'EA6B3C', '2AA26B', 'EAE83C'])
+axes.facecolor: f0f0f0
+axes.edgecolor: 323232
+
+font.family: sans-serif
+font.sans-serif: Segoe UI
+font.size: 12
+mathtext.fontset: stix
+
+figure.facecolor: f0f0f0
+figure.figsize: 5.12, 5.12
+
+lines.linewidth: 1.5
+
+xtick.color: 323232
+
+ytick.color: 323232
+
+text.color: 323232
+
+legend.facecolor: f0f0f0
