@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='qncmbe',
-    version='0.5',
+    version='1.0',
     description='Python tools for the QNC-MBE lab at '
                 'the University of Waterloo',
     url='https://github.com/cdeimert/qncmbe',
