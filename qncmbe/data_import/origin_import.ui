@@ -34,16 +34,16 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="input_layout">
       <item row="5" column="3">
-       <widget class="QPushButton" name="filepath_button">
+       <widget class="QPushButton" name="save_file_button">
         <property name="text">
          <string>Select...</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="filepath_label">
+       <widget class="QLabel" name="save_file_label">
         <property name="text">
          <string>Save to:</string>
         </property>
@@ -57,7 +57,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QDateTimeEdit" name="end">
+       <widget class="QDateTimeEdit" name="end_time_edit">
         <property name="dateTime">
          <datetime>
           <hour>0</hour>
@@ -74,28 +74,28 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="end_label">
+       <widget class="QLabel" name="end_time_label">
         <property name="text">
          <string>End time:</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="template_label">
+       <widget class="QLabel" name="template_file_label">
         <property name="text">
          <string>Template:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="start_label">
+       <widget class="QLabel" name="start_time_label">
         <property name="text">
          <string>Start time:</string>
         </property>
        </widget>
       </item>
       <item row="3" column="2">
-       <spacer name="horizontalSpacer_3">
+       <spacer name="end_time_spacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -108,7 +108,7 @@
        </spacer>
       </item>
       <item row="1" column="1">
-       <widget class="QDateTimeEdit" name="start">
+       <widget class="QDateTimeEdit" name="start_time_edit">
         <property name="dateTime">
          <datetime>
           <hour>0</hour>
@@ -125,7 +125,7 @@
        </widget>
       </item>
       <item row="5" column="1" colspan="2">
-       <widget class="QLabel" name="filepath">
+       <widget class="QLabel" name="save_file_display">
         <property name="autoFillBackground">
          <bool>false</bool>
         </property>
@@ -147,7 +147,7 @@
        </widget>
       </item>
       <item row="4" column="1" colspan="2">
-       <widget class="QLabel" name="template_file">
+       <widget class="QLabel" name="template_file_display">
         <property name="styleSheet">
          <string notr="true">background: white</string>
         </property>
@@ -163,7 +163,7 @@
        </widget>
       </item>
       <item row="4" column="3">
-       <widget class="QPushButton" name="template_button">
+       <widget class="QPushButton" name="template_file_button">
         <property name="text">
          <string>Select...</string>
         </property>
@@ -172,9 +172,9 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="runtime_messages_label">
       <property name="text">
-       <string>Messages:</string>
+       <string>Runtime messages:</string>
       </property>
      </widget>
     </item>
@@ -220,7 +220,8 @@ To use the importer, set the start time, end time, and savepath, then press &quo
 
 Before running this, make sure you've synced data from the Molly computer to insitu1, and make sure you have access to the shared drives \\insitu1 and \\zw-xp1.
 
-If you select &quot;Generate empty data,&quot; no data will be collected, but an Origin file will still be created, and table columns will be created for each data element. Useful for testing or generating a template file.</string>
+If you select &quot;Generate empty data,&quot; no data will be collected, but an Origin file will still be created, and table columns will be created for each data element. Useful for testing or generating a template file.
+</string>
       </property>
       <property name="tabStopWidth">
        <number>85</number>
@@ -231,9 +232,9 @@ If you select &quot;Generate empty data,&quot; no data will be collected, but an
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="import_button_layout">
       <item>
-       <spacer name="horizontalSpacer_2">
+       <spacer name="import_button_spacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -258,10 +259,10 @@ If you select &quot;Generate empty data,&quot; no data will be collected, but an
   </widget>
  </widget>
  <tabstops>
-  <tabstop>start</tabstop>
-  <tabstop>end</tabstop>
-  <tabstop>template_button</tabstop>
-  <tabstop>filepath_button</tabstop>
+  <tabstop>start_time_edit</tabstop>
+  <tabstop>end_time_edit</tabstop>
+  <tabstop>template_file_button</tabstop>
+  <tabstop>save_file_button</tabstop>
   <tabstop>empty_data_checkbox</tabstop>
   <tabstop>runtime_messages</tabstop>
   <tabstop>import_button</tabstop>
