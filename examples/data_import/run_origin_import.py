@@ -26,7 +26,7 @@ import os
 this_dir = os.path.dirname(os.path.abspath(__file__))
 default_template = os.path.join(this_dir, "Growth data template.opj")
 
-test_mode = True
+test_mode = False
 
 if test_mode:
     import datetime

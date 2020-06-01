@@ -486,7 +486,10 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 # Activate the workbook
                 if not self.origin.Execute(f'win -a {wkbk_names[loc]}'):
-                    self.origin.Execue(f'newbook {wkbk_names[loc]}')
+                    self.origin.Execute(
+                        f'newbook name:={wkbk_names[loc]} sheet:=0'
+                        ' option:=lsname'
+                    )
 
                 sublocs = []
                 subloc_names = {}
@@ -563,6 +566,35 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
                     f"Done writing {loc} data to Origin. ({dt:.4f} s)"
                 )
 
+            # Write start and end dates to ImportInfo table
+            if not self.origin.Execute(f'win -a ImportInfo'):
+                self.origin.Execute(
+                    f'newbook name:=ImportInfo sheet:=0 option:=lsname'
+                )
+
+            if self.origin.Execute(f'page.active$ = ImportInfo'):
+                self.origin.Execute(f'wks.ncols=2')
+            else:
+                self.origin.Execute(
+                    f'newsheet name:=ImportInfo cols:=2'
+                )
+
+            self.origin.Execute('wks.nrows=0')
+
+            if not self.do_empty_data:
+                self.origin.PutWorksheet(
+                    'ImportInfo',
+                    [[str(self.start_time), str(self.end_time)]],
+                    0, 0
+                )
+
+            self.origin.Execute(f'col(1)[L]$ = Start time')
+            self.origin.Execute(f'col(2)[L]$ = End time')
+
+            self.origin.Execute('wks.labels(L)')
+            self.origin.Execute('wautosize')
+
+            # Save output file
             self.add_runtime_message("Saving output file...")
             if not self.origin.Execute(f'save {self.save_file}'):
                 self.logging.error("Could not save output file.")
