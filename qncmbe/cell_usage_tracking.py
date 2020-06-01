@@ -146,14 +146,16 @@ class CellUsageCalculator():
             molly_dt=self.delta_t
         )
 
-        print(f"Collecting temperature data for {day.strftime('%Y-%m-%d')}...")
+        logger.info(
+            f"Collecting temperature data for {day.strftime('%Y-%m-%d')}..."
+        )
         data = collector.get_data(force_reload=self.force_reload)
 
         day += delta
 
         while day <= self.end_date:
 
-            print(
+            logger.info(
                 f"Collecting temperature data for "
                 f"{day.strftime('%Y-%m-%d')}..."
             )
@@ -185,7 +187,7 @@ class CellUsageCalculator():
 
             self.temperature[cell][mask_high | mask_low] = 0.0
 
-        print("Done collecting temperature data!")
+        logger.info("Done collecting temperature data!")
 
     def get_time(self):
 
@@ -278,11 +280,11 @@ class CellUsageCalculator():
             self.collect_temperature_data()
 
         if not self.A:
-            print("Collecting ABC coefficients...")
+            logger.info("Collecting ABC coefficients...")
             self.collect_ABC_coefs()
-            print("Done collecting ABC coefficients.")
+            logger.info("Done collecting ABC coefficients.")
 
-        print("Calculating element usage...")
+        logger.info("Calculating element usage...")
 
         for cell in self.cells:
 
@@ -305,7 +307,7 @@ class CellUsageCalculator():
                 self.particle_usage[cell]*atomic_mass[cell]/avogadro
             )
 
-        print("Done calculating element usage!")
+        logger.info("Done calculating element usage!")
 
     def get_mass_usage(self):
         '''
@@ -348,7 +350,7 @@ class CellUsageCalculator():
 
             header += f',{cell} usage (# of atoms),{cell} usage (g)'
 
-        print(f"Saving usage data to {fname}")
+        logger.info(f"Saving usage data to {fname}")
 
         np.savetxt(
             fname, np.stack(out_arr).transpose(), header=header,

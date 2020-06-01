@@ -2,8 +2,11 @@
 import csv
 import os.path as path
 import ast
-import warnings
 import re
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class DataInfo():
@@ -159,8 +162,8 @@ class DataNamesIndex(FlexibleDict):
 
                 if name in self:
                     raise ValueError(
-                        f'Duplicate name "{name}". Check database file:'
-                        f'\n  "{self.database_file}"'
+                        f'Duplicate name "{name}". Check database file'
+                        f' "{self.database_file}"'
                     )
                 else:
                     self[name] = DataInfo(
@@ -199,7 +202,7 @@ index = DataNamesIndex()
 
 def print_allowed_value_names(full_csv=False):
 
-    warnings.warn(
+    logger.warning(
         "print_allowed_value_names() is no longer maintained."
         " Use DataNamesIndex class instead.",
     )
@@ -219,7 +222,7 @@ def get_value_names_list(location="all"):
     location (either "Molly", "SVT", or "BET")
     '''
 
-    warnings.warn(
+    logger.warning(
         "get_value_names_list() is no longer maintained."
         " Use DataNamesIndex.get_names_list() instead."
     )

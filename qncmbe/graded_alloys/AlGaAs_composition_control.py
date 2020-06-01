@@ -3,6 +3,8 @@ Functions for generating smooth composition profiles in AlGaAs by varying the
 Al cell temperature as a function of time
 '''
 
+import logging
+
 # Non-standard library imports (included in setup.py)
 import numpy as np
 from scipy.integrate import cumtrapz
@@ -20,6 +22,8 @@ shutter_location = {
     'Si1': 'Si1_base',
     'As1': 'As1_valve'
 }
+
+logger = logging.getLogger(__name__)
 
 
 def flux_to_temperature(flux_in, A, B, C):
@@ -143,18 +147,19 @@ class Growth_step():
 
 class Growth():
     def __init__(self, Ga_cell, GR_GaAs, Al_cell_pars, dry_run=False):
+        '''Al_cell_pars should be a dictionary like
+        {
+          'static': [A,B,C],
+          'shutter': [K_sh, t_sh, zeta_sh, T_sh],
+          'dynamic': [K, t0, zeta]
+        }
+        '''
 
         self.Ga_cell = Ga_cell  # String (either 'Ga1' or 'Ga2')
         self.GR_GaAs = GR_GaAs  # 'nm/s'
 
         self.flux_Ga = 4*GR_GaAs/(a_GaAs**3)  # flux in nm^-2.s^-1
 
-        # Al_cell_pars should be a dictionary like
-        # {
-        #   'static': [A,B,C],
-        #   'shutter': [K_sh, t_sh, zeta_sh, T_sh],
-        #   'dynamic': [K, t0, zeta]
-        # }
         self.Al_cell_pars = Al_cell_pars
 
         # Set true to generate recipes where only Al shutter is opened
@@ -189,7 +194,9 @@ class Growth():
 
         self.update_t()
 
-        print("Adding step '{}'. Duration = {:.2f} s".format(name, t_rel[-1]))
+        logger.info(
+            "Adding step '{}'. Duration = {:.2f} s".format(name, t_rel[-1])
+        )
 
     def add_AlGaAs_step(self, z, x, Si_doped=False, name='AlGaAs layer'):
 
@@ -340,7 +347,7 @@ class Growth():
 
         flux_Al = self.get_Al_flux()
         s_Ga = self.get_shutter_status(self.Ga_cell)
-        
+
         return (a_perp_AlAs*flux_Al + a_GaAs*self.flux_Ga*s_Ga)*(a_GaAs**2)/4
 
     def get_Al_composition(self):
@@ -426,7 +433,7 @@ class Growth():
                     n += 1
 
                 if 'As1_valve' not in string:
-                    print("WARNING: As shutter closed in {}".format(step.name))
+                    logger.warning("As shutter closed in {}".format(step.name))
 
             string += ");\n"
 

@@ -8,6 +8,8 @@ Applied Physics, 1995)
 This is part of the qncmbe package. Please see the example file
 '''
 
+import logging
+
 # Non-standard library imports (included in setup.py)
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,6 +27,8 @@ wvln_colors_dark = {
 }
 
 refl_pars = ['n', 'k', 'ns', 'ks', 'G', 's', 'wlvn']
+
+logger = logging.getLogger(__name__)
 
 
 class Material():
@@ -60,7 +64,7 @@ def create_alloy(name, mat1, mat2, x):
         nr = (epsr**0.5).real
         kr = (epsr**0.5).imag
 
-        result.set_nk_at_wavelength(wvln=wvln, n=nr, k=kr)    
+        result.set_nk_at_wavelength(wvln=wvln, n=nr, k=kr)
 
     return result
 
@@ -117,7 +121,7 @@ def fit_reflectance(refl, time, pars_guess):
     except RuntimeError:
         pars_opt = pars_guess
         refl_fit = refl_func(rel_time, *pfit_guess)
-        print("WARNING: fit failed.")
+        logger.warning("Fit failed.")
         return pars_opt, refl_fit
 
     pars_opt = {**pars_guess}

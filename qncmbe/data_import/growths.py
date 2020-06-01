@@ -1,6 +1,5 @@
 # Standard library imports
 from pathlib import Path
-import logging
 
 # qncmbe imports
 from .utils import DataCollector
@@ -10,14 +9,11 @@ from .SVT import SVTDataCollector
 from .data_names import index
 
 
-logger = logging.getLogger(__name__)
-
-
 class GrowthDataCollector(DataCollector):
     '''Class to collect multiple kinds of data, related to MBE growths.
 
     Currently includes Molly, BET, and SVT data.
-    
+
     Members:
         locations       A set of all allowed location strings
         subcollectors   dictionary of DataCollectors {location: DataCollector}
@@ -58,9 +54,6 @@ class GrowthDataCollector(DataCollector):
 
         super().__init__(start_time, end_time, names, savedir)
 
-        # Use locally-saved data for speed during testing
-        # self._set_test_mode()
-
     def filter_names(self, location):
         return [n for n in self.names if index[n].location == location]
 
@@ -98,14 +91,16 @@ class GrowthDataCollector(DataCollector):
 
         return self.data
 
-    def _set_test_mode(self):
+    def set_test_mode(self):
         '''Use locally-saved data for speed during testing.'''
-
-        logger.warning("Using GrowthDataCollector in test mode!")
 
         root = Path(__file__).resolve().parent.parent.parent
 
         basedir = root.joinpath('tests', 'example_data')
+
+        self.logger.warning(
+            f'Using GrowthDataCollector with test data from "{basedir}"'
+        )
 
         data_dirs = {
             "BET": basedir,
@@ -115,4 +110,3 @@ class GrowthDataCollector(DataCollector):
 
         for loc in data_dirs:
             self.set_data_path(loc, data_dirs[loc])
-

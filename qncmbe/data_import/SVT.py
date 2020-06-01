@@ -43,6 +43,12 @@ class SVTDataCollector(DataCollector):
         if not self.names:
             return {}
 
+        if not os.path.exists(self.main_data_path):
+            self.logger.error(
+                f'Cannot find/access data path "{self.main_data_path}"'
+            )
+            return self.data
+
         for fname in os.listdir(self.main_data_path):
             fpath = os.path.join(self.main_data_path, fname)
             if is_SVT_folder(fpath):
@@ -53,9 +59,9 @@ class SVTDataCollector(DataCollector):
                 t0, ts, te = get_SVT_folder_time_info(fpath)
 
                 if any([t is None for t in [t0, ts, te]]):
-                    logger.warning(
+                    self.logger.warning(
                         f'Problem with SVT time info.'
-                        f' Skipping folder\n  "{fpath}"'
+                        f' Skipping folder "{fpath}"'
                     )
                     continue
 
@@ -184,8 +190,8 @@ def get_SVT_folder_time_info(folder):
 
             if err:
                 logger.error(
-                    f'Invalid time_info.txt file\n  "{time_file}".'
-                    '\n  Repair or delete it!'
+                    f'Invalid time_info.txt file "{time_file}".'
+                    ' Repair or delete it!'
                 )
                 return None, None, None
 
@@ -197,8 +203,7 @@ def get_SVT_folder_time_info(folder):
         # If the time_info.txt file has not been generated, generate it.
 
         logger.info(
-            f'Missing time_info.txt in\n  "{folder}".'
-            '\n  Attempting to generate it...'
+            f'Generating time_info file in "{folder}"'
         )
         engine_file = ''
         for name in os.listdir(folder):
@@ -226,7 +231,7 @@ def get_SVT_folder_time_info(folder):
             logger.error(
                 "Cannot automatically generate time_info.txt because "
                 "SVT Engine modification time < creation time in"
-                f'\n  "{engine_file}"'
+                f' "{engine_file}"'
             )
             return None, None, None
 
@@ -254,8 +259,6 @@ def get_SVT_folder_time_info(folder):
             tf.write(f'Zero_time = {t_zero.strftime(fmt_string)}\n')
             tf.write(f'Data_start_time = {t_start.strftime(fmt_string)}\n')
             tf.write(f'Data_end_time = {t_end.strftime(fmt_string)}')
-
-        logger.info(f'Generated time_info.txt file\n  "{time_file}"')
 
     return t_zero, t_start, t_end
 

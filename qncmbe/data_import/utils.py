@@ -15,18 +15,6 @@ import matplotlib.dates as mdates
 from dateutil import parser as date_parser
 
 
-logger = logging.getLogger(__name__)
-
-formatter = logging.Formatter('%(levelname)s: %(message)s')
-
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.WARNING)
-console_handler.setFormatter(formatter)
-
-logging.getLogger().addHandler(console_handler)
-logging.getLogger().setLevel(logging.INFO)
-
-
 class DataElement():
     '''Generic container for time-dependent data.
 
@@ -52,6 +40,8 @@ class DataElement():
     def __init__(
         self, name, datetime0, units='', time=np.zeros(0), vals=np.zeros(0)
     ):
+
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.name = name
         self.datetime0 = datetime0
         self.units = units
@@ -297,6 +287,8 @@ class DataCollector():
         is used, so the string format is fairly flexible.
         '''
 
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         self.set_times(start_time, end_time, clear_data=False)
 
         if self.end_time <= self.start_time:
@@ -365,10 +357,10 @@ class DataCollector():
             else:
                 try:
                     self.load_data()
-                    logger.info("Loaded from local save data.")
+                    self.logger.info("Loaded from local save data.")
 
                 except FileNotFoundError:
-                    logger.info(
+                    self.logger.info(
                         "Local save data unavailable or incomplete."
                         " Loading from remote source..."
                     )
@@ -446,4 +438,3 @@ def parse_datetime_input(datetime_input):
         raise ValueError(
             'datetime_input must be datetime object or valid string.'
         )
-

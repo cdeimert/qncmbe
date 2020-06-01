@@ -11,12 +11,6 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 
 save_dir = os.path.join(this_dir, 'data_saves')
 
-data_dirs = {
-    "BET": os.path.join(this_dir, 'example_data'),
-    "SVT": os.path.join(this_dir, 'example_data', 'SVT Data'),
-    "Molly": os.path.join(this_dir, 'example_data', 'Molly Data')
-}
-
 names = [
     'BET temp',
     'Refl calib 950',
@@ -32,10 +26,7 @@ collector = GrowthDataCollector(
     molly_dt=None
 )
 
-collector._set_test_mode()
-
-for location, path in data_dirs.items():
-    collector.set_data_path(location, path)
+collector.set_test_mode()
 
 data = collector.get_data(force_reload=True)
 

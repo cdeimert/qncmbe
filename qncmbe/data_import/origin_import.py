@@ -60,16 +60,16 @@ class QPlainTextEditHandler(logging.Handler):
         self.widget.repaint()
 
 
-class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
+class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(
         self, template_file=None, start_time=None, end_time=None,
-        parent=None
+        parent=None, test_mode=False
     ):
 
-        super(ImportFrame, self).__init__(parent)
+        super(OriginImportGui, self).__init__(parent)
         self.setupUi(self)
 
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.start_gui_logger()
 
         self.import_button.clicked.connect(self.import_data)
@@ -103,6 +103,8 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         self.save_file = None
         self.log_file = None
         self.do_empty_data = None
+
+        self.test_mode = test_mode
 
     def start_gui_logger(self):
 
@@ -260,7 +262,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for path in bad_paths:
             self.logger.error(
-                    f'Could not find/access data folder\n  "{path}"'
+                    f'Could not find/access data folder "{path}"'
                 )
             passed = False
 
@@ -338,8 +340,8 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             postfix = f'-import-log-{n}.txt'
             if n > 100:
                 self.logger.error(
-                    "Too many existing import log files for output"
-                    f" file\n  {self.save_file}"
+                    'Too many existing import log files for output'
+                    f' file "{self.save_file}"'
                 )
                 return None
 
@@ -374,7 +376,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.log_file_handler.setFormatter(
             logging.Formatter(
-                    '%(levelname)s %(asctime)s (%(name)s):\n  %(message)s'
+                    '%(levelname)s (%(name)s %(asctime)s):\n  %(message)s'
             )
         )
 
@@ -401,7 +403,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
         if not self.start_file_logger():
             return
 
-        self.add_runtime_message(f"Created log file\n  {self.log_file}")
+        self.add_runtime_message(f'Created log file "{self.log_file}"')
 
         t = tm.time()
 
@@ -423,6 +425,9 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
             end_time=self.end_time,
             names=full_names_list
         )
+
+        if self.test_mode:
+            collector.set_test_mode()
 
         if not self.do_empty_data:
             if not self.check_connections(collector):
@@ -576,7 +581,7 @@ class ImportFrame(QtWidgets.QMainWindow, Ui_MainWindow):
                 pass
             finally:
                 del self.origin
-            
+
             t = tm.time() - t
             self.add_runtime_message(f'Done. (Total time: {t:.4f} s)')
             self.clear_file_logger()
@@ -593,6 +598,6 @@ def run_origin_import(**kwargs):
 
     argv = []
     app = QApplication(argv)
-    form = ImportFrame(**kwargs)
+    form = OriginImportGui(**kwargs)
     form.show()
     app.exec_()

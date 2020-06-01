@@ -7,15 +7,18 @@ Also, your computer must have access to
 '''
 
 # Load packages
-from qncmbe.data_import.core import get_growth_data, print_names_list
+from qncmbe.data_import.core import get_growth_data
 import matplotlib.pyplot as plt
 
-from qncmbe.plotting import load_plot_style
+from qncmbe.plotting import styles
 
-load_plot_style('qncmbe', update_style_files=False)
+styles.use('qncmbe')
 
-# Uncomment this line to print a list of allowed data names
-# print_names_list(); exit()
+# Change this to True to print a list of allowed data names
+if False:
+    from qncmbe.data_import.core import print_names_list
+    print_names_list()
+    exit()
 
 # Set start and end times
 start_time = "2019-09-24 17:30"

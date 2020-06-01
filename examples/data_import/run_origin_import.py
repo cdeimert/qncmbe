@@ -21,13 +21,24 @@ the location of your python.exe installation.
 
 from qncmbe.data_import.origin_import import run_origin_import
 import os
-import datetime
 
 # Get the full path of the folder containing this .py file
 this_dir = os.path.dirname(os.path.abspath(__file__))
 default_template = os.path.join(this_dir, "Growth data template.opj")
 
-default_end = None  # (gui will choose default end time)
-# default_end = datetime.datetime(2019, 12, 24)  # Useful date for testing
+test_mode = True
 
-run_origin_import(template_file=default_template, end_time=default_end)
+if test_mode:
+    import datetime
+    default_start = datetime.datetime(2019, 12, 23)
+    default_end = datetime.datetime(2019, 12, 25)
+else:
+    default_start = None
+    default_end = None
+
+run_origin_import(
+    template_file=default_template,
+    start_time=default_start,
+    end_time=default_end,
+    test_mode=test_mode
+)

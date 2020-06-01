@@ -59,9 +59,7 @@ def install(name):
     )
 
     if not os.path.exists(local_file):
-        logger.info(
-            f'Installing style "{name}".'
-        )
+        logger.info(f'Installing plot style "{name}"')
         write_style_file(name)
         return True
 
@@ -70,8 +68,8 @@ def install(name):
         for header_line in get_header().split('\n'):
             if lf.readline().rstrip() != header_line.rstrip():
                 logger.warning(
-                    'Unexpected header in matplotlib style file:'
-                    f'\n  "{local_file}"'
+                    'Unexpected header in matplotlib style file'
+                    f' "{local_file}"'
                 )
                 return False
         local_contents = lf.read()
@@ -113,7 +111,7 @@ def write_style_file(name):
         with open(package_file, 'r') as pf:
             lf.write(pf.read())
 
-    logger.info(f'Wrote to style file:\n  "{local_file}"')
+    logger.info(f'Wrote to style file "{local_file}"')
     plt.style.reload_library()
 
 

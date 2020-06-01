@@ -2,7 +2,6 @@
 import datetime
 import os
 import re
-import logging
 
 # qncmbe imports
 from .utils import DataCollector, DataElement
@@ -11,9 +10,6 @@ from .data_names import index
 # Non-standard library imports (included in setup.py)
 import numpy as np
 from dateutil import parser as date_parser
-
-
-logger = logging.getLogger(__name__)
 
 
 class BETDataCollector(DataCollector):
@@ -53,6 +49,12 @@ class BETDataCollector(DataCollector):
         if not self.names:
             return {}
 
+        if not os.path.exists(self.main_data_path):
+            self.logger.error(
+                f'Cannot find/access data path "{self.main_data_path}"'
+            )
+            return self.data
+
         # Loop through files. Add as necessary
         folder_set = {self.parameters[name]['folder'] for name in self.names}
 
@@ -62,13 +64,13 @@ class BETDataCollector(DataCollector):
                 fpath = os.path.join(folderpath, fname)
                 rv = self.is_data_file(fpath)
                 if rv == -1:
-                    logger.warning(
-                        f'Skipping problematic data file\n  "{fname}"'
+                    self.logger.warning(
+                        f'Skipping problematic data file "{fname}"'
                     )
                 elif rv:
                     file_arr = np.loadtxt(fpath, skiprows=1)
 
-                    file_ctime, _ = BETDataCollector.get_file_times(fpath)
+                    file_ctime, _ = self.get_file_times(fpath)
 
                     for name in self.names:
                         if folderpath.endswith(
@@ -101,15 +103,15 @@ class BETDataCollector(DataCollector):
 
         basename = os.path.basename(fpath)
 
-        ctime, mtime = BETDataCollector.get_file_times(fpath)
+        ctime, mtime = self.get_file_times(fpath)
 
         if ctime is None:
             return -1
 
         if ctime > mtime:
-            logger.error(
+            self.logger.error(
                 f'Timestamp inconsistent with modification time in'
-                f'\n  "{basename}"'
+                f' "{basename}"'
             )
             return -1
 
@@ -119,7 +121,7 @@ class BETDataCollector(DataCollector):
         )
 
         if not name_condition:
-            logger.warning(f'Unexpected filename format\n  "{basename}"')
+            self.logger.warning(f'Unexpected filename format "{basename}"')
 
         time_condition = (
             (self.start_time < mtime) and (self.end_time > ctime)
@@ -127,8 +129,7 @@ class BETDataCollector(DataCollector):
 
         return time_condition
 
-    @staticmethod
-    def get_file_times(fpath):
+    def get_file_times(self, fpath):
         '''Gets the creation and modification date of the BET data file.
 
         returns (ctime, mtime) as datetime objects
@@ -162,8 +163,8 @@ class BETDataCollector(DataCollector):
                 # Some older timestamps are missing the seconds, so need
                 # two cases
                 if match[1] == '':
-                    logger.debug(
-                        f'Timestamp missing seconds in\n  "{basename}"'
+                    self.logger.debug(
+                        f'Timestamp missing seconds in "{basename}"'
                     )
 
                     if abs((timestamp - file_ctime).total_seconds()) < 60:
@@ -178,7 +179,7 @@ class BETDataCollector(DataCollector):
 
         except ValueError:
             ctime = None
-            logger.error(f'Could not parse filename\n  "{basename}"')
+            self.logger.error(f'Could not parse filename "{basename}"')
 
         mtime = file_mtime
 

@@ -3,7 +3,6 @@ import datetime
 import os
 import re
 import struct
-import logging
 
 # qncmbe imports
 from .utils import DataCollector, DataElement
@@ -13,13 +12,10 @@ from .data_names import index
 import numpy as np
 
 
-logger = logging.getLogger(__name__)
-
-
 class MollyDataCollector(DataCollector):
 
     default_data_path = os.path.join(
-        r"\\insitu1.nexus.uwaterloo.ca", "Documents", "QNC MBE Data",
+        r"\\insitu1", "Documents", "QNC MBE Data",
         "Production Data", "Molly data"
     )
 
@@ -57,6 +53,12 @@ class MollyDataCollector(DataCollector):
     def collect_data(self):
 
         self.initialize_data()
+
+        if not os.path.exists(self.main_data_path):
+            self.logger.error(
+                f'Cannot find/access data path "{self.main_data_path}"'
+            )
+            return self.data
 
         # For speed. Skip collection process if no names are requested.
         if not self.names:
@@ -164,7 +166,7 @@ class MollyDataCollector(DataCollector):
         try:
             header = open(header_path, "r")
         except IOError:
-            logger.warning(
+            self.logger.warning(
                 "Missing Molly header file for "
                 f"{hour.strftime('%Y-%m-%d')} {hour.strftime('%H')}:00"
             )
@@ -191,7 +193,7 @@ class MollyDataCollector(DataCollector):
                             total_values[name] = int(match.group(1))
                             values_offset[name] = int(match.group(2))
                             if found[name]:
-                                logger.error(
+                                self.logger.error(
                                     f"Duplicate entries for '{name}'"
                                     f"{hour.strftime('%Y-%m-%d')} "
                                     f"{hour.strftime('%H')}:00"
@@ -201,7 +203,7 @@ class MollyDataCollector(DataCollector):
 
             for name in self.names:
                 if not found[name]:
-                    logger.debug(
+                    self.logger.debug(
                         f"Missing '{name}' for "
                         f"{hour.strftime('%Y-%m-%d')} {hour.strftime('%H')}:00"
                     )
@@ -253,7 +255,7 @@ class MollyDataCollector(DataCollector):
         try:
             binary = open(binary_path, "rb")
         except IOError:
-            logger.warning(
+            self.logger.warning(
                 "Missing Molly binary file for "
                 f"{hour.strftime('%Y-%m-%d')} {hour.strftime('%H')}:00"
             )
@@ -262,7 +264,7 @@ class MollyDataCollector(DataCollector):
         try:
             for name in self.names:
                 if (total_values[name] < 0) or (values_offset[name] < 0):
-                    logger.error(
+                    self.logger.error(
                         f'Invalid total_values or values_offset for "{name}"'
                     )
                     break
