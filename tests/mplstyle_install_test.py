@@ -1,9 +1,9 @@
-from qncmbe.plotting import load_plot_style
+from qncmbe.plotting import styles
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-load_plot_style('qncmbe', update_style_files=False)
+styles.use('qncmbe')
 
 x = np.linspace(0, 10, 1000)
 y = np.sin(x)

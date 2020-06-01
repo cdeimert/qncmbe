@@ -1,5 +1,3 @@
-# This mplstyle is from the qncmbe python package
-# Warning: modifications will be overwritten by the qncmbe package installer!
 #
 # Sets appropriate sizes and fonts for AIP papers
 # This style does not set any aesthetics (colors, etc.).
@@ -19,7 +17,7 @@ mathtext.fontset: stix
 figure.facecolor: white
 figure.figsize: 3.37, 2.53
 
-lines.linewidth: 0.75
+lines.linewidth: 1.0
 
 xtick.labelsize: 8
 

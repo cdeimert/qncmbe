@@ -3,9 +3,9 @@ import os
 import matplotlib.pyplot as plt
 
 from qncmbe.data_import.molly import MollyDataCollector
-import qncmbe.plotting as pltutils
+from qncmbe.plotting import styles
 
-pltutils.load_plot_style('qncmbe', update_style_files=False)
+styles.use('qncmbe')
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 

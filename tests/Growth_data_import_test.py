@@ -1,22 +1,11 @@
 import os
-import logging
 
 import matplotlib.pyplot as plt
 
 from qncmbe.data_import.growths import GrowthDataCollector
-from qncmbe.data_import.utils import console_handler
-import qncmbe.plotting as pltutils
+from qncmbe.plotting import styles
 
-
-pltutils.load_plot_style('qncmbe', update_style_files=False)
-
-verbose = False
-
-if verbose:
-    console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter(
-        logging.Formatter('%(levelname)s (%(name)s): %(message)s')
-    )
+styles.use('qncmbe')
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 

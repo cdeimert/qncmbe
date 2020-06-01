@@ -1,110 +1,12 @@
 '''
 Useful functions for plotting with matplotlib
-
-Also gives capability to load and install qncmbe plot styles.
-See the qncmbe/plot_stylelib folder for plot styles.
 '''
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as clrs
-import os
-import shutil
 import numpy as np
 import scipy.interpolate as interpolate
-
-
-def load_plot_style(name, update_style_files=False):
-    '''Wrapper for matplotlib.pyplot.style.use(). '''
-
-    if update_style_files:
-        install_plot_styles()
-
-    try:
-        plt.style.use(name)
-    except OSError:
-        raise OSError(
-            f'Matplotlib style "{name}" not found.'
-            '\nIf this style is part of the qncmbe package, the styles may not'
-            ' have been correctly installed. Try running load_plot_style() '
-            ' again with update_style_files=True'
-        )
-
-
-def install_plot_styles():
-
-    print("Installing/updating qncmbe plot styles...")
-
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    qncmbe_stylelib_dir = os.path.join(this_dir, 'plot_stylelib')
-
-    print("Found qncmbe plot styles folder:")
-    print(f'    "{qncmbe_stylelib_dir}"')
-
-    print("Will install plot styles:")
-    qncmbe_style_files = []
-    for fname in os.listdir(qncmbe_stylelib_dir):
-        fpath = os.path.join(qncmbe_stylelib_dir, fname)
-
-        if check_mplstyle_header(fpath):
-            print(f'    {fname}')
-            qncmbe_style_files.append(fname)
-        else:
-            raise ValueError(
-                'Package file does not have correct header:'
-                f'\n    "{fpath}"'
-            )
-
-    local_stylelib_dir = os.path.join(mpl.get_configdir(), 'stylelib')
-
-    if os.path.exists(local_stylelib_dir):
-        print('Found existing local stylelib directory:')
-    else:
-        os.makedirs(local_stylelib_dir)
-        print('Created local stylelib directory:')
-
-    print(f'    "{local_stylelib_dir}"')
-
-    for fname in qncmbe_style_files:
-        if fname in os.listdir(local_stylelib_dir):
-            print(f'Found existing local stylelib file "{fname}"')
-            local_fpath = os.path.join(local_stylelib_dir, fname)
-
-            if check_mplstyle_header(local_fpath):
-                print(f'    Header check passed. Will update this file.')
-            else:
-                raise ValueError(
-                    'Local stylelib file appears to have been modified or'
-                    ' corrupted.\nTry deleting qncmbe styles from local'
-                    ' stylelib directory'
-                    f'\n    "{local_stylelib_dir}"'
-                    '\nand run the installation again.'
-                )
-
-        fpath = os.path.join(qncmbe_stylelib_dir, fname)
-        shutil.copy(fpath, local_stylelib_dir)
-
-    print("Installation complete. Reloading matplotlib library.")
-    plt.style.reload_library()
-
-
-def check_mplstyle_header(fpath):
-    '''Confirm that an .mplstyle file has the correct header for the qncmbe
-    package. Important to make sure that the installation does not overwrite
-    user-generated files.'''
-
-    check_lines = [
-        '# This mplstyle is from the qncmbe python package',
-        '# Warning: modifications will be overwritten by the qncmbe package'
-        ' installer!'
-    ]
-
-    with open(fpath, 'r') as f:
-        for i in range(2):
-            if f.readline().rstrip() != check_lines[i]:
-                return False
-
-    return True
 
 
 def get_mpl_colors():

@@ -1,7 +1,5 @@
-# This mplstyle is from the qncmbe python package
-# Warning: modifications will be overwritten by the qncmbe package installer!
 #
-# This is the default QNC-MBE aesthetic in greyscale
+# Default QNC-MBE plotstyle in greyscale
 #
 
 axes.grid: False
