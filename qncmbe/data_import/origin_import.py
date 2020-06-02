@@ -17,6 +17,7 @@ import os
 import logging
 from textwrap import dedent
 import re
+from pathlib import Path
 
 # qncmbe imports
 from .growths import GrowthDataCollector
@@ -33,6 +34,10 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 
 qt_creator_file = os.path.join(this_dir, "origin_import.ui")
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qt_creator_file)
+
+# TODO: switch back to pyuic5 for loading the .ui
+# Could add a switch to load directly from the .ui file for
+# development mode
 
 logging.addLevelName(logging.ERROR, 'Error')
 logging.addLevelName(logging.WARNING, 'Warning')
@@ -67,7 +72,7 @@ class OriginInterface():
     higher level functions from win32com (e.g., Save or Load) do not always
     work as expected.
 
-    The alternative package OriginExt seems cleaner, but I found that it has 
+    The alternative package OriginExt seems cleaner, but I found that it has
     poor error handling. If something goes wrong, it tends to freeze rather
     than throw an exception, requiring the user to manually kill Origin from
     the task manager. (And it may not even be obvious to the user that Origin
@@ -75,47 +80,57 @@ class OriginInterface():
 
     NOTE: even though the Execute(LabTalk command) approach is more reliable
     than the other approaches, it still freezes sometimes. Caution is required.
-    
-    Also note that input sanitation is important when pasting strings into LabTalk commands
-    
-    TODO: Find a secure way to sanitize file and string inputs.
-    '''
+
+    Also note that input sanitation is important when pasting strings into
+    LabTalk commands'''
 
     def __enter__(self):
         self.app = win32com.client.Dispatch("Origin.Application")
+
+        return self
 
     def execute(self, command):
         '''Execute LabTalk command'''
         return self.app.Execute(command)
 
     @staticmethod
+    def sanitize_string(string):
+
+        # https://www.originlab.com/doc/LabTalk/ref/LT-Keywords
+        repl_list = [
+            ('\"', '%(quote)'),
+            ('\t', '%(tab)'),
+            ('\r\n', '%(crlf)'),
+            ('\r', '%(cr)'),
+            ('\n', '%(lf)')
+        ]
+
+        for s1, s2 in repl_list:
+            string = string.replace(s1, s2)
+
+        return string
+
+    @staticmethod
     def sanitize_path(filepath):
-        p = str(Path(filepath).resolve())
 
-        if '"' in p:
-            raise ValueError("Illegal character in filepath.")
+        p = Path(filepath).resolve()
 
-        return p
+        return OriginInterface.sanitize_string(str(p))
 
     @staticmethod
     def validate_shortname(name):
 
-        # Should be purely alphanumeric. No spaces.
+        if not re.match('^[a-zA-Z0-9]+$', name):
+            raise ValueError(
+                "Shortname cannot include whitespace or special chars."
+            )
 
-        if not isinstance(arg, str):
-            raise ValueError("Argument must be a string.")
-        else:
-            arg_clean = arg.replace('"', '')
-            return f'"{arg_clean}"'
-
-    def validate_int(self, arg):
-        if not isinstance(arg, int):
-            raise ValueError("Argument must be an integer.")
+        return True
 
     def load(self, filename):
         '''Load Origin file from specified path. Return True if successful.'''
         fn = self.sanitize_path(filename)
-        return self.execute(f'doc -o {fn}')
+        return self.execute(f'doc -o "{fn}"')
 
     def save(self, filename):
         '''Save Origin file to specified path. Return True if successful.'''
@@ -126,27 +141,30 @@ class OriginInterface():
         '''Activate workbook by name. Create it if it doesn't exist.
         '''
 
-        wbk = self.sanitize_str(name)
-        if self.execute(f'win -a {wbk}'):
-            return wbk
+        self.validate_shortname(name)
+
+        if self.execute(f'win -a "{name}"'):
+            return True
         else:
             return self.execute(
-                f'newbook name:={wbk} sheet:=0 option:=lsname'
+                f'newbook name:="{name}" sheet:=0 option:=lsname'
             )
 
     def activate_worksheet(self, name):
         '''Activate worksheet by name (within the current active workbook).
         Create it if it doesn't exist.'''
 
-        wks = self.sanitize_str(name)
-        if not self.execute(f'page.active$ = {wks}'):
-            self.execute(f'newsheet name:={wks} cols:=0')
-
-    def set_worksheet_rows(self, nrows):
-
+        self.validate_shortname(name)
+        if self.execute(f'page.active$ = "{name}"'):
+            return True
+        else:
+            return self.execute(f'newsheet name:="{name}" cols:=0')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        del self.origin
+        try:
+            self.app.Exit()
+        except TypeError:
+            del self.app
 
 
 class QPlainTextEditHandler(logging.Handler):
