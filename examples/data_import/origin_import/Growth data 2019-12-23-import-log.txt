@@ -1,0 +1,80 @@
+##### Data import info #####
+
+QNC-MBE growth data imported to Origin file:
+"C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\examples\data_import\Growth data 2019-12-23.opj"
+using template file:
+"c:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\examples\data_import\Growth data template.opj"
+
+Data range from
+2019-12-23 00:00:00 (defined as t=0)
+to
+2019-12-25 00:00:00
+
+This data was imported using the qncmbe Python package
+(https://github.com/cdeimert/qncmbe)
+
+
+##### Runtime log #####
+
+Info (OriginImportGui 2020-06-01 14:14:51,248):
+  Created log file "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\examples\data_import\Growth data 2019-12-23-import-log.txt"
+Warning (GrowthDataCollector 2020-06-01 14:14:51,268):
+  Using GrowthDataCollector with test data from "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\tests\data_import\test_data"
+Info (OriginImportGui 2020-06-01 14:14:51,275):
+  Loading Origin...
+Info (OriginImportGui 2020-06-01 14:14:52,692):
+  Loading template file...
+Info (OriginImportGui 2020-06-01 14:14:53,865):
+  Creating output file...
+Info (OriginImportGui 2020-06-01 14:14:54,085):
+  Collecting data... (this may take a while, and the window might say "Not Responding")
+Info (OriginImportGui 2020-06-01 14:14:54,089):
+  Collecting Molly data...
+Info (OriginImportGui 2020-06-01 14:15:00,887):
+  Done collecting Molly data. (6.7978 s)
+Info (OriginImportGui 2020-06-01 14:15:00,890):
+  Writing Molly data to Origin...
+Info (OriginImportGui 2020-06-01 14:15:05,217):
+  Done writing Molly data to Origin. (4.3265 s)
+Info (OriginImportGui 2020-06-01 14:15:05,218):
+  Collecting BET data...
+Error (BETDataCollector 2020-06-01 14:15:05,220):
+  Could not parse filename "BET   G0710 messed up for test  10.42.02 asdf, December 21, 2019 - Copy.dat"
+Warning (BETDataCollector 2020-06-01 14:15:05,225):
+  Skipping problematic data file "BET   G0710 messed up for test  10.42.02 asdf, December 21, 2019 - Copy.dat"
+Error (BETDataCollector 2020-06-01 14:15:05,227):
+  Timestamp inconsistent with modification time in "BET   G0711 messed up for test  10.08.32 Sunday, December 31, 2019.dat"
+Warning (BETDataCollector 2020-06-01 14:15:05,229):
+  Skipping problematic data file "BET   G0711 messed up for test  10.08.32 Sunday, December 31, 2019.dat"
+Info (OriginImportGui 2020-06-01 14:15:06,442):
+  Done collecting BET data. (1.2237 s)
+Info (OriginImportGui 2020-06-01 14:15:06,444):
+  Writing BET data to Origin...
+Info (OriginImportGui 2020-06-01 14:15:06,863):
+  Done writing BET data to Origin. (0.4200 s)
+Info (OriginImportGui 2020-06-01 14:15:06,865):
+  Collecting SVT data...
+Info (qncmbe.data_import.SVT 2020-06-01 14:15:06,868):
+  Generating time_info file in "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\tests\data_import\test_data\SVT Data\G0643 messed up for test"
+Error (qncmbe.data_import.SVT 2020-06-01 14:15:06,930):
+  Cannot automatically generate time_info.txt because SVT Engine modification time < creation time in "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\tests\data_import\test_data\SVT Data\G0643 messed up for test\G0643_Engine 1.txt"
+Warning (SVTDataCollector 2020-06-01 14:15:06,932):
+  Problem with SVT time info. Skipping folder "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\tests\data_import\test_data\SVT Data\G0643 messed up for test"
+Error (qncmbe.data_import.SVT 2020-06-01 14:15:06,935):
+  Invalid time_info.txt file "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\tests\data_import\test_data\SVT Data\G0645 messed up for test\time_info.txt". Repair or delete it!
+Warning (SVTDataCollector 2020-06-01 14:15:06,942):
+  Problem with SVT time info. Skipping folder "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\tests\data_import\test_data\SVT Data\G0645 messed up for test"
+Info (OriginImportGui 2020-06-01 14:15:07,327):
+  Done collecting SVT data. (0.4618 s)
+Info (OriginImportGui 2020-06-01 14:15:07,328):
+  Writing SVT data to Origin...
+Info (OriginImportGui 2020-06-01 14:15:07,600):
+  Done writing SVT data to Origin. (0.2718 s)
+Info (OriginImportGui 2020-06-01 14:15:07,615):
+  Saving output file...
+Info (OriginImportGui 2020-06-01 14:15:08,088):
+  Import complete!
+Info (OriginImportGui 2020-06-01 14:15:08,089):
+  Closing Origin...
+Info (OriginImportGui 2020-06-01 14:15:13,988):
+  Done. (Total time: 22.7328 s)

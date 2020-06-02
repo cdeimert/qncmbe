@@ -1,10 +1,11 @@
 *.dat
 *.opj
-tests/data_import/data_saves
-tests/data_import/test_data
+tests/test_data_import/data_saves
+tests/test_data_import/test_data
 examples/cell_usage/saved_cell_data
 examples/data_import/*.opj
 examples/data_import/*log*.txt
+examples/data_import/data_saves
 !examples/data_import/Growth\ data\ template.opj
 .vscode
 *.dat

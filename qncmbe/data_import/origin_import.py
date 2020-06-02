@@ -7,16 +7,7 @@ installed on Origin. This uses the win32com.client interface to access Origin
 from the Python distribution installed on the computer.
 This makes things much easier to install and gives greater flexibility.
 
-Words of warning:
-Many of the functions in win32com.client do not seem to work as expected.
-(E.g. Save() and Load()) The better approach seems to be to use Execute() and
-call LabTalk commands directly (https://www.originlab.com/doc/LabTalk/guide)
 
-There's an alternative package OriginExt, which is much "cleaner" in the sense
-that everything can be done within Python. However, OriginExt does not seem to
-handle errors very well. When something goes wrong inside one of the functions
-(e.g. Load()), it tends to freeze rather than throw an exception. This requires
-you to kill all the processes manually via task manager.
 '''
 
 # Standard library imports (not included in setup.py)
@@ -25,6 +16,7 @@ import datetime as datetime
 import os
 import logging
 from textwrap import dedent
+import re
 
 # qncmbe imports
 from .growths import GrowthDataCollector
@@ -45,6 +37,116 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(qt_creator_file)
 logging.addLevelName(logging.ERROR, 'Error')
 logging.addLevelName(logging.WARNING, 'Warning')
 logging.addLevelName(logging.INFO, 'Info')
+
+
+#
+# TODO: for better organization, split OriginImportGui into 3 classes
+#   - OriginInterface to deal with reading/writing from Origin. This should be
+#     a class with __enter__ and __exit__ functions so it can use the
+#     "with ... as:" syntax.
+#   - OriginImport, to import data from a selected time range into Origin
+#   - OriginImportGui, to deal with the Qt interface
+#
+#   Also, create unit tests...
+#
+
+
+class OriginError(Exception):
+    pass
+
+
+class OriginInterface():
+    '''Functions for reading/writing to Origin. Uses the win32com.client
+    interface with Origin.
+
+    Developer notes:
+    Most of these commands are implemented by using Execute() to call LabTalk
+    commands directly (https://www.originlab.com/doc/LabTalk/guide).
+
+    This seems to be the most reliable way to interface with Origin. The
+    higher level functions from win32com (e.g., Save or Load) do not always
+    work as expected.
+
+    The alternative package OriginExt seems cleaner, but I found that it has 
+    poor error handling. If something goes wrong, it tends to freeze rather
+    than throw an exception, requiring the user to manually kill Origin from
+    the task manager. (And it may not even be obvious to the user that Origin
+    is running in the first place.)
+
+    NOTE: even though the Execute(LabTalk command) approach is more reliable
+    than the other approaches, it still freezes sometimes. Caution is required.
+    
+    Also note that input sanitation is important when pasting strings into LabTalk commands
+    
+    TODO: Find a secure way to sanitize file and string inputs.
+    '''
+
+    def __enter__(self):
+        self.app = win32com.client.Dispatch("Origin.Application")
+
+    def execute(self, command):
+        '''Execute LabTalk command'''
+        return self.app.Execute(command)
+
+    @staticmethod
+    def sanitize_path(filepath):
+        p = str(Path(filepath).resolve())
+
+        if '"' in p:
+            raise ValueError("Illegal character in filepath.")
+
+        return p
+
+    @staticmethod
+    def validate_shortname(name):
+
+        # Should be purely alphanumeric. No spaces.
+
+        if not isinstance(arg, str):
+            raise ValueError("Argument must be a string.")
+        else:
+            arg_clean = arg.replace('"', '')
+            return f'"{arg_clean}"'
+
+    def validate_int(self, arg):
+        if not isinstance(arg, int):
+            raise ValueError("Argument must be an integer.")
+
+    def load(self, filename):
+        '''Load Origin file from specified path. Return True if successful.'''
+        fn = self.sanitize_path(filename)
+        return self.execute(f'doc -o {fn}')
+
+    def save(self, filename):
+        '''Save Origin file to specified path. Return True if successful.'''
+        fn = self.sanitize_path(filename)
+        return self.execute(f'save {fn}')
+
+    def activate_workbook(self, name):
+        '''Activate workbook by name. Create it if it doesn't exist.
+        '''
+
+        wbk = self.sanitize_str(name)
+        if self.execute(f'win -a {wbk}'):
+            return wbk
+        else:
+            return self.execute(
+                f'newbook name:={wbk} sheet:=0 option:=lsname'
+            )
+
+    def activate_worksheet(self, name):
+        '''Activate worksheet by name (within the current active workbook).
+        Create it if it doesn't exist.'''
+
+        wks = self.sanitize_str(name)
+        if not self.execute(f'page.active$ = {wks}'):
+            self.execute(f'newsheet name:={wks} cols:=0')
+
+    def set_worksheet_rows(self, nrows):
+
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        del self.origin
 
 
 class QPlainTextEditHandler(logging.Handler):

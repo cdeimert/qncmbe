@@ -1,0 +1,60 @@
+##### Data import info #####
+
+QNC-MBE growth data imported to Origin file:
+"C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\examples\data_import\Growth data G0712.opj"
+using template file:
+"c:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\examples\data_import\Growth data template.opj"
+
+Data range from
+2019-12-23 00:00:00 (defined as t=0)
+to
+2019-12-25 00:00:00
+
+This data was imported using the qncmbe Python package
+(https://github.com/cdeimert/qncmbe)
+
+
+##### Runtime log #####
+
+Info (OriginImportGui 2020-06-01 14:16:02,846):
+  Created log file "C:\Users\Chris\OneDrive - University of Waterloo\Projects\Code and calculations\qncmbe\examples\data_import\Growth data G0712-import-log.txt"
+Info (OriginImportGui 2020-06-01 14:16:05,224):
+  Loading Origin...
+Info (OriginImportGui 2020-06-01 14:16:06,574):
+  Loading template file...
+Info (OriginImportGui 2020-06-01 14:16:07,713):
+  Creating output file...
+Info (OriginImportGui 2020-06-01 14:16:07,938):
+  Collecting data... (this may take a while, and the window might say "Not Responding")
+Info (OriginImportGui 2020-06-01 14:16:07,942):
+  Collecting Molly data...
+Info (OriginImportGui 2020-06-01 14:16:34,209):
+  Done collecting Molly data. (26.2670 s)
+Info (OriginImportGui 2020-06-01 14:16:34,210):
+  Writing Molly data to Origin...
+Info (OriginImportGui 2020-06-01 14:16:38,525):
+  Done writing Molly data to Origin. (4.3147 s)
+Info (OriginImportGui 2020-06-01 14:16:38,526):
+  Collecting BET data...
+Info (OriginImportGui 2020-06-01 14:16:58,319):
+  Done collecting BET data. (19.7928 s)
+Info (OriginImportGui 2020-06-01 14:16:58,320):
+  Writing BET data to Origin...
+Info (OriginImportGui 2020-06-01 14:16:58,740):
+  Done writing BET data to Origin. (0.4203 s)
+Info (OriginImportGui 2020-06-01 14:16:58,742):
+  Collecting SVT data...
+Info (OriginImportGui 2020-06-01 14:17:20,934):
+  Done collecting SVT data. (22.1916 s)
+Info (OriginImportGui 2020-06-01 14:17:20,936):
+  Writing SVT data to Origin...
+Info (OriginImportGui 2020-06-01 14:17:21,210):
+  Done writing SVT data to Origin. (0.2739 s)
+Info (OriginImportGui 2020-06-01 14:17:21,227):
+  Saving output file...
+Info (OriginImportGui 2020-06-01 14:17:21,739):
+  Import complete!
+Info (OriginImportGui 2020-06-01 14:17:21,740):
+  Closing Origin...
+Info (OriginImportGui 2020-06-01 14:17:27,421):
+  Done. (Total time: 84.5653 s)
