@@ -7,9 +7,9 @@ Based on the data from QNC-MBE growth G0641, which is included
 import matplotlib.pyplot as plt
 
 from qncmbe.refl_fit import Material, Structure
-import qncmbe.plotting as pltutils
+from qncmbe.plotting import styles
 
-pltutils.load_plot_style('qncmbe', update_style_files=False)
+styles.use('qncmbe')
 
 # Set up materials
 GaAs = Material('GaAs')

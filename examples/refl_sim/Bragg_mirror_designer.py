@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 from qncmbe.refl_sim import Material, Structure
-import qncmbe.plotting as pltutils
+from qncmbe.plotting import styles
 
-pltutils.load_plot_style('qncmbe', update_style_files=False)
+styles.use('qncmbe')
 
 
 # === Set up materials ===

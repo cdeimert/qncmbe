@@ -329,7 +329,7 @@ class Structure():
         self.layers = []
         self.layer_names = []
         self.use_angstroms = False
-        self.fit_type = 'fix nk'
+        self.fitted_pars = 'ns,ks,G,s'
 
         self.use_data_file = False
 
@@ -393,7 +393,7 @@ class Structure():
         self.use_angstroms = use_angstroms
         for layer in self.layers:
             layer.use_angstroms_for_structure(use_angstroms)
-            layer.set_refl_pars_guess(self.fit_type)
+            layer.set_refl_pars_guess(self.fitted_pars)
 
     def add_layer(
         self, name, material, material_beneath, growth_rate, t_start, t_end
@@ -416,6 +416,10 @@ class Structure():
 
         self.layers.append(new_layer)
         self.layer_names.append(name)
+
+    def delete_all_layers(self):
+        self.layers = []
+        self.layer_names = []
 
     def set_pars_to_fit(self, fit_pars):
         '''
