@@ -6,8 +6,6 @@ Unlike origin_import_wizard_legacy, this does NOT run using the Python
 installed on Origin. This uses the win32com.client interface to access Origin
 from the Python distribution installed on the computer.
 This makes things much easier to install and gives greater flexibility.
-
-
 '''
 
 # Standard library imports (not included in setup.py)
@@ -77,6 +75,9 @@ class OriginInterface():
     than throw an exception, requiring the user to manually kill Origin from
     the task manager. (And it may not even be obvious to the user that Origin
     is running in the first place.)
+
+    NOTE: Apparently there is a new package called originpro which is supposed
+    to be better. I haven't tried it.
 
     NOTE: even though the Execute(LabTalk command) approach is more reliable
     than the other approaches, it still freezes sometimes. Caution is required.
@@ -394,7 +395,7 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
         self.origin = win32com.client.Dispatch("Origin.Application")
 
     def load_template_file(self):
-        self.add_runtime_message(f'Loading template file...')
+        self.add_runtime_message('Loading template file...')
 
         if (
             (not os.path.exists(self.template_file))
@@ -436,7 +437,7 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
 
             ''')
 
-        header += dedent(f'''\
+        header += dedent('''\
             This data was imported using the qncmbe Python package
             (https://github.com/cdeimert/qncmbe)
 
@@ -661,7 +662,7 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
 
                         # Set as X-type column for plotting
                         self.origin.Execute(f'wks.col = {n+1}')
-                        self.origin.Execute(f'wks.col.type = 4')
+                        self.origin.Execute('wks.col.type = 4')
 
                         # Add data name and units
                         self.origin.Execute(f'col({n+2})[L]$ = {name}')
@@ -669,7 +670,7 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
 
                         # Set as Y-type column for plotting
                         self.origin.Execute(f'wks.col = {n+2}')
-                        self.origin.Execute(f'wks.col.type = 1')
+                        self.origin.Execute('wks.col.type = 1')
 
                         n += 2
 
@@ -687,16 +688,16 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
             # Write start and end dates to ImportInfo table
-            if not self.origin.Execute(f'win -a ImportInfo'):
+            if not self.origin.Execute('win -a ImportInfo'):
                 self.origin.Execute(
-                    f'newbook name:=ImportInfo sheet:=0 option:=lsname'
+                    'newbook name:=ImportInfo sheet:=0 option:=lsname'
                 )
 
-            if self.origin.Execute(f'page.active$ = ImportInfo'):
-                self.origin.Execute(f'wks.ncols=2')
+            if self.origin.Execute('page.active$ = ImportInfo'):
+                self.origin.Execute('wks.ncols=2')
             else:
                 self.origin.Execute(
-                    f'newsheet name:=ImportInfo cols:=2'
+                    'newsheet name:=ImportInfo cols:=2'
                 )
 
             self.origin.Execute('wks.nrows=0')
@@ -708,8 +709,8 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
                     0, 0
                 )
 
-            self.origin.Execute(f'col(1)[L]$ = Start time')
-            self.origin.Execute(f'col(2)[L]$ = End time')
+            self.origin.Execute('col(1)[L]$ = Start time')
+            self.origin.Execute('col(2)[L]$ = End time')
 
             self.origin.Execute('wks.labels(L)')
             self.origin.Execute('wautosize')
@@ -720,7 +721,7 @@ class OriginImportGui(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.logging.error("Could not save output file.")
                 raise RuntimeError("Error saving output file")
 
-            self.add_runtime_message(f"Import complete!")
+            self.add_runtime_message("Import complete!")
 
         except RuntimeError:
             self.add_runtime_message("Import failed!")
