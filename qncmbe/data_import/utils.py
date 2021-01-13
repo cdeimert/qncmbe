@@ -59,6 +59,9 @@ class DataElement():
     def __len__(self):
         return len(self.time)
 
+    def copy(self):
+        return deepcopy(self)
+
     def add_data(self, other):
         '''Add data from one DataElement to the present DataElement (still
         keeping the existing data.)
@@ -133,6 +136,14 @@ class DataElement():
             self.add_data(di)
             self.add_data(df)
 
+    def scale(self, scalar):
+        '''Multiply the vals array by scalar'''
+
+        if not np.isscalar(scalar):
+            raise ValueError("Must be scalar.")
+
+        self.vals *= scalar
+
     def step_interpolate(self, ti, right=False):
         '''Step-interpolates the current DataElement at time values ti, and
         returns in the form of a new DataElement.
@@ -158,11 +169,25 @@ class DataElement():
                 inds = np.digitize(ti, self.time) - 1
                 inds[inds < 0] = 0
 
-        output = deepcopy(self)
+        output = self.copy()
 
         output.set_data(ti[:], self.vals[inds])
 
         return output
+
+    def linear_interpolate(self, ti):
+        '''Interpolates the current DataElement at time values ti, and
+        returns in the form of a new DataElement.'''
+
+        if len(self.vals) == 0:
+            return deepcopy(self)
+        else:
+            vi = np.interp(ti, self.time, self.vals)
+
+            output = deepcopy(self)
+            output.set_data(ti[:], vi)
+
+            return output
 
     def set_datetime0(self, datetime0):
 
@@ -325,8 +350,8 @@ class DataCollector():
         self.savedir = savedir
 
     def set_times(self, start_time, end_time, clear_data=True):
-        self.start_time = parse_datetime_input(start_time)
-        self.end_time = parse_datetime_input(end_time)
+        self.start_time = parse_datetime(start_time)
+        self.end_time = parse_datetime(end_time)
 
         if clear_data:
             self.initialize_data()
@@ -342,11 +367,48 @@ class DataCollector():
         '''
         return self.data
 
+    def check_data(self):
+        '''Ensure that data dictionary follows the correct format.
+        - keys correspond to DataCollector.names
+        - name of each DataElement corresponds to the dict key
+        - units of each DataElement correspond to DataCollector.units
+        - datetime0 of each DataElement corresponds to DataCollector.start_time
+        '''
+
+        if set(self.data.keys()) != set(self.names):
+            raise ValueError("Unexpected keys in data dictionary.")
+
+        for name in self.names:
+            if self.data[name].name != name:
+                self.data[name].name = name
+                self.logger.warning(
+                    f'Name mismatch corrected in DataElement "{name}"'
+                )
+
+            if self.data[name].units != self.units[name]:
+                self.data[name].units = self.units[name]
+                self.logger.warning(
+                    f'Units mismatch corrected in DataElement "{name}"'
+                )
+
+            if self.data[name].datetime0 != self.start_time:
+                self.data[name].set_datetime0(self.start_time)
+                self.logger.warning(
+                    f'Datetime0 mismatch corrected in DataElement "{name}"'
+                )
+
     def get_data(self, force_reload=False):
         '''Get data. Uses the collect_data() method to collect from remote
         source. If self.savedir is set, will automatically save/load from
         this local folder so that the remote data only has to be accessed
-        once.'''
+        once.
+        
+        Data is returned as a dictionary of DataElements. Dictionary keys
+        correspond to the names list given to the DataCollector class.
+
+        The datetime0 of each DataElement corresponds to the start_time
+        of the DataCollector
+        '''
 
         if self.savedir is None:
             self.collect_data()
@@ -367,7 +429,21 @@ class DataCollector():
                     self.collect_data()
                     self.save_data()
 
+        self.check_data()
+
         return self.data
+
+    def generate_regular_time(self, dt):
+        '''Generate evenly spaced time array.
+
+        Array will start on the DataCollector start_time and will end before
+        end_time. Spacing is dt seconds.
+        '''
+
+        t_tot = (self.end_time - self.start_time).total_seconds()
+        N = int(t_tot/dt)
+
+        return np.linspace(0.0, N*dt, N + 1)
 
     def generate_save_subdirname(self):
 
@@ -412,7 +488,7 @@ class DataCollector():
                 )
 
 
-def parse_datetime_input(datetime_input):
+def parse_datetime(datetime_input):
     '''Converts datetime_input into a datetime.datetime object.
 
     Allowed input types

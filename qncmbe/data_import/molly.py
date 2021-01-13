@@ -114,17 +114,10 @@ class MollyDataCollector(DataCollector):
                     self.start_time, self.end_time, include_endpoints=True
                 )
             else:
-                ti = self.get_interpolated_time()
-                self.data[name] = self.data[name].step_interpolate(ti)
+                t = self.generate_regular_time(self.dt)
+                self.data[name] = self.data[name].step_interpolate(t)
 
         return self.data
-
-    def get_interpolated_time(self):
-        if self.dt is None:
-            return None
-        else:
-            tot_seconds = (self.end_time - self.start_time).total_seconds()
-            return np.arange(0.0, tot_seconds, self.dt)
 
     def get_header_path(self, hour):
         '''Find the path for a Molly header file for a given hour (datetime
