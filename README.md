@@ -32,6 +32,10 @@ Non-QNC-MBE members must obtain the source code (e.g., from https://github.com/c
 
 ```pip install .```
 
+If you have git installed on your computer, you can also install directly from github:
+
+```pip install git+https://github.com/cdeimert/qncmbe```
+
 Note: to use `qncmbe.data_import.origin_import_wizard`, you may need to install PyQt separately, as pip is not able to automatically install it.
 In Anaconda, PyQt was likely already installed. 
 If not, you may have to run `conda install pyqt`.
