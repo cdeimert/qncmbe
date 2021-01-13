@@ -69,8 +69,9 @@ def calc_Al_shutter_transient(t, s, K_sh, t_sh, zeta_sh, T_sh, n_per=1):
 
     if n_per > 1:
         s_in = np.concatenate([s[:-1] for n in range(n_per)] + [s[-1:]])
-        t_in = np.concatenate([t[:-1] + n*t[-1]
-                               for n in range(n_per)] + [t[-1:]*n_per])
+        t_in = np.concatenate(
+            [t[:-1] + n*t[-1] for n in range(n_per)] + [t[-1:]*n_per]
+        )
     else:
         s_in = s[:]
         t_in = t[:]
@@ -137,7 +138,7 @@ def calc_inverse_Al_dynamics(t, T_targ, K, t0, zeta, n_per=1):
     return T_in[-len(t):]
 
 
-class Growth_step():
+class GrowthStep():
     def __init__(self, open_shutters, t, T_Al, name='Growth step'):
         self.name = name
         self.open_shutters = open_shutters  # List of open cells
@@ -145,22 +146,53 @@ class Growth_step():
         self.T_Al = T_Al  # Array of desired Al melt temperatures
 
 
-class Growth():
-    def __init__(self, Ga_cell, GR_GaAs, Al_cell_pars, dry_run=False):
-        '''Al_cell_pars should be a dictionary like
-        {
-          'static': [A,B,C],
-          'shutter': [K_sh, t_sh, zeta_sh, T_sh],
-          'dynamic': [K, t0, zeta]
-        }
-        '''
+class AlGaAsGrowth():
+    '''Class for doing AlGaAs growths where the Al composition varies smoothly
+    as a function of position.
 
-        self.Ga_cell = Ga_cell  # String (either 'Ga1' or 'Ga2')
-        self.GR_GaAs = GR_GaAs  # 'nm/s'
+    Arguments for constructor:
+        Ga_cell         String specifying Ga_cell
+        GR_GaAs         Growth rate of pure GaAs in nm/s
+        Al_cell_pars    Dictionary of Al cell parameters. Keys must include
+                            - A, B, C (parameters for static case)
+                            - K, t0, zeta (parameters for dynamic case)
+                            - K_sh, t_sh, zeta_sh, T_sh (parameters for shutter
+                                transient)
+        dry_run         Defaults to False. If true, will generate Molly
+                        commands that only open the Al shutter, not Ga, As or
+                        Si
+    '''
+    def __init__(self, Ga_cell, GR_GaAs, Al_cell_pars, dry_run=False):
+
+        if Ga_cell in ['Ga1', 'Ga2']:
+            self.Ga_cell = Ga_cell
+        else:
+            raise ValueError(
+                f'Ga_cell="{Ga_cell}", but must be "Ga1" or "Ga2"'
+            )
+
+        if GR_GaAs > 0.3:
+            logger.warning(
+                f'GaAs growth rate of {GR_GaAs} nm/s is quite high.'
+            )
+        elif GR_GaAs < 0.0:
+            raise ValueError('GaAs growth rate cannot be negative.')
+        else:
+            self.GR_GaAs = GR_GaAs
 
         self.flux_Ga = 4*GR_GaAs/(a_GaAs**3)  # flux in nm^-2.s^-1
 
-        self.Al_cell_pars = Al_cell_pars
+        self.Al_static_pars = [
+            Al_cell_pars[k] for k in ['A', 'B', 'C']
+        ]
+
+        self.Al_dynamic_pars = [
+            Al_cell_pars[k] for k in ['K', 't0', 'zeta']
+        ]
+
+        self.Al_shutter_pars = [
+            Al_cell_pars[k] for k in ['K_sh', 't_sh', 'zeta_sh', 'T_sh']
+        ]
 
         # Set true to generate recipes where only Al shutter is opened
         self.dry_run = dry_run
@@ -187,8 +219,9 @@ class Growth():
 
         t_rel = t - t[0]
 
-        self.steps.append(Growth_step(
-            open_shutters, self.t_total + t_rel, T_Al, name))
+        self.steps.append(
+            GrowthStep(open_shutters, self.t_total + t_rel, T_Al, name)
+        )
 
         self.t_total += t_rel[-1]
 
@@ -206,7 +239,7 @@ class Growth():
             open_shutters += ['Si1']
 
         flux_Al = x*self.flux_Ga/(1 - x)
-        T_Al = flux_to_temperature(flux_Al, *self.Al_cell_pars['static'])
+        T_Al = flux_to_temperature(flux_Al, *self.Al_static_pars)
 
         GR_AlGaAs = (a_perp_AlAs*flux_Al + a_GaAs*self.flux_Ga)*(a_GaAs**2)/4
 
@@ -230,7 +263,7 @@ class Growth():
             open_shutters += ['Si1']
 
         flux_Al = x*self.flux_Ga/(1 - x)
-        T_Al = flux_to_temperature(flux_Al, *self.Al_cell_pars['static'])
+        T_Al = flux_to_temperature(flux_Al, *self.Al_static_pars)
 
         GR_AlGaAs = self.GR_GaAs
 
@@ -262,8 +295,8 @@ class Growth():
 
         flux_i = xi*self.flux_Ga/(1 - xi)
         flux_f = xf*self.flux_Ga/(1 - xf)
-        Ti = flux_to_temperature(flux_i, *self.Al_cell_pars['static'])
-        Tf = flux_to_temperature(flux_f, *self.Al_cell_pars['static'])
+        Ti = flux_to_temperature(flux_i, *self.Al_static_pars)
+        Tf = flux_to_temperature(flux_f, *self.Al_static_pars)
 
         num_t = int(duration/dt) + 1
         t = np.linspace(0, duration, num_t)
@@ -339,7 +372,7 @@ class Growth():
         T = self.get_T_Al()
         s = self.get_shutter_status('Al1')
 
-        flux = s*temperature_to_flux(T, *self.Al_cell_pars['static'])
+        flux = s*temperature_to_flux(T, *self.Al_static_pars)
 
         return flux
 
@@ -379,7 +412,7 @@ class Growth():
         s = self.get_shutter_status('Al1')
 
         t, T_s = calc_Al_shutter_transient(
-            self.t, s, *self.Al_cell_pars['shutter'], n_per)
+            self.t, s, *self.Al_shutter_pars, n_per)
 
         return T_s
 
@@ -399,7 +432,7 @@ class Growth():
             T_targ -= self.T_err
 
         T_in = calc_inverse_Al_dynamics(
-            self.t, T_targ, *self.Al_cell_pars['dynamic'], n_per
+            self.t, T_targ, *self.Al_dynamic_pars, n_per
         )
 
         return T_in
