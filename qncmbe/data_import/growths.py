@@ -96,7 +96,7 @@ class GrowthDataCollector(DataCollector):
 
         root = Path(__file__).resolve().parent.parent.parent
 
-        basedir = root.joinpath('tests', 'data_import', 'test_data')
+        basedir = root.joinpath('tests', 'test_data_import', 'test_data')
 
         self.logger.warning(
             f'Using GrowthDataCollector with test data from "{basedir}"'

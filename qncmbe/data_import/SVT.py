@@ -280,7 +280,7 @@ def read_SVT_data_file(filepath, cols, try_increments=True):
     name = filepath
     keep_going = True
     while keep_going:
-        with open(name) as f:
+        with open(name, 'r') as f:
             for line in f:
                 try:
                     data.append([float(line.split()[i]) for i in cols])
